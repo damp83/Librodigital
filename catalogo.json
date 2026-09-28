@@ -1,0 +1,164 @@
+[
+  {
+    "archivo": "Cuaderno_Infantil_3anios_multinivel.pdf",
+    "titulo": "Cuaderno anual · 3 años",
+    "etapas": ["3 años"],
+    "tipo": "Cuaderno",
+    "desc": "20 fichas de septiembre a junio: posiciones, series, cantidad y correspondencia uno a uno. Con guía y registro de observación.",
+    "pags": 23,
+    "peso": 132
+  },
+  {
+    "archivo": "Cuaderno_Infantil_4anios_multinivel.pdf",
+    "titulo": "Cuaderno anual · 4 años",
+    "etapas": ["4 años"],
+    "tipo": "Cuaderno",
+    "desc": "70 fichas (dos por semana): clasificación, orden, simetría, dobles, repartos, valor hasta el 5, muros y recta numérica.",
+    "pags": 74,
+    "peso": 389
+  },
+  {
+    "archivo": "Cuaderno_Infantil_5anios_multinivel.pdf",
+    "titulo": "Cuaderno anual · 5 años",
+    "etapas": ["5 años"],
+    "tipo": "Cuaderno",
+    "desc": "70 fichas (dos por semana): 2 por 1 y 1 por 2, muros, parejas del 10, partes-todo, un diez y unos, máquinas y letras.",
+    "pags": 74,
+    "peso": 422
+  },
+  {
+    "archivo": "Cuaderno_1Primaria_multinivel.pdf",
+    "titulo": "Cuaderno anual · 1.º de Primaria",
+    "etapas": ["1.º"],
+    "tipo": "Cuaderno",
+    "desc": "70 fichas: registro en una línea, parejas del 10, familias de operaciones, paso por el diez, panel del 100 y dieces y unos.",
+    "pags": 74,
+    "peso": 408
+  },
+  {
+    "archivo": "Bingo_de_las_regletas.pdf",
+    "titulo": "El bingo de las regletas",
+    "etapas": ["4 años", "5 años", "1.º", "2.º"],
+    "tipo": "Juego",
+    "desc": "20 cartones en cuatro niveles, del 1 al 99. Sale un número y se marca el conjunto de regletas que lo representa.",
+    "pags": 16,
+    "peso": 618
+  },
+  {
+    "archivo": "Secuencia_OAOA_3anios_a_2Primaria.pdf",
+    "titulo": "Secuencia didáctica anual OAOA",
+    "etapas": ["3 años", "4 años", "5 años", "1.º", "2.º"],
+    "tipo": "Programación",
+    "desc": "Progresión de 3 años a 2.º: 15 unidades trimestrales con objetivos, actividades por proceso de Bloom, niveles e indicadores.",
+    "pags": 13,
+    "peso": 71
+  },
+  {
+    "archivo": "Ficha_multinivel_generalizacion_cero_Amigos_100.pdf",
+    "titulo": "Generalización al cero y Amigos del 100",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "desc": "12 actividades multinivel: el truco del cero, los amigos del 100 y el valor de las decenas.",
+    "pags": 7,
+    "peso": 93
+  },
+  {
+    "archivo": "Ficha_multinivel_Suma_en_Arbol.pdf",
+    "titulo": "La suma en árbol · ficha",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "desc": "13 actividades: sumar dieces y unidades separando las ramas del árbol, con problemas y creación propia.",
+    "pags": 10,
+    "peso": 131
+  },
+  {
+    "archivo": "Ficha_multinivel_Parejas_del_10.pdf",
+    "titulo": "Parejas del 10 e intrusos",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "desc": "13 actividades: buscar parejas del 10 en cadenas, unir los intrusos y leer el valor posicional.",
+    "pags": 10,
+    "peso": 123
+  },
+  {
+    "archivo": "Ficha_multinivel_Suma_y_Resta.pdf",
+    "titulo": "La relación entre suma y resta",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "desc": "15 actividades con policubos, regletas y el supertruco de los ceros hasta las centenas.",
+    "pags": 9,
+    "peso": 127
+  },
+  {
+    "archivo": "Ficha_multinivel_Problemas_Partes_Todo.pdf",
+    "titulo": "Problemas con el diagrama partes-todo",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "desc": "10 actividades: los cuatro pasos del detective de problemas, decidir si se busca el todo o una parte.",
+    "pags": 9,
+    "peso": 99
+  },
+  {
+    "archivo": "Ficha_multinivel_Vestidos_de_los_Numeros.pdf",
+    "titulo": "Los vestidos de los números · ficha",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "desc": "11 actividades de descomposición canónica y no canónica, con el juego de la prenda que falta.",
+    "pags": 8,
+    "peso": 109
+  },
+  {
+    "archivo": "Amigos_del_100_regletas_corregido.pdf",
+    "titulo": "Amigos del 100",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "desc": "El poder del cero: de las parejas del 10 a los amigos del 100 con regletas a escala.",
+    "pags": 15,
+    "peso": 105
+  },
+  {
+    "archivo": "La_Suma_en_Arbol_corregido.pdf",
+    "titulo": "La suma en árbol · presentación",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "desc": "Cómo crece el árbol: rama de las decenas, rama de las unidades y tronco con el total.",
+    "pags": 14,
+    "peso": 207
+  },
+  {
+    "archivo": "Detectives_parejas_del_10_corregido.pdf",
+    "titulo": "Detectives de las parejas del 10",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "desc": "Buscar parejas del 10, unir intrusos y leer el valor posicional, con el juego final de operaciones.",
+    "pags": 15,
+    "peso": 162
+  },
+  {
+    "archivo": "Laboratorio_Matematico_corregido.pdf",
+    "titulo": "El laboratorio matemático",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "desc": "La magia de juntar y separar: partes-todo con policubos, regletas y generalización al cero.",
+    "pags": 14,
+    "peso": 205
+  },
+  {
+    "archivo": "Detectives_de_Problemas_corregido.pdf",
+    "titulo": "Detectives de problemas",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "desc": "Resolver misterios matemáticos con el diagrama partes-todo, con retos y soluciones.",
+    "pags": 16,
+    "peso": 3425
+  },
+  {
+    "archivo": "Los_Vestidos_de_los_Numeros_corregido.pdf",
+    "titulo": "Los vestidos de los números · presentación",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "desc": "Descomposición de números de dos cifras: el vestido favorito y los cambios de ropa.",
+    "pags": 18,
+    "peso": 2216
+  }
+]

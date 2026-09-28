@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aula de Matemáticas Manipulativas</title>
+<meta name="description" content="Cuadernos, fichas, presentaciones y juegos con regletas Cuisenaire, de 3 años a 2.º de Primaria.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='4' width='6' height='5' rx='1' fill='%23e3261f'/%3E%3Crect x='2' y='11' width='12' height='5' rx='1' fill='%23f2c200'/%3E%3Crect x='2' y='18' width='20' height='5' rx='1' fill='%232e8b3a'/%3E%3Crect x='2' y='25' width='28' height='5' rx='1' fill='%232f7fd1'/%3E%3C/svg%3E">
+<script>
+  try { var t = localStorage.getItem("aula-tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+</script>
+<style>
+:root{
+  --brand:#1565e0; --brand-d:#0f4fb4; --on-brand:#ffffff;
+  --bg:#ffffff; --bg2:#f2f4f7; --stage:#e8ecf2; --card:#ffffff;
+  --ink:#1c2330; --muted:#566070; --line:#d3d9e1; --line2:#e6eaf0;
+  --dark:#222222; --on-dark:#ffffff; --link:#1565e0; --ok:#2e7d32;
+  --r2:#e3261f; --r3:#7cc84a; --r5:#f2c200; --r6:#2e8b3a; --r9:#2f7fd1; --r10:#f57c22;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12171e; --bg2:#1a212b; --stage:#0d1116; --card:#1a212b;
+  --ink:#e9edf2; --muted:#a3adba; --line:#2f3a47; --line2:#242d38;
+  --dark:#e9edf2; --on-dark:#12171e; --link:#8db8f5; --ok:#7bc67e; color-scheme: dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#12171e; --bg2:#1a212b; --stage:#0d1116; --card:#1a212b;
+  --ink:#e9edf2; --muted:#a3adba; --line:#2f3a47; --line2:#242d38;
+  --dark:#e9edf2; --on-dark:#12171e; --link:#8db8f5; --ok:#7bc67e; color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.5;-webkit-text-size-adjust:100%}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+svg.ic{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+[hidden]{display:none !important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Biblioteca ---------- */
+.cab{position:sticky;top:0;z-index:20;background:var(--bg2);border-bottom:1px solid var(--line);
+  padding-top:env(safe-area-inset-top,0px)}
+.cab .in{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px}
+.marca{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+.escalera{display:grid;gap:3px;width:44px}
+.escalera i{display:block;height:7px;border-radius:2px}
+.marca b{display:block;font-size:clamp(17px,2.6vw,22px);font-weight:700;line-height:1.1;letter-spacing:-.01em}
+.marca small{display:block;font-size:14px;font-weight:700;color:var(--muted);line-height:1.2}
+.cab .acciones{margin-left:auto;display:flex;gap:4px}
+.ibtn{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;border:0;background:transparent;color:var(--ink)}
+.ibtn:hover{background:var(--line2)}
+
+.filtros{max-width:1180px;margin:0 auto;padding:22px 20px 8px}
+.filtros p.intro{margin:0 0 14px;color:var(--muted);font-size:15px;max-width:62ch}
+.buscador{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);
+  padding:0 12px;max-width:560px}
+.buscador input{flex:1;border:0;background:transparent;padding:11px 0;font-size:16px;outline:none;min-width:0}
+.buscador:focus-within{border-color:var(--brand);box-shadow:0 0 0 2px color-mix(in srgb,var(--brand) 30%,transparent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 12px;border-radius:999px;font-size:14px;font-weight:500;
+  display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.chip .punto{width:10px;height:10px;border-radius:2px}
+.chips .sep{width:1px;background:var(--line);margin:4px 6px}
+
+main.lista{max-width:1180px;margin:0 auto;padding:6px 20px 48px}
+.cuenta{color:var(--muted);font-size:14px;margin:6px 0 4px}
+.grupo h2{font-size:18px;font-weight:700;margin:26px 0 12px;display:flex;align-items:center;gap:10px}
+.grupo h2 .regleta{height:10px;border-radius:2px;display:inline-block}
+.libro{display:flex;border:1px solid var(--line);border-radius:4px;background:var(--card);margin-bottom:18px;overflow:hidden;min-height:196px}
+.portada{flex:none;width:150px;background:var(--bg2);border:0;padding:0;display:block;position:relative;border-right:1px solid var(--line2)}
+.portada img,.portada canvas{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.portada.apaisada img,.portada.apaisada canvas{object-fit:contain;object-position:center}
+.portada .franja{position:absolute;left:0;top:0;bottom:0;width:6px}
+.datos{flex:1;min-width:0;padding:16px 20px 18px;display:flex;flex-direction:column}
+.datos .tipo{font-weight:700;font-size:15px;margin:0}
+.datos h3{margin:0 0 6px;font-size:20px;font-weight:700;line-height:1.25}
+.datos p.desc{margin:0;color:var(--muted);font-size:15px;max-width:70ch}
+.datos .meta{margin:6px 0 0;color:var(--muted);font-size:13px}
+.botones{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:16px}
+.bt{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:4px;
+  font-size:17px;font-weight:600;text-decoration:none;border:1px solid transparent}
+.bt.azul{background:var(--brand);color:var(--on-brand);min-width:180px}
+.bt.azul:hover{background:var(--brand-d)}
+.bt.negro{background:var(--dark);color:var(--on-dark);min-width:180px}
+.bt.borde{background:transparent;border-color:var(--line);color:var(--ink);font-size:15px}
+.bt.borde[aria-pressed="true"]{border-color:var(--ok);color:var(--ok)}
+.vacio{padding:48px 0;text-align:center;color:var(--muted)}
+.vacio button{margin-top:12px}
+footer.pie{border-top:1px solid var(--line);background:var(--bg2);color:var(--muted);font-size:13.5px;
+  padding:24px 20px calc(32px + env(safe-area-inset-bottom,0px))}
+footer.pie .in{max-width:1180px;margin:0 auto}
+footer.pie p{margin:0 0 6px;max-width:80ch}
+
+@media (max-width:640px){
+  main.lista{padding-left:14px;padding-right:14px}
+  .libro{display:grid;grid-template-columns:96px 1fr;column-gap:14px;min-height:0;padding:0 0 14px}
+  .portada{grid-row:1 / span 4;width:auto;min-height:136px;border-bottom:1px solid var(--line2)}
+  .datos{display:contents}
+  .datos .tipo{padding-top:12px;font-size:14px}
+  .datos .tipo,.datos h3,.datos p.desc,.datos .meta{grid-column:2;padding-right:14px}
+  .datos h3{font-size:17px}
+  .datos p.desc{font-size:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .botones{grid-column:1 / -1;padding:14px 14px 0;gap:8px}
+  .bt{min-height:46px;padding:0 12px;font-size:16px}
+  .bt.azul,.bt.negro{min-width:0;flex:1}
+  .bt.borde{flex-basis:100%}
+}
+
+/* ---------- Lector ---------- */
+#lector{position:fixed;inset:0;z-index:50;background:var(--stage);display:grid;grid-template-rows:auto 1fr auto;height:100%}
+.l-cab{background:var(--brand);color:var(--on-brand);display:grid;grid-template-columns:56px 1fr 56px;align-items:center;
+  padding-top:env(safe-area-inset-top,0px);min-height:60px}
+.l-cab h1{margin:0;text-align:center;font-size:clamp(16px,2.4vw,22px);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px}
+.l-cab .ibtn{color:var(--on-brand);justify-self:center}
+.l-cab .ibtn:hover{background:rgba(255,255,255,.16)}
+.l-cuerpo{display:flex;min-height:0;position:relative}
+.lateral{flex:none;width:108px;background:var(--card);border-right:1px solid var(--line);display:flex;flex-direction:column;
+  overflow-y:auto;z-index:3}
+.lateral .plegar{height:64px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--brand);display:grid;place-items:center}
+.lateral .plegar svg{transition:transform .2s}
+.lat-btn{border:0;background:transparent;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:14px 6px;font-size:14px;font-weight:600}
+.lat-btn svg{color:var(--brand);width:30px;height:30px;stroke-width:1.8}
+.lat-btn:hover{background:var(--line2)}
+.lat-btn[aria-expanded="true"]{background:color-mix(in srgb,var(--brand) 12%,var(--card));box-shadow:inset 3px 0 0 var(--brand)}
+.lector-plegado .lateral{width:64px}
+.lector-plegado .lat-btn span{display:none}
+.lector-plegado .lateral .plegar svg{transform:rotate(180deg)}
+
+.panel{position:absolute;top:0;bottom:0;left:108px;width:min(340px,calc(100% - 108px));background:var(--card);border-right:1px solid var(--line);
+  box-shadow:6px 0 18px rgba(0,0,0,.12);z-index:2;display:flex;flex-direction:column}
+.lector-plegado .panel{left:64px;width:min(340px,calc(100% - 64px))}
+.panel header{display:flex;align-items:center;justify-content:space-between;padding:10px 8px 10px 18px;border-bottom:1px solid var(--line)}
+.panel header h2{margin:0;font-size:17px}
+.panel .cuerpo{overflow-y:auto;padding:14px 18px 24px;flex:1}
+.panel .nota-pie{font-size:13px;color:var(--muted);margin:16px 0 0}
+.miniaturas{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.mini{border:2px solid transparent;background:transparent;padding:4px;border-radius:6px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13px;color:var(--muted)}
+.mini canvas{width:100%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);display:block;aspect-ratio:var(--ar,.707)}
+.mini[aria-current="page"]{border-color:var(--brand);color:var(--ink);font-weight:700}
+.fila{display:flex;align-items:center;gap:8px;width:100%;border:0;border-bottom:1px solid var(--line2);background:transparent;padding:10px 4px;text-align:left}
+.fila:hover{background:var(--line2)}
+.fila b{white-space:nowrap}
+.fila span{color:var(--muted);font-size:14px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.fila mark{background:#ffe38a;color:#1c2330;border-radius:2px}
+.panel input[type=search],.panel textarea{width:100%;border:1px solid var(--line);border-radius:6px;background:var(--bg);padding:10px 12px;font-size:16px}
+.panel textarea{min-height:160px;resize:vertical}
+.panel .bt{width:100%;margin:0 0 14px;font-size:15px;min-height:44px}
+.lista-marcas{display:flex;flex-direction:column}
+.lista-marcas .item{display:flex;align-items:center}
+.lista-marcas .item .fila{flex:1}
+.guardado{font-size:13px;color:var(--ok);min-height:20px;margin:6px 0 0}
+
+.zona{flex:1;min-width:0;position:relative}
+.escena:focus{outline:none}
+.escena{position:absolute;inset:0;overflow:auto;display:flex;touch-action:pan-x pan-y pinch-zoom;overscroll-behavior:contain}
+.paginas{margin:auto;display:flex;padding:28px 72px;flex:none}
+.hoja{position:relative;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.hoja canvas{display:block}
+.hoja + .hoja{box-shadow:4px 2px 10px rgba(0,0,0,.18)}
+.hoja .cinta{position:absolute;top:0;right:22px;width:26px;height:42px;background:var(--r10);
+  clip-path:polygon(0 0,100% 0,100% 100%,50% 76%,0 100%)}
+.aviso{margin:auto;text-align:center;color:var(--muted);padding:24px;max-width:44ch}
+.aviso .bt{margin-top:14px}
+.girando{width:36px;height:36px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--brand);margin:0 auto 12px;animation:gira 1s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.flecha{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;border:0;background:var(--card);
+  color:var(--brand);display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.18);z-index:1}
+.flecha svg{width:30px;height:30px}
+.flecha:disabled{opacity:.35;cursor:default}
+.flecha.izq{left:14px}.flecha.der{right:14px}
+.zoom{position:absolute;right:14px;bottom:14px;display:flex;flex-direction:column;align-items:center;gap:10px;z-index:1}
+.zoom .ibtn{background:var(--card);color:var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.18);width:48px;height:48px}
+.zoom .porcentaje{background:var(--card);color:var(--brand);border:0;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.18);
+  padding:10px 16px;font-size:17px;font-weight:600;min-width:84px}
+
+.barra{background:var(--card);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:clamp(6px,3vw,40px);
+  padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));flex-wrap:nowrap}
+.b-btn{border:0;background:transparent;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;
+  font-size:15px;font-weight:600;text-decoration:none;border-radius:8px;min-width:64px}
+.b-btn svg{color:var(--brand);width:30px;height:30px;stroke-width:1.8}
+.b-btn:hover{background:var(--line2)}
+.b-btn:disabled{opacity:.4;cursor:default}
+.b-btn[aria-pressed="true"] svg{color:var(--ok)}
+.paginador{display:flex;flex-direction:column;align-items:center;gap:2px}
+.paginador .caja{display:flex;align-items:center;border:1.5px solid var(--muted);border-radius:4px;font-size:21px;height:46px}
+.paginador input{width:4.4em;border:0;background:transparent;text-align:center;font-size:21px;padding:0 6px}
+.paginador .total{border-left:1.5px solid var(--muted);padding:0 14px;line-height:1.1}
+.paginador label{font-size:15px;font-weight:600}
+
+@media (max-width:760px){
+  .lateral{width:64px}
+  .lateral .plegar{display:none}
+  .lat-btn span{display:none}
+  .panel,.lector-plegado .panel{left:64px;width:calc(100% - 64px)}
+  .paginas{padding:14px 12px}
+  .flecha{width:48px;height:48px;top:auto;bottom:10px;transform:none}
+  .flecha svg{width:26px;height:26px}
+  .flecha.izq{left:calc(50% - 56px)}.flecha.der{right:auto;left:calc(50% + 8px)}
+  .zoom{right:8px;bottom:8px;gap:8px}
+  .zoom .ibtn{width:40px;height:40px}
+  .zoom .porcentaje{font-size:14px;padding:6px 10px;min-width:60px}
+  .zoom .pantalla{display:none}
+  .b-btn span{display:none}
+  .b-btn{min-width:44px;padding:6px}
+  .paginador .caja{font-size:17px;height:40px}
+  .paginador input{font-size:17px;width:3.8em}
+  .paginador .total{padding:0 10px}
+  .paginador label{display:none}
+  .l-cab{min-height:52px}
+}
+@media (prefers-reduced-motion: reduce){ *{animation:none !important;transition:none !important} }
+</style>
+</head>
+<body>
+
+<!-- ================= BIBLIOTECA ================= -->
+<div id="biblioteca">
+  <header class="cab">
+    <div class="in">
+      <a class="marca" href="#/" aria-label="Aula de Matemáticas Manipulativas, inicio">
+        <span class="escalera" aria-hidden="true">
+          <i style="width:20%;background:var(--r2)"></i>
+          <i style="width:50%;background:var(--r5)"></i>
+          <i style="width:75%;background:var(--r6)"></i>
+          <i style="width:100%;background:var(--r9)"></i>
+        </span>
+        <span><b>Aula de Matemáticas</b><small>Manipulativas</small></span>
+      </a>
+      <div class="acciones">
+        <button class="ibtn" id="btnTema" data-icon="luna" aria-label="Activar modo oscuro"></button>
+      </div>
+    </div>
+  </header>
+
+  <section class="filtros" aria-label="Buscar y filtrar">
+    <p class="intro">Cuadernos, fichas, presentaciones y juegos con regletas Cuisenaire, de 3 años a 2.º de Primaria.</p>
+    <label class="buscador">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+      <span class="sr">Buscar material</span>
+      <input type="search" id="q" placeholder="Buscar por título o tema" autocomplete="off">
+    </label>
+    <div class="chips" id="fEtapa" role="group" aria-label="Filtrar por curso"></div>
+    <div class="chips" id="fTipo" role="group" aria-label="Filtrar por tipo"></div>
+  </section>
+
+  <main class="lista" id="lista">
+    <p class="cuenta" id="cuenta" aria-live="polite"></p>
+    <div id="grupos"></div>
+    <div class="vacio" id="vacio" hidden>
+      <p>Ningún material coincide con la búsqueda y los filtros.</p>
+      <button class="bt borde" id="limpiar">Quitar filtros</button>
+    </div>
+  </main>
+
+  <footer class="pie">
+    <div class="in">
+      <p><strong>Aula de Matemáticas Manipulativas</strong>, materiales de Diego Alberto Moya.</p>
+      <p>Licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>:
+         puedes usarlos y adaptarlos citando la autoría, sin fines comerciales y compartiendo con la misma licencia.</p>
+      <p>Las marcas de «trabajado», los marcadores y las notas se guardan solo en este dispositivo.</p>
+    </div>
+  </footer>
+</div>
+
+<!-- ================= LECTOR ================= -->
+<div id="lector" hidden role="dialog" aria-modal="true" aria-labelledby="lTitulo">
+  <header class="l-cab">
+    <span></span>
+    <h1 id="lTitulo"></h1>
+    <button class="ibtn" id="lCerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button>
+  </header>
+
+  <div class="l-cuerpo" id="lCuerpo">
+    <nav class="lateral" aria-label="Herramientas del libro">
+      <button class="plegar" id="lPlegar" data-icon="plegar" aria-label="Plegar la barra lateral"></button>
+      <button class="lat-btn" id="lInicio"><svg class="ic" data-icon="casa"></svg><span>Inicio</span></button>
+      <button class="lat-btn" data-panel="contenido" aria-expanded="false"><svg class="ic" data-icon="contenido"></svg><span>Contenido</span></button>
+      <button class="lat-btn" data-panel="marcador" aria-expanded="false"><svg class="ic" data-icon="marcador"></svg><span>Marcador</span></button>
+      <button class="lat-btn" data-panel="buscar" aria-expanded="false"><svg class="ic" data-icon="buscar"></svg><span>Buscar</span></button>
+      <button class="lat-btn" data-panel="notas" aria-expanded="false"><svg class="ic" data-icon="notas"></svg><span>Notas</span></button>
+    </nav>
+
+    <aside class="panel" id="panel" hidden>
+      <header><h2 id="panelTitulo"></h2><button class="ibtn" id="panelCerrar" data-icon="x" aria-label="Cerrar panel"></button></header>
+      <div class="cuerpo" id="panelCuerpo"></div>
+    </aside>
+
+    <div class="zona">
+      <div class="escena" id="escena" tabindex="-1"><div class="paginas" id="paginas"></div></div>
+      <button class="flecha izq" id="lAnt" data-icon="izq" aria-label="Página anterior"></button>
+      <button class="flecha der" id="lSig" data-icon="der" aria-label="Página siguiente"></button>
+      <div class="zoom">
+        <button class="ibtn pantalla" id="lPantalla" data-icon="pantalla" aria-label="Pantalla completa"></button>
+        <button class="ibtn" id="lMas" data-icon="mas" aria-label="Ampliar"></button>
+        <button class="ibtn" id="lMenos" data-icon="menos" aria-label="Reducir"></button>
+        <button class="porcentaje" id="lZoom" aria-label="Ajustar a la pantalla">100%</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="barra">
+    <button class="b-btn" id="lUltima"><svg class="ic" data-icon="historial"></svg><span>Última página vista</span></button>
+    <div class="paginador">
+      <div class="caja">
+        <input id="lPag" inputmode="numeric" autocomplete="off" aria-label="Ir a la página">
+        <span class="total" id="lTotal"></span>
+      </div>
+      <label for="lPag">Página actual</label>
+    </div>
+    <button class="b-btn" id="lDoble"><svg class="ic" data-icon="una"></svg><span>Una página</span></button>
+    <a class="b-btn" id="lDescargar" download><svg class="ic" data-icon="descargar"></svg><span>Descargar</span></a>
+    <button class="b-btn" id="lHecho" aria-pressed="false"><svg class="ic" data-icon="check"></svg><span>Trabajado</span></button>
+  </footer>
+</div>
+
+<script>
+/* =====================================================================
+   CATÁLOGO: para añadir un material, copia el PDF en materiales/ y añade
+   una entrada aquí. La portada (portadas/NOMBRE.jpg) es opcional: si no
+   existe, se dibuja sola a partir de la primera página del PDF.
+   ===================================================================== */
+const MATERIALES = [
+ {"archivo":"Cuaderno_Infantil_3anios_multinivel.pdf","titulo":"Cuaderno anual · 3 años","etapas":["3 años"],"tipo":"Cuaderno",
+  "desc":"20 fichas de septiembre a junio: posiciones, series, cantidad y correspondencia uno a uno. Con guía y registro de observación.","pags":23,"peso":132},
+ {"archivo":"Cuaderno_Infantil_4anios_multinivel.pdf","titulo":"Cuaderno anual · 4 años","etapas":["4 años"],"tipo":"Cuaderno",
+  "desc":"70 fichas (dos por semana): clasificación, orden, simetría, dobles, repartos, valor hasta el 5, muros y recta numérica.","pags":74,"peso":389},
+ {"archivo":"Cuaderno_Infantil_5anios_multinivel.pdf","titulo":"Cuaderno anual · 5 años","etapas":["5 años"],"tipo":"Cuaderno",
+  "desc":"70 fichas (dos por semana): 2 por 1 y 1 por 2, muros, parejas del 10, partes-todo, un diez y unos, máquinas y letras.","pags":74,"peso":422},
+ {"archivo":"Cuaderno_1Primaria_multinivel.pdf","titulo":"Cuaderno anual · 1.º de Primaria","etapas":["1.º"],"tipo":"Cuaderno",
+  "desc":"70 fichas: registro en una línea, parejas del 10, familias de operaciones, paso por el diez, panel del 100 y dieces y unos.","pags":74,"peso":408},
+ {"archivo":"Bingo_de_las_regletas.pdf","titulo":"El bingo de las regletas","etapas":["4 años","5 años","1.º","2.º"],"tipo":"Juego",
+  "desc":"20 cartones en cuatro niveles, del 1 al 99. Sale un número y se marca el conjunto de regletas que lo representa.","pags":16,"peso":618},
+ {"archivo":"Secuencia_OAOA_3anios_a_2Primaria.pdf","titulo":"Secuencia didáctica anual OAOA","etapas":["3 años","4 años","5 años","1.º","2.º"],"tipo":"Programación",
+  "desc":"Progresión de 3 años a 2.º: 15 unidades trimestrales con objetivos, actividades por proceso de Bloom, niveles e indicadores.","pags":13,"peso":71},
+ {"archivo":"Ficha_multinivel_generalizacion_cero_Amigos_100.pdf","titulo":"Generalización al cero y Amigos del 100","etapas":["2.º"],"tipo":"Ficha",
+  "desc":"12 actividades multinivel: el truco del cero, los amigos del 100 y el valor de las decenas.","pags":7,"peso":93},
+ {"archivo":"Ficha_multinivel_Suma_en_Arbol.pdf","titulo":"La suma en árbol · ficha","etapas":["2.º"],"tipo":"Ficha",
+  "desc":"13 actividades: sumar dieces y unidades separando las ramas del árbol, con problemas y creación propia.","pags":10,"peso":131},
+ {"archivo":"Ficha_multinivel_Parejas_del_10.pdf","titulo":"Parejas del 10 e intrusos","etapas":["2.º"],"tipo":"Ficha",
+  "desc":"13 actividades: buscar parejas del 10 en cadenas, unir los intrusos y leer el valor posicional.","pags":10,"peso":123},
+ {"archivo":"Ficha_multinivel_Suma_y_Resta.pdf","titulo":"La relación entre suma y resta","etapas":["2.º"],"tipo":"Ficha",
+  "desc":"15 actividades con policubos, regletas y el supertruco de los ceros hasta las centenas.","pags":9,"peso":127},
+ {"archivo":"Ficha_multinivel_Problemas_Partes_Todo.pdf","titulo":"Problemas con el diagrama partes-todo","etapas":["2.º"],"tipo":"Ficha",
+  "desc":"10 actividades: los cuatro pasos del detective de problemas, decidir si se busca el todo o una parte.","pags":9,"peso":99},
+ {"archivo":"Ficha_multinivel_Vestidos_de_los_Numeros.pdf","titulo":"Los vestidos de los números · ficha","etapas":["2.º"],"tipo":"Ficha",
+  "desc":"11 actividades de descomposición canónica y no canónica, con el juego de la prenda que falta.","pags":8,"peso":109},
+ {"archivo":"Amigos_del_100_regletas_corregido.pdf","titulo":"Amigos del 100","etapas":["2.º"],"tipo":"Presentación",
+  "desc":"El poder del cero: de las parejas del 10 a los amigos del 100 con regletas a escala.","pags":15,"peso":105},
+ {"archivo":"La_Suma_en_Arbol_corregido.pdf","titulo":"La suma en árbol · presentación","etapas":["2.º"],"tipo":"Presentación",
+  "desc":"Cómo crece el árbol: rama de las decenas, rama de las unidades y tronco con el total.","pags":14,"peso":207},
+ {"archivo":"Detectives_parejas_del_10_corregido.pdf","titulo":"Detectives de las parejas del 10","etapas":["2.º"],"tipo":"Presentación",
+  "desc":"Buscar parejas del 10, unir intrusos y leer el valor posicional, con el juego final de operaciones.","pags":15,"peso":162},
+ {"archivo":"Laboratorio_Matematico_corregido.pdf","titulo":"El laboratorio matemático","etapas":["2.º"],"tipo":"Presentación",
+  "desc":"La magia de juntar y separar: partes-todo con policubos, regletas y generalización al cero.","pags":14,"peso":205},
+ {"archivo":"Detectives_de_Problemas_corregido.pdf","titulo":"Detectives de problemas","etapas":["2.º"],"tipo":"Presentación",
+  "desc":"Resolver misterios matemáticos con el diagrama partes-todo, con retos y soluciones.","pags":16,"peso":3425},
+ {"archivo":"Los_Vestidos_de_los_Numeros_corregido.pdf","titulo":"Los vestidos de los números · presentación","etapas":["2.º"],"tipo":"Presentación",
+  "desc":"Descomposición de números de dos cifras: el vestido favorito y los cambios de ropa.","pags":18,"peso":2216}
+];
+
+const BASE = "materiales/", PORTADAS = "portadas/";
+const ETAPAS = ["3 años","4 años","5 años","1.º","2.º"];
+const TIPOS  = ["Cuaderno","Ficha","Presentación","Juego","Programación"];
+const NOMBRE_ETAPA = {"3 años":"Infantil 3 años","4 años":"Infantil 4 años","5 años":"Infantil 5 años","1.º":"1.º de Primaria","2.º":"2.º de Primaria"};
+const COLOR_ETAPA  = {"3 años":"var(--r2)","4 años":"var(--r3)","5 años":"var(--r5)","1.º":"var(--r6)","2.º":"var(--r9)"};
+const ANCHO_ETAPA  = {"3 años":24,"4 años":40,"5 años":56,"1.º":72,"2.º":88};
+
+/* ---------- Iconos ---------- */
+const ICON = {
+  casa:'<path d="M3 11 12 3l9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
+  contenido:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  marcador:'<path d="M6 3h12v18l-6-5-6 5z"/>',
+  buscar:'<circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/>',
+  notas:'<path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5M8 13h8M8 17h5"/>',
+  plegar:'<path d="M11 6l-6 6 6 6M19 6l-6 6 6 6"/>',
+  x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  izq:'<path d="M15 5l-7 7 7 7"/>', der:'<path d="M9 5l7 7-7 7"/>',
+  pantalla:'<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/>',
+  mas:'<path d="M12 5v14M5 12h14"/>', menos:'<path d="M5 12h14"/>',
+  historial:'<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4v5h5"/><path d="M12 7.5V12l3 3"/>',
+  una:'<rect x="6.5" y="3" width="11" height="18" rx="1"/>',
+  dos:'<rect x="2" y="4" width="9.5" height="16" rx="1"/><rect x="12.5" y="4" width="9.5" height="16" rx="1"/>',
+  descargar:'<path d="M12 3v12M7 10l5 5 5-5M4 16v4h16v-4"/>',
+  luna:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  sol:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7"/>', abrir:'<path d="M3 5.5C5.5 4 8.5 4 12 6c3.5-2 6.5-2 9-.5V19c-2.5-1.5-5.5-1.5-9 .5-3.5-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/>'
+};
+function svg(nombre){ return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'+ICON[nombre]+'</svg>'; }
+function pintarIconos(raiz){
+  raiz.querySelectorAll("[data-icon]").forEach(el=>{
+    const n = el.dataset.icon;
+    if(el.tagName.toLowerCase()==="svg"){ el.setAttribute("viewBox","0 0 24 24"); el.setAttribute("aria-hidden","true"); el.innerHTML = ICON[n]; }
+    else el.innerHTML = svg(n);
+  });
+}
+
+/* ---------- Utilidades ---------- */
+const $ = id => document.getElementById(id);
+const norm = s => (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const esc = s => String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function leer(clave, def){ try{ const v = localStorage.getItem(clave); return v===null ? def : JSON.parse(v); }catch(e){ return def; } }
+function guardar(clave, val){ try{ localStorage.setItem(clave, JSON.stringify(val)); }catch(e){} }
+const hechos = () => leer("aula-done", []);
+const esHecho = a => hechos().includes(a);
+function alternarHecho(a){ const d = hechos(); const i = d.indexOf(a); if(i>=0) d.splice(i,1); else d.push(a); guardar("aula-done", d); }
+const nombreBase = a => a.replace(/\.pdf$/i,"");
+function textoEtapas(m){
+  if(m.etapas.length===1) return NOMBRE_ETAPA[m.etapas[0]];
+  const a = m.etapas[0], b = m.etapas[m.etapas.length-1];
+  return "de " + (a.includes("años") ? a : NOMBRE_ETAPA[a]) + " a " + (b.includes("años") ? b : b+" de Primaria");
+}
+
+/* ---------- Tema (claro / oscuro) ---------- */
+const mqOscuro = matchMedia("(prefers-color-scheme: dark)");
+function temaActual(){ return document.documentElement.getAttribute("data-theme") || (mqOscuro.matches ? "dark" : "light"); }
+function pintarBotonTema(){
+  const oscuro = temaActual()==="dark", b = $("btnTema");
+  b.innerHTML = svg(oscuro ? "sol" : "luna");
+  b.setAttribute("aria-label", oscuro ? "Activar modo claro" : "Activar modo oscuro");
+  b.title = b.getAttribute("aria-label");
+}
+$("btnTema").addEventListener("click", ()=>{
+  const nuevo = temaActual()==="dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", nuevo);
+  try{ localStorage.setItem("aula-tema", nuevo); }catch(e){}
+  pintarBotonTema();
+});
+mqOscuro.addEventListener?.("change", pintarBotonTema);
+
+/* =====================================================================
+   BIBLIOTECA
+   ===================================================================== */
+const filtroEtapa = new Set(), filtroTipo = new Set();
+let soloPendientes = false;
+
+function crearChips(){
+  const cE = $("fEtapa"), cT = $("fTipo");
+  ETAPAS.forEach(e=>{
+    const b = document.createElement("button");
+    b.className = "chip"; b.setAttribute("aria-pressed","false");
+    b.innerHTML = '<span class="punto" style="background:'+COLOR_ETAPA[e]+'"></span>'+esc(NOMBRE_ETAPA[e]);
+    b.onclick = ()=>{ filtroEtapa.has(e) ? filtroEtapa.delete(e) : filtroEtapa.add(e); b.setAttribute("aria-pressed", filtroEtapa.has(e)); pintarLista(); };
+    cE.appendChild(b);
+  });
+  TIPOS.forEach(t=>{
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = t; b.setAttribute("aria-pressed","false");
+    b.onclick = ()=>{ filtroTipo.has(t) ? filtroTipo.delete(t) : filtroTipo.add(t); b.setAttribute("aria-pressed", filtroTipo.has(t)); pintarLista(); };
+    cT.appendChild(b);
+  });
+  const sep = document.createElement("span"); sep.className = "sep"; cT.appendChild(sep);
+  const p = document.createElement("button");
+  p.className = "chip"; p.id = "soloPend"; p.textContent = "Sin trabajar"; p.setAttribute("aria-pressed","false");
+  p.onclick = ()=>{ soloPendientes = !soloPendientes; p.setAttribute("aria-pressed", soloPendientes); pintarLista(); };
+  cT.appendChild(p);
+}
+
+function tarjeta(m){
+  const art = document.createElement("article");
+  art.className = "libro";
+  const hecho = esHecho(m.archivo);
+  const color = m.etapas.length===1 ? COLOR_ETAPA[m.etapas[0]] : "var(--r10)";
+  art.innerHTML =
+    '<button class="portada" aria-label="Abrir '+esc(m.titulo)+'">'+
+      '<img loading="lazy" alt="" src="'+PORTADAS+encodeURIComponent(nombreBase(m.archivo))+'.jpg">'+
+      '<span class="franja" style="background:'+color+'"></span></button>'+
+    '<div class="datos">'+
+      '<p class="tipo">'+esc(m.tipo)+(m.etapas.length>1 ? ", "+esc(textoEtapas(m)) : "")+'</p>'+
+      '<h3>'+esc(m.titulo)+'</h3>'+
+      '<p class="desc">'+esc(m.desc)+'</p>'+
+      '<p class="meta">'+m.pags+' páginas, '+(m.peso>=1000 ? (m.peso/1024).toFixed(1).replace(".",",")+" MB" : m.peso+" KB")+'</p>'+
+      '<div class="botones">'+
+        '<a class="bt azul" href="#/leer/'+encodeURIComponent(m.archivo)+'">'+svg("abrir")+'Abrir</a>'+
+        '<a class="bt negro" href="'+BASE+encodeURIComponent(m.archivo)+'" download>'+svg("descargar")+'Descargar</a>'+
+        '<button class="bt borde" aria-pressed="'+hecho+'">'+svg("check")+(hecho ? "Trabajado" : "Marcar como trabajado")+'</button>'+
+      '</div></div>';
+  const img = art.querySelector("img"), portada = art.querySelector(".portada");
+  img.onload = ()=>{ if(img.naturalWidth > img.naturalHeight) portada.classList.add("apaisada"); };
+  img.onerror = ()=> portadaDesdePDF(m, portada, img);
+  portada.onclick = ()=>{ location.hash = "#/leer/"+encodeURIComponent(m.archivo); };
+  const bh = art.querySelector(".bt.borde");
+  bh.onclick = ()=>{ alternarHecho(m.archivo); const h = esHecho(m.archivo);
+    bh.setAttribute("aria-pressed", h); bh.innerHTML = svg("check")+(h ? "Trabajado" : "Marcar como trabajado");
+    if(soloPendientes) pintarLista(); };
+  return art;
+}
+
+function pintarLista(){
+  const q = norm($("q").value.trim());
+  const lista = MATERIALES.filter(m=>{
+    if(filtroEtapa.size && !m.etapas.some(e=>filtroEtapa.has(e))) return false;
+    if(filtroTipo.size && !filtroTipo.has(m.tipo)) return false;
+    if(soloPendientes && esHecho(m.archivo)) return false;
+    if(q && !norm([m.titulo,m.desc,m.tipo,m.etapas.map(e=>NOMBRE_ETAPA[e]).join(" ")].join(" ")).includes(q)) return false;
+    return true;
+  });
+  const cont = $("grupos"); cont.innerHTML = "";
+  const grupos = ETAPAS.map(e=>({clave:e, titulo:NOMBRE_ETAPA[e], color:COLOR_ETAPA[e], ancho:ANCHO_ETAPA[e],
+                                 items:lista.filter(m=>m.etapas.length===1 && m.etapas[0]===e)}));
+  grupos.push({clave:"varios", titulo:"Para varios cursos", color:"var(--r10)", ancho:100, items:lista.filter(m=>m.etapas.length>1)});
+  grupos.filter(g=>g.items.length).forEach(g=>{
+    const s = document.createElement("section"); s.className = "grupo";
+    s.innerHTML = '<h2><span class="regleta" style="width:'+g.ancho+'px;background:'+g.color+'" aria-hidden="true"></span>'+esc(g.titulo)+'</h2>';
+    g.items.forEach(m=>s.appendChild(tarjeta(m)));
+    cont.appendChild(s);
+  });
+  $("cuenta").textContent = lista.length===MATERIALES.length ? MATERIALES.length+" materiales" : lista.length+" de "+MATERIALES.length+" materiales";
+  $("vacio").hidden = lista.length>0;
+}
+$("q").addEventListener("input", pintarLista);
+$("limpiar").onclick = ()=>{
+  filtroEtapa.clear(); filtroTipo.clear(); soloPendientes=false; $("q").value="";
+  document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false")); pintarLista();
+};
+
+/* =====================================================================
+   PDF.js (se carga solo al abrir un material; vive en lib/)
+   ===================================================================== */
+let pdfjs = null;
+async function cargarPdfjs(){
+  if(pdfjs) return pdfjs;
+  const url = new URL("lib/pdf.min.js", document.baseURI).href;
+  pdfjs = await import(url);
+  pdfjs.GlobalWorkerOptions.workerSrc = new URL("lib/pdf.worker.min.js", document.baseURI).href;
+  return pdfjs;
+}
+function abrirDocumento(archivo){
+  return pdfjs.getDocument({ url: BASE + encodeURIComponent(archivo),
+    standardFontDataUrl: new URL("lib/standard_fonts/", document.baseURI).href }).promise;
+}
+async function portadaDesdePDF(m, portada, img){
+  try{
+    await cargarPdfjs();
+    const doc = await abrirDocumento(m.archivo), p = await doc.getPage(1);
+    const v1 = p.getViewport({scale:1}), vp = p.getViewport({scale: 300 / v1.width});
+    const c = document.createElement("canvas"); c.width = vp.width; c.height = vp.height;
+    await p.render({canvasContext: c.getContext("2d"), viewport: vp}).promise;
+    if(v1.width > v1.height) portada.classList.add("apaisada");
+    img.replaceWith(c); doc.destroy();
+  }catch(e){ img.remove(); }
+}
+
+/* =====================================================================
+   LECTOR
+   ===================================================================== */
+const L = { m:null, doc:null, n:0, pag:1, doble:false, vertical:true, zoom:1, token:0, tareas:[],
+            textos:null, ultimaAlAbrir:null, panel:null, desdeBiblioteca:false, tamanos:{} };
+const escena = $("escena"), paginas = $("paginas");
+
+function visibles(p){
+  if(!L.doble) return [p];
+  if(p===1) return [1];
+  const izq = p%2===0 ? p : p-1;
+  return izq+1<=L.n ? [izq, izq+1] : [izq];
+}
+const marcas = () => leer("aula-marcas:"+L.m.archivo, []);
+const notas  = () => leer("aula-notas:"+L.m.archivo, {});
+
+function avisoEscena(html){ paginas.innerHTML = '<div class="aviso">'+html+'</div>'; }
+
+async function abrirLector(archivo, pag){
+  const m = MATERIALES.find(x=>x.archivo===archivo);
+  if(!m){ location.replace("#/"); return; }
+  if(L.m && L.m.archivo===archivo && L.doc){ if(pag) irA(pag); return; }
+  if(L.doc) cerrarDocumento();
+  L.m = m; L.zoom = 1; L.textos = null; L.tamanos = {};
+  $("biblioteca").setAttribute("aria-hidden","true"); $("biblioteca").inert = true;
+  $("lector").hidden = false; document.body.style.overflow = "hidden";
+  $("lTitulo").textContent = m.titulo;
+  $("lDescargar").href = BASE + encodeURIComponent(m.archivo);
+  $("lDescargar").setAttribute("download", m.archivo);
+  pintarHechoLector(); cerrarPanel(); $("lZoom").textContent = "100%";
+  $("lTotal").textContent = m.pags; $("lPag").value = "";
+  avisoEscena('<div class="girando"></div>Abriendo el material…');
+  escena.focus({preventScroll:true});
+  try{
+    await cargarPdfjs();
+    const doc = await abrirDocumento(m.archivo);
+    if(L.m!==m){ doc.destroy(); return; }
+    L.doc = doc; L.n = doc.numPages; $("lTotal").textContent = L.n;
+    const v = (await doc.getPage(1)).getViewport({scale:1});
+    L.vertical = v.height >= v.width;
+    L.doble = L.vertical && L.n>1 && escena.clientWidth >= 900;
+    const ult = leer("aula-ultima", {})[m.archivo];
+    L.ultimaAlAbrir = ult && ult>1 && ult<=L.n ? ult : null;
+    $("lUltima").disabled = !L.ultimaAlAbrir;
+    pintarBotonDoble();
+    irA(pag || 1);
+  }catch(e){
+    console.error(e);
+    avisoEscena('No se ha podido mostrar el material aquí.<br>Puedes abrirlo directamente como PDF.'+
+      '<br><a class="bt azul" href="'+BASE+encodeURIComponent(m.archivo)+'" target="_blank" rel="noopener">Abrir el PDF</a>');
+  }
+}
+
+function cerrarDocumento(){
+  L.token++; L.tareas.forEach(t=>{ try{ t.cancel(); }catch(e){} }); L.tareas = [];
+  if(L.doc){ L.doc.destroy(); L.doc = null; }
+  if(miniObs){ miniObs.disconnect(); miniObs = null; }
+  paginas.innerHTML = ""; L.m = null;
+}
+function cerrarLector(){
+  if($("lector").hidden) return;
+  if(document.fullscreenElement) document.exitFullscreen?.();
+  cerrarDocumento(); cerrarPanel();
+  $("lector").hidden = true; $("biblioteca").removeAttribute("aria-hidden"); $("biblioteca").inert = false;
+  document.body.style.overflow = "";
+  pintarLista();
+}
+function salirDelLector(){
+  if(L.desdeBiblioteca){ L.desdeBiblioteca = false; history.back(); }
+  else location.hash = "#/";
+}
+
+function irA(p){
+  if(!L.doc) return;
+  p = Math.max(1, Math.min(L.n, parseInt(p,10) || 1));
+  L.pag = visibles(p)[0];
+  pintarPaginas();
+  const v = visibles(L.pag);
+  $("lPag").value = v.join("-");
+  $("lAnt").disabled = v[0]<=1; $("lSig").disabled = v[v.length-1]>=L.n;
+  history.replaceState(history.state, "", "#/leer/"+encodeURIComponent(L.m.archivo)+"/"+L.pag);
+  const u = leer("aula-ultima", {}); u[L.m.archivo] = L.pag; guardar("aula-ultima", u);
+  refrescarPanel();
+}
+function siguiente(){ const v = visibles(L.pag); if(v[v.length-1] < L.n) irA(v[v.length-1]+1); }
+function anterior(){ const f = visibles(L.pag)[0]; if(f>1) irA(L.doble ? Math.max(1, f===2 ? 1 : f-2) : f-1); }
+
+async function tamano(n){
+  if(!L.tamanos[n]){ const pg = await L.doc.getPage(n); L.tamanos[n] = {pg, v: pg.getViewport({scale:1})}; }
+  return L.tamanos[n];
+}
+
+async function pintarPaginas(){
+  const t = ++L.token;
+  L.tareas.forEach(x=>{ try{ x.cancel(); }catch(e){} }); L.tareas = [];
+  const nums = visibles(L.pag);
+  let info;
+  try{ info = await Promise.all(nums.map(tamano)); }catch(e){ return; }
+  if(t!==L.token) return;
+  const estrecho = escena.clientWidth < 760;
+  const padX = estrecho ? 24 : 144, padY = estrecho ? 150 : 56;   // en móvil deja sitio a las flechas de abajo
+  const W = Math.max(100, escena.clientWidth - padX), H = Math.max(100, escena.clientHeight - padY);
+  const totalW = info.reduce((s,i)=>s+i.v.width, 0), maxH = Math.max(...info.map(i=>i.v.height));
+  const escala = Math.min(W/totalW, H/maxH) * L.zoom;
+  const dpr = window.devicePixelRatio || 1;
+  const nuevo = document.createDocumentFragment(), trabajos = [];
+  const lasMarcas = marcas();
+  info.forEach((i, k)=>{
+    const vpCss = i.pg.getViewport({scale: escala});
+    let salida = dpr;
+    const px = vpCss.width*vpCss.height*salida*salida;
+    if(px > 14e6) salida = Math.sqrt(14e6/(vpCss.width*vpCss.height));   // límite de memoria en iPad/iPhone
+    const vp = i.pg.getViewport({scale: escala*salida});
+    const hoja = document.createElement("div"); hoja.className = "hoja";
+    const c = document.createElement("canvas");
+    c.width = Math.floor(vp.width); c.height = Math.floor(vp.height);
+    c.style.width = Math.floor(vpCss.width)+"px"; c.style.height = Math.floor(vpCss.height)+"px";
+    c.setAttribute("role","img"); c.setAttribute("aria-label","Página "+nums[k]);
+    hoja.appendChild(c);
+    if(lasMarcas.includes(nums[k])){ const cinta = document.createElement("span"); cinta.className = "cinta"; cinta.title = "Página marcada"; hoja.appendChild(cinta); }
+    nuevo.appendChild(hoja);
+    const tarea = i.pg.render({canvasContext: c.getContext("2d"), viewport: vp});
+    L.tareas.push(tarea); trabajos.push(tarea.promise);
+  });
+  try{ await Promise.all(trabajos); }catch(e){ return; }
+  if(t!==L.token) return;
+  paginas.replaceChildren(nuevo);
+  paginas.style.padding = (padY/2)+"px "+(padX/2)+"px";
+}
+
+/* Zoom */
+function ponerZoom(z){
+  L.zoom = Math.min(3, Math.max(0.5, Math.round(z*100)/100));
+  $("lZoom").textContent = Math.round(L.zoom*100)+"%";
+  $("lZoom").setAttribute("aria-label", L.zoom===1 ? "Tamaño ajustado a la pantalla" : "Volver a ajustar a la pantalla");
+  pintarPaginas();
+}
+$("lMas").onclick = ()=> ponerZoom(L.zoom + .25);
+$("lMenos").onclick = ()=> ponerZoom(L.zoom - .25);
+$("lZoom").onclick = ()=> ponerZoom(1);
+
+/* Una / dos páginas */
+function pintarBotonDoble(){
+  const b = $("lDoble");
+  b.disabled = !L.doc || L.n<2;
+  b.innerHTML = svg(L.doble ? "una" : "dos") + "<span>"+(L.doble ? "Una página" : "Dos páginas")+"</span>";
+  b.setAttribute("aria-label", L.doble ? "Ver una página" : "Ver dos páginas");
+}
+$("lDoble").onclick = ()=>{ L.doble = !L.doble; pintarBotonDoble(); irA(L.pag); };
+
+/* Marcar como trabajado desde el lector */
+function pintarHechoLector(){
+  const h = L.m && esHecho(L.m.archivo), b = $("lHecho");
+  b.setAttribute("aria-pressed", !!h);
+  b.innerHTML = svg("check") + "<span>"+(h ? "Trabajado" : "Marcar trabajado")+"</span>";
+}
+$("lHecho").onclick = ()=>{ alternarHecho(L.m.archivo); pintarHechoLector(); };
+
+/* Botones varios */
+$("lAnt").onclick = anterior; $("lSig").onclick = siguiente;
+$("lCerrar").onclick = salirDelLector; $("lInicio").onclick = salirDelLector;
+$("lUltima").onclick = ()=>{ if(L.ultimaAlAbrir) irA(L.ultimaAlAbrir); };
+$("lPag").addEventListener("focus", e=>e.target.select());
+$("lPag").addEventListener("keydown", e=>{ if(e.key==="Enter"){ irA(e.target.value); e.target.blur(); } });
+$("lPag").addEventListener("change", e=> irA(e.target.value));
+$("lPlegar").onclick = ()=>{
+  const p = $("lector").classList.toggle("lector-plegado");
+  $("lPlegar").setAttribute("aria-label", p ? "Desplegar la barra lateral" : "Plegar la barra lateral");
+  pintarPaginas();
+};
+if(document.fullscreenEnabled){
+  $("lPantalla").onclick = ()=>{ document.fullscreenElement ? document.exitFullscreen() : $("lector").requestFullscreen(); };
+} else $("lPantalla").hidden = true;
+
+/* Redimensionar */
+let tRes = null;
+new ResizeObserver(()=>{ if(!L.doc) return; clearTimeout(tRes); tRes = setTimeout(pintarPaginas, 150); }).observe(escena);
+
+/* Teclado */
+document.addEventListener("keydown", e=>{
+  if($("lector").hidden) return;
+  const enCampo = /^(input|textarea)$/i.test(e.target.tagName);
+  if(e.key==="Escape"){ e.preventDefault(); if(L.panel) cerrarPanel(true); else salirDelLector(); return; }
+  if(enCampo) return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"){ e.preventDefault(); siguiente(); }
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){ e.preventDefault(); anterior(); }
+  else if(e.key==="+"||e.key==="="){ ponerZoom(L.zoom+.25); }
+  else if(e.key==="-"){ ponerZoom(L.zoom-.25); }
+  else if(e.key==="0"){ ponerZoom(1); }
+});
+
+/* Deslizar con el dedo */
+let toque = null;
+escena.addEventListener("pointerdown", e=>{ if(e.pointerType==="touch" && e.isPrimary) toque = {x:e.clientX, y:e.clientY, t:Date.now()}; });
+escena.addEventListener("pointerup", e=>{
+  if(!toque || e.pointerType!=="touch") return;
+  const dx = e.clientX-toque.x, dy = e.clientY-toque.y, rapido = Date.now()-toque.t < 700;
+  toque = null;
+  if(L.zoom<=1 && rapido && Math.abs(dx)>60 && Math.abs(dy)<60){ dx<0 ? siguiente() : anterior(); }
+});
+escena.addEventListener("pointercancel", ()=>{ toque = null; });
+
+/* =====================================================================
+   PANELES: Contenido, Marcador, Buscar, Notas
+   ===================================================================== */
+const TITULO_PANEL = {contenido:"Contenido", marcador:"Marcador", buscar:"Buscar en el material", notas:"Notas"};
+let miniObs = null, tNota = null;
+
+document.querySelectorAll(".lat-btn[data-panel]").forEach(b=>{
+  b.onclick = ()=>{ const n = b.dataset.panel; L.panel===n ? cerrarPanel() : abrirPanel(n); };
+});
+$("panelCerrar").onclick = ()=> cerrarPanel(true);
+
+function abrirPanel(n){
+  if(!L.doc) return;
+  L.panel = n;
+  document.querySelectorAll(".lat-btn[data-panel]").forEach(b=>b.setAttribute("aria-expanded", b.dataset.panel===n));
+  $("panelTitulo").textContent = TITULO_PANEL[n];
+  $("panel").hidden = false;
+  const c = $("panelCuerpo"); c.innerHTML = ""; c.scrollTop = 0;
+  if(miniObs){ miniObs.disconnect(); miniObs = null; }
+  ({contenido:panelContenido, marcador:panelMarcador, buscar:panelBuscar, notas:panelNotas})[n](c);
+}
+function cerrarPanel(devolverFoco){
+  const antes = L.panel;
+  L.panel = null; $("panel").hidden = true;
+  if(miniObs){ miniObs.disconnect(); miniObs = null; }
+  document.querySelectorAll(".lat-btn[data-panel]").forEach(b=>b.setAttribute("aria-expanded","false"));
+  if(devolverFoco && antes) document.querySelector('.lat-btn[data-panel="'+antes+'"]')?.focus();
+}
+function refrescarPanel(){
+  if(L.panel==="contenido"){
+    const v = visibles(L.pag);
+    document.querySelectorAll(".mini").forEach(b=>{
+      if(v.includes(+b.dataset.p)) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
+    });
+  } else if(L.panel==="marcador" || L.panel==="notas") abrirPanel(L.panel);
+}
+function irDesdePanel(p){ irA(p); if(escena.clientWidth < 500) cerrarPanel(); }
+
+function panelContenido(c){
+  const g = document.createElement("div"); g.className = "miniaturas"; c.appendChild(g);
+  const v = visibles(L.pag);
+  miniObs = new IntersectionObserver(ents=>{
+    ents.forEach(async en=>{
+      if(!en.isIntersecting) return;
+      const b = en.target; miniObs && miniObs.unobserve(b);
+      try{
+        const {pg, v:v1} = await tamano(+b.dataset.p);
+        const vp = pg.getViewport({scale: 240 / v1.width});
+        const cv = b.querySelector("canvas"); cv.width = vp.width; cv.height = vp.height;
+        await pg.render({canvasContext: cv.getContext("2d"), viewport: vp}).promise;
+      }catch(e){}
+    });
+  }, {root:c, rootMargin:"300px"});
+  const ar = L.tamanos[1] ? L.tamanos[1].v.width / L.tamanos[1].v.height : .707;
+  for(let p=1; p<=L.n; p++){
+    const b = document.createElement("button");
+    b.className = "mini"; b.dataset.p = p;
+    b.innerHTML = '<canvas style="--ar:'+ar+'" aria-hidden="true"></canvas>Página '+p;
+    if(v.includes(p)) b.setAttribute("aria-current","page");
+    b.onclick = ()=> irDesdePanel(p);
+    g.appendChild(b); miniObs.observe(b);
+  }
+  requestAnimationFrame(()=> g.querySelector('[aria-current="page"]')?.scrollIntoView({block:"center"}));
+}
+
+function panelMarcador(c){
+  const lista = marcas().sort((a,b)=>a-b), v = visibles(L.pag);
+  const marcada = lista.includes(L.pag);
+  const b = document.createElement("button");
+  b.className = "bt " + (marcada ? "borde" : "azul");
+  b.innerHTML = svg("marcador") + (marcada ? "Quitar la marca de esta página" : "Marcar "+(v.length>1 ? "las páginas "+v.join("-") : "esta página"));
+  b.onclick = ()=>{
+    let m = marcas(); m = m.includes(L.pag) ? m.filter(x=>x!==L.pag) : m.concat(L.pag);
+    guardar("aula-marcas:"+L.m.archivo, m); pintarPaginas(); abrirPanel("marcador");
+  };
+  c.appendChild(b);
+  if(!lista.length){ c.insertAdjacentHTML("beforeend", '<p class="nota-pie">Todavía no has marcado ninguna página. Las páginas marcadas llevan una cinta naranja en la esquina.</p>'); return; }
+  const cont = document.createElement("div"); cont.className = "lista-marcas";
+  lista.forEach(p=>{
+    const it = document.createElement("div"); it.className = "item";
+    const ir = document.createElement("button"); ir.className = "fila";
+    ir.innerHTML = svg("marcador")+"<b>Página "+p+"</b>";
+    ir.onclick = ()=> irDesdePanel(p);
+    const q = document.createElement("button"); q.className = "ibtn"; q.innerHTML = svg("x");
+    q.setAttribute("aria-label","Quitar la marca de la página "+p);
+    q.onclick = ()=>{ guardar("aula-marcas:"+L.m.archivo, marcas().filter(x=>x!==p)); pintarPaginas(); abrirPanel("marcador"); };
+    it.append(ir, q); cont.appendChild(it);
+  });
+  c.appendChild(cont);
+  c.insertAdjacentHTML("beforeend", '<p class="nota-pie">Los marcadores se guardan solo en este dispositivo.</p>');
+}
+
+function panelBuscar(c){
+  c.innerHTML = '<form role="search"><input type="search" id="bTexto" placeholder="Palabra o número" aria-label="Buscar en el material"></form>'+
+                '<p class="nota-pie" id="bEstado" aria-live="polite"></p><div id="bResultados"></div>';
+  const inp = c.querySelector("#bTexto");
+  inp.value = L.ultimaBusqueda || "";
+  c.querySelector("form").onsubmit = e=>{ e.preventDefault(); buscar(inp.value); };
+  let tb = null; inp.oninput = ()=>{ clearTimeout(tb); tb = setTimeout(()=>buscar(inp.value), 350); };
+  setTimeout(()=>inp.focus(), 30);
+  if(inp.value) buscar(inp.value);
+}
+async function buscar(texto){
+  const q = norm(texto.trim()); L.ultimaBusqueda = texto;
+  const est = $("bEstado"), res = $("bResultados"); if(!est) return;
+  res.innerHTML = "";
+  if(q.length<1){ est.textContent = ""; return; }
+  if(!L.textos){
+    est.textContent = "Preparando la búsqueda…";
+    const doc = L.doc, textos = [];
+    for(let p=1; p<=L.n; p++){
+      try{ const pg = await doc.getPage(p); const tc = await pg.getTextContent();
+           textos.push(tc.items.map(i=>i.str + (i.hasEOL ? " " : "")).join("").replace(/\s+/g," ")); }
+      catch(e){ textos.push(""); }
+      if(L.doc!==doc) return;
+    }
+    L.textos = textos;
+  }
+  if(L.ultimaBusqueda!==texto || !$("bResultados")) return;
+  let total = 0; const frag = document.createDocumentFragment();
+  L.textos.forEach((t,i)=>{
+    const tn = norm(t); let pos = tn.indexOf(q), veces = 0, primera = pos;
+    while(pos>=0){ veces++; pos = tn.indexOf(q, pos+q.length); }
+    if(!veces) return;
+    total += veces;
+    const a = Math.max(0, primera-40), b = Math.min(t.length, primera+q.length+60);
+    const trozo = (a>0?"…":"") + esc(t.slice(a, primera)) + "<mark>" + esc(t.slice(primera, primera+q.length)) + "</mark>" + esc(t.slice(primera+q.length, b)) + (b<t.length?"…":"");
+    const f = document.createElement("button"); f.className = "fila";
+    f.innerHTML = "<b>Pág. "+(i+1)+"</b><span>"+trozo+"</span>";
+    f.onclick = ()=> irDesdePanel(i+1);
+    frag.appendChild(f);
+  });
+  res.appendChild(frag);
+  est.textContent = total ? total+(total===1?" resultado":" resultados")+" en "+res.children.length+(res.children.length===1?" página":" páginas")
+                          : "«"+texto.trim()+"» no aparece en este material.";
+}
+
+function panelNotas(c){
+  const todas = notas(), v = visibles(L.pag);
+  c.innerHTML = '<label for="nTexto"><b>Nota de '+(v.length>1 ? "las páginas "+v.join("-") : "la página "+v[0])+'</b></label>'+
+    '<textarea id="nTexto" placeholder="Escribe aquí lo que quieras recordar de esta página"></textarea>'+
+    '<p class="guardado" id="nGuardado" aria-live="polite"></p><div id="nOtras"></div>'+
+    '<p class="nota-pie">Las notas se guardan solo en este dispositivo.</p>';
+  const ta = c.querySelector("#nTexto"); ta.value = todas[L.pag] || "";
+  ta.oninput = ()=>{
+    clearTimeout(tNota);
+    tNota = setTimeout(()=>{
+      const n = notas(); const val = ta.value.trim();
+      if(val) n[L.pag] = ta.value; else delete n[L.pag];
+      guardar("aula-notas:"+L.m.archivo, n); $("nGuardado").textContent = "Nota guardada"; pintarOtras();
+    }, 400);
+  };
+  function pintarOtras(){
+    const n = notas(), cont = $("nOtras"); if(!cont) return; cont.innerHTML = "";
+    const otras = Object.keys(n).map(Number).filter(p=>p!==L.pag).sort((a,b)=>a-b);
+    if(!otras.length) return;
+    cont.insertAdjacentHTML("beforeend", '<p class="nota-pie"><b>Otras notas</b></p>');
+    otras.forEach(p=>{
+      const f = document.createElement("button"); f.className = "fila";
+      f.innerHTML = "<b>Pág. "+p+"</b><span>"+esc(n[p])+"</span>";
+      f.onclick = ()=> irDesdePanel(p);
+      cont.appendChild(f);
+    });
+  }
+  pintarOtras();
+}
+
+/* =====================================================================
+   RUTAS: #/  biblioteca   ·   #/leer/ARCHIVO.pdf/PAGINA  lector
+   ===================================================================== */
+let rutaPrevia = location.hash;
+function ruta(){
+  const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
+  if(m){
+    if(!/^#\/leer\//.test(rutaPrevia)) L.desdeBiblioteca = rutaPrevia !== location.hash && rutaPrevia !== "__inicio__";
+    abrirLector(decodeURIComponent(m[1]), m[2] ? +m[2] : null);
+  } else cerrarLector();
+  rutaPrevia = location.hash;
+}
+window.addEventListener("hashchange", ruta);
+
+/* Arranque */
+pintarIconos(document);
+pintarBotonTema();
+crearChips();
+pintarLista();
+rutaPrevia = "__inicio__";
+ruta();
+</script>
+</body>
+</html>

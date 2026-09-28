@@ -15,8 +15,9 @@ de Educación Infantil 3 años a 2.º de Primaria.
 3. En uno o dos minutos el material aparece en la web con la etiqueta **Nuevo**
    (la lleva 30 días) y su portada.
 
-No hace falta nada más: GitHub mueve el PDF a `materiales/`, dibuja la portada,
-cuenta las páginas y lo añade a `catalogo.json`. El progreso se ve en la pestaña **Actions**.
+No hace falta nada más: GitHub mueve el PDF a `materiales/`, lo comprime sin pérdida de calidad,
+dibuja la portada, cuenta las páginas y lo añade a `catalogo.json`. El progreso y los avisos
+se ven en la pestaña **Actions** (pulsa en la ejecución para ver el resumen).
 
 - **Título y descripción** se toman de las propiedades del PDF (*Título* y *Asunto*).
   Si el PDF no las tiene, el título sale del nombre del archivo y la descripción queda vacía.
@@ -28,13 +29,27 @@ cuenta las páginas y lo añade a `catalogo.json`. El progreso se ve en la pesta
 
 ### Subir una presentación con su ficha (un recurso)
 
-Para que salgan juntas en la misma tarjeta, súbelas a una subcarpeta con el nombre del recurso:
-`subir/2-primaria/La suma en árbol/`. En la pantalla de subida de GitHub, escribe al final de la
-ruta el nombre de la carpeta seguido de `/` (por ejemplo `La suma en árbol/`) y después arrastra
-los dos PDF. En el lector aparecen unas pestañas para pasar de la presentación a la ficha.
+Para que salgan juntas en la misma tarjeta, ponles el mismo nombre seguido de un guion y el tipo,
+y súbelas a la vez a la carpeta del curso:
+
+- `La decena - presentación.pdf`
+- `La decena - ficha.pdf`
+
+Saldrán en la tarjeta «La decena». Tipos admitidos detrás del guion: presentación, ficha,
+cuaderno, juego y programación (con o sin tilde; se puede añadir un número: `La decena - ficha 2.pdf`).
+En el lector aparecen unas pestañas para pasar de la presentación a la ficha.
+
+Desde un ordenador también vale arrastrar una carpeta con el nombre del recurso que contenga los PDF.
 
 Para agrupar materiales que ya están subidos, pon el mismo `"recurso"` en sus bloques de
 `catalogo.json` (ver abajo).
+
+### Si algo sale mal
+
+- **PDF dañado o con contraseña:** se queda en `subir/` sin publicarse y aparece un aviso en *Actions*.
+  El resto de materiales se publica con normalidad. Bórralo y súbelo exportado de nuevo.
+- **Dos PDF con el mismo nombre:** si ya existía uno con ese nombre, el nuevo lo sustituye y sale
+  un aviso. Para recuperar el anterior, ábrelo en `materiales/` → *History*.
 
 ### Sustituir un material por una versión corregida
 

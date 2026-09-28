@@ -1,6 +1,6 @@
 # Publica el aula en GitHub Pages cada vez que cambia la rama main.
 # Antes de publicar, actualiza el catálogo (scripts/actualizar_catalogo.py): recoge los PDF
-# de subir/<curso>/, genera portadas, recalcula páginas y comprueba catalogo.json.
+# de subir/<curso>/, los comprime sin pérdida, genera portadas, recalcula páginas y comprueba catalogo.json.
 # Si el catálogo tiene un error, no se publica nada y la web sigue como estaba.
 name: Publicar el aula
 
@@ -25,14 +25,14 @@ jobs:
       name: github-pages
       url: ${{ steps.despliegue.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       - name: Instalar herramientas de PDF
-        run: pip install "pypdfium2>=5,<6" "pillow>=10"
+        run: pip install "pypdfium2>=5,<6" "pillow>=10" "pikepdf>=9"
 
       - name: Actualizar el catálogo
         run: python scripts/actualizar_catalogo.py
@@ -52,7 +52,7 @@ jobs:
 
       - uses: actions/configure-pages@v5
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: .
 

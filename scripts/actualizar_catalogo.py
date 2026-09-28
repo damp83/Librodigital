@@ -1,13 +1,16 @@
 """Mantiene al día el catálogo del aula.
 
 Lo ejecuta GitHub Actions en cada cambio de la rama main (.github/workflows/publicar.yml),
-pero también se puede lanzar a mano:  pip install pypdfium2 pillow && python scripts/actualizar_catalogo.py
+pero también se puede lanzar a mano:  pip install pypdfium2 pillow pikepdf && python scripts/actualizar_catalogo.py
+(con --optimizar-todo comprime también, sin pérdida, los PDF que ya estaban publicados).
 
 Qué hace:
   1. Mueve los PDF de subir/<curso>/ a materiales/ y los añade al catálogo
      (o sustituye el archivo si ya existía uno con el mismo nombre, sin tocar sus datos).
-     Los PDF de una subcarpeta, subir/<curso>/<Nombre del recurso>/, se agrupan en un
-     mismo recurso (por ejemplo, una presentación y su ficha).
+     Los PDF llamados «<Nombre del recurso> - presentación.pdf», «<Nombre del recurso> - ficha.pdf»…
+     (o subidos a subir/<curso>/<Nombre del recurso>/) se agrupan en un mismo recurso.
+     Los PDF nuevos se comprimen sin pérdida. Un PDF dañado se queda en subir/ con un aviso,
+     sin bloquear la publicación del resto.
   2. Añade al catálogo los PDF que estén en materiales/ y no figuren en él.
   3. Quita del catálogo los materiales cuyo PDF se ha borrado.
   4. Recalcula páginas y peso, y genera las portadas que falten.
@@ -41,6 +44,10 @@ CARPETAS = {
 }
 LADO_PORTADA = 360        # píxeles del lado mayor de la portada
 AVISO_PESO_KB = 2048      # a partir de aquí se avisa de que conviene comprimir el PDF
+# «La decena - presentación.pdf» -> recurso «La decena», tipo Presentación
+CONVENCION = re.compile(r"^(.+?)\s+-\s+(presentaci[oó]n|ficha|cuaderno|juego|programaci[oó]n)(?:\s*\d+)?$", re.I)
+TIPO_DE_PALABRA = {"presentacion": "Presentación", "ficha": "Ficha", "cuaderno": "Cuaderno",
+                   "juego": "Juego", "programacion": "Programación"}
 
 errores, avisos, cambios = [], [], []
 
@@ -61,6 +68,43 @@ def abrir_pdf(ruta):
     return pdfium.PdfDocument(str(ruta))
 
 
+def se_puede_abrir(ruta):
+    try:
+        doc = abrir_pdf(ruta); n = len(doc); doc.close()
+        return n > 0
+    except Exception:
+        return False
+
+
+def optimizar(ruta):
+    """Compresión sin pérdida (se ve exactamente igual). Solo se queda con el resultado si ocupa menos y abre bien."""
+    try:
+        import pikepdf
+    except ImportError:
+        return
+    tmp = ruta.with_suffix(".tmp.pdf")
+    try:
+        with pikepdf.open(ruta) as pdf:
+            n = len(pdf.pages)
+            pdf.save(tmp, compress_streams=True, recompress_flate=True,
+                     object_stream_mode=pikepdf.ObjectStreamMode.generate)
+        doc = abrir_pdf(tmp); ok = len(doc) == n; doc.close()
+        if ok and tmp.stat().st_size < ruta.stat().st_size * 0.97:
+            antes = ruta.stat().st_size
+            tmp.replace(ruta)
+            cambios.append(f"Comprimido: {ruta.name} ({antes // 1024} → {ruta.stat().st_size // 1024} KB, sin pérdida)")
+    except Exception:
+        pass
+    finally:
+        tmp.unlink(missing_ok=True)
+
+
+def convencion(stem):
+    """Devuelve (recurso, tipo) si el nombre sigue la forma «Recurso - tipo»; si no, (None, None)."""
+    c = CONVENCION.match(stem.replace("_", " ").strip())
+    return (c.group(1).strip(), TIPO_DE_PALABRA[norm(c.group(2))]) if c else (None, None)
+
+
 def titulo_limpio(t):
     t = re.sub(r"\s*\((\d\.?\s*º|[345]\s*años)[^)]*\)\s*$", "", t.strip())   # quita «(2º Primaria)» al final
     t = re.sub(r"^ficha( multinivel)?\s*:\s*", "", t, flags=re.I)             # el tipo ya se muestra aparte
@@ -79,14 +123,16 @@ def deducir_tipo(archivo, titulo, apaisado):
     return "Presentación" if apaisado else "Ficha"
 
 
-def entrada_nueva(ruta, etapas, recurso=None):
+def entrada_nueva(ruta, etapas, recurso=None, tipo=None):
     doc = abrir_pdf(ruta)
     meta = doc.get_metadata_dict()
     ancho, alto = doc[0].get_size()
     doc.close()
     titulo = (meta.get("Title") or "").strip()
     if not titulo or re.match(r"^(microsoft|untitled|sin t[ií]tulo|presentaci[oó]n de powerpoint|documento)", titulo, re.I):
-        titulo = ruta.stem
+        titulo = recurso or ruta.stem
+    if convencion(titulo)[0]:                 # «La decena - ficha» -> «La decena» (el tipo ya se muestra aparte)
+        titulo = convencion(titulo)[0]
     if " " not in titulo:                     # título sacado del nombre del archivo: «Mi_ficha» -> «Mi ficha»
         titulo = re.sub(r"[_-]+", " ", titulo).strip()
     titulo = titulo_limpio(titulo)
@@ -94,7 +140,7 @@ def entrada_nueva(ruta, etapas, recurso=None):
         "archivo": ruta.name,
         "titulo": titulo,
         "etapas": etapas,
-        "tipo": deducir_tipo(ruta.name, titulo, ancho > alto),
+        "tipo": tipo or deducir_tipo(ruta.name, titulo, ancho > alto),
         **({"recurso": recurso} if recurso else {}),
         "desc": (meta.get("Subject") or "").strip(),
         "pags": 0,
@@ -170,7 +216,10 @@ def main():
     if catalogo is None:
         return terminar()
     por_archivo = {m.get("archivo"): m for m in catalogo if isinstance(m, dict)}
-    regenerar = set()
+    if "--optimizar-todo" in sys.argv:
+        for pdf in sorted(MATERIALES.glob("*.pdf")):
+            optimizar(pdf)
+    regenerar, llegados = set(), set()
 
     # 1. Buzón subir/<curso>/
     for pdf in sorted(SUBIR.rglob("*")) if SUBIR.is_dir() else []:
@@ -179,18 +228,33 @@ def main():
         partes = pdf.relative_to(SUBIR).parts
         carpeta = partes[0] if len(partes) > 1 else ""
         recurso = partes[1].strip() if len(partes) > 2 else None
+        recurso_nombre, tipo = convencion(pdf.stem)
+        recurso = recurso_nombre or recurso
+        if not se_puede_abrir(pdf):
+            avisos.append(f"{pdf.relative_to(RAIZ)}: el PDF está dañado o protegido con contraseña; se ha dejado en "
+                          "subir/ sin publicar. Bórralo y vuelve a subirlo exportado de nuevo.")
+            continue
         etapas = CARPETAS.get(carpeta)
         if etapas is None:
             avisos.append(f"{pdf.relative_to(RAIZ)}: la carpeta «{carpeta or 'subir'}» no es de ningún curso; "
                           "el material queda en «Sin curso asignado».")
             etapas = []
         destino = MATERIALES / nombre_seguro(pdf.name)
+        repetido = destino.name in llegados
+        if repetido:
+            avisos.append(f"{pdf.relative_to(RAIZ)}: se ha subido a la vez otro PDF que se llama igual "
+                          f"({destino.name}); solo se ha quedado este último. Cambia el nombre de uno de ellos.")
+        llegados.add(destino.name)
         shutil.move(str(pdf), destino)
+        optimizar(destino)
         if destino.name in por_archivo:
             regenerar.add(destino.name)
             cambios.append(f"Sustituido: {destino.name} (se conservan título, curso y descripción)")
+            if not repetido:
+                avisos.append(f"{destino.name} ya existía y se ha sustituido por el nuevo. Si era un material distinto, "
+                              "recupera el anterior desde el historial de GitHub y sube este con otro nombre.")
         else:
-            m = entrada_nueva(destino, etapas, recurso)
+            m = entrada_nueva(destino, etapas, recurso, tipo)
             catalogo.append(m); por_archivo[m["archivo"]] = m
             cambios.append(f"Nuevo: {m['archivo']} → «{m['titulo']}», {m['tipo']}, "
                            f"{', '.join(etapas) or 'sin curso'}" + (f", recurso «{recurso}»" if recurso else ""))
@@ -198,7 +262,11 @@ def main():
     # 2. PDF subidos directamente a materiales/
     for pdf in sorted(MATERIALES.glob("*")):
         if pdf.is_file() and pdf.suffix.lower() == ".pdf" and pdf.name not in por_archivo:
-            m = entrada_nueva(pdf, [])
+            if not se_puede_abrir(pdf):
+                avisos.append(f"materiales/{pdf.name}: el PDF está dañado o protegido con contraseña; no se publica.")
+                continue
+            optimizar(pdf)
+            m = entrada_nueva(pdf, [], *convencion(pdf.stem))
             catalogo.append(m); por_archivo[m["archivo"]] = m
             cambios.append(f"Nuevo: {m['archivo']} → «{m['titulo']}» (sin curso: súbelo a subir/<curso>/ "
                            "o pon sus «etapas» en catalogo.json)")
@@ -217,8 +285,9 @@ def main():
         ruta = MATERIALES / m["archivo"]
         try:
             doc = abrir_pdf(ruta); pags = len(doc); doc.close()
-        except Exception as e:  # PDF dañado o protegido
-            errores.append(f"{m['archivo']}: no se puede abrir el PDF ({e}).")
+        except Exception:  # PDF dañado o protegido: no bloquea la publicación del resto
+            avisos.append(f"{m['archivo']}: el PDF no se puede abrir (¿dañado o con contraseña?). "
+                          "Súbelo de nuevo exportado otra vez.")
             continue
         m["pags"], m["peso"] = pags, round(ruta.stat().st_size / 1024)
         if m["peso"] > AVISO_PESO_KB:
@@ -229,7 +298,10 @@ def main():
             avisos.append(f"{m['archivo']}: no tiene curso; aparece en «Sin curso asignado».")
         portada = PORTADAS / (ruta.stem + ".jpg")
         if m["archivo"] in regenerar or not portada.exists():
-            generar_portada(ruta)
+            try:
+                generar_portada(ruta)
+            except Exception:
+                avisos.append(f"{m['archivo']}: no se ha podido dibujar la portada; la web la dibujará sola.")
 
     # Portadas que ya no corresponden a ningún material
     vivos = {Path(m["archivo"]).stem for m in catalogo if isinstance(m, dict) and isinstance(m.get("archivo"), str)}

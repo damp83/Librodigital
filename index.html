@@ -5,6 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aula de Matemáticas Manipulativas</title>
 <meta name="description" content="Cuadernos, fichas, presentaciones y juegos con regletas Cuisenaire, de 3 años a 2.º de Primaria.">
+<!-- Solo se permite cargar recursos de esta misma web (nada de servidores externos) -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- Vista previa al compartir el enlace (WhatsApp, correo, redes) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="Aula de Matemáticas Manipulativas">
+<meta property="og:title" content="Aula de Matemáticas Manipulativas">
+<meta property="og:description" content="Cuadernos, fichas, presentaciones y juegos con regletas Cuisenaire, de 3 años a 2.º de Primaria.">
+<meta property="og:url" content="https://damp83.github.io/Librodigital/">
+<meta property="og:image" content="https://damp83.github.io/Librodigital/compartir.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Aula de Matemáticas Manipulativas: regletas de colores">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='4' width='6' height='5' rx='1' fill='%23e3261f'/%3E%3Crect x='2' y='11' width='12' height='5' rx='1' fill='%23f2c200'/%3E%3Crect x='2' y='18' width='20' height='5' rx='1' fill='%232e8b3a'/%3E%3Crect x='2' y='25' width='28' height='5' rx='1' fill='%232f7fd1'/%3E%3C/svg%3E">
 <script>
   try { var t = localStorage.getItem("aula-tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
@@ -234,6 +249,33 @@ footer.pie p{margin:0 0 6px;max-width:80ch}
   .paginador label{display:none}
   .l-cab{min-height:52px}
 }
+/* Móvil en horizontal: poca altura, así que todo se compacta para dejar sitio a la página */
+@media (max-height:520px) and (orientation:landscape){
+  .l-cab{grid-template-columns:48px 1fr auto 48px;min-height:44px}
+  .l-cab h1{font-size:16px;text-align:left}
+  .l-cab #lCerrar{grid-column:4;grid-row:1;width:40px;height:40px}
+  .l-partes{grid-column:3;grid-row:1;padding:0 4px;gap:6px;flex-wrap:nowrap}
+  .l-parte{padding:3px 12px;font-size:14px}
+  .lateral{width:56px}
+  .lateral .plegar{display:none}
+  .lat-btn{padding:8px 4px}
+  .lat-btn span{display:none}
+  .lat-btn svg{width:26px;height:26px}
+  .panel,.lector-plegado .panel{left:56px;width:min(340px,calc(100% - 56px))}
+  .flecha{width:44px;height:44px;top:50%;bottom:auto;transform:translateY(-50%)}
+  .flecha svg{width:24px;height:24px}
+  .flecha.izq{left:8px}.flecha.der{left:auto;right:8px}
+  .zoom{flex-direction:row;right:8px;bottom:8px;gap:6px}
+  .zoom .ibtn{width:40px;height:40px}
+  .zoom .porcentaje{font-size:14px;padding:6px 10px;min-width:60px}
+  .barra{padding:4px 12px calc(4px + env(safe-area-inset-bottom,0px));gap:clamp(6px,2vw,24px)}
+  .b-btn span{display:none}
+  .b-btn{min-width:44px;padding:4px}
+  .b-btn svg{width:26px;height:26px}
+  .paginador .caja{font-size:16px;height:36px}
+  .paginador input{font-size:16px;width:3.8em}
+  .paginador label{display:none}
+}
 @media (prefers-reduced-motion: reduce){ *{animation:none !important;transition:none !important} }
 </style>
 </head>
@@ -259,6 +301,7 @@ footer.pie p{margin:0 0 6px;max-width:80ch}
   </header>
 
   <section class="filtros" aria-label="Buscar y filtrar">
+    <h1 class="sr">Aula de Matemáticas Manipulativas: biblioteca de materiales</h1>
     <p class="intro">Cuadernos, fichas, presentaciones y juegos con regletas Cuisenaire, de 3 años a 2.º de Primaria.</p>
     <label class="buscador">
       <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
@@ -575,7 +618,8 @@ async function cargarPdfjs(){
 }
 function abrirDocumento(archivo){
   return pdfjs.getDocument({ url: BASE + encodeURIComponent(archivo),
-    standardFontDataUrl: new URL("lib/standard_fonts/", document.baseURI).href }).promise;
+    standardFontDataUrl: new URL("lib/standard_fonts/", document.baseURI).href,
+    isEvalSupported: false }).promise;   // defensa extra: nunca ejecuta código generado a partir del PDF
 }
 async function portadaDesdePDF(m, portada, img){
   try{
@@ -652,10 +696,12 @@ function cerrarDocumento(){
 function cerrarLector(){
   if($("lector").hidden) return;
   if(document.fullscreenElement) document.exitFullscreen?.();
+  const abierto = L.m && L.m.archivo;
   cerrarDocumento(); cerrarPanel();
   $("lector").hidden = true; $("biblioteca").removeAttribute("aria-hidden"); $("biblioteca").inert = false;
   document.body.style.overflow = "";
   pintarLista();
+  if(abierto) document.querySelector('a.bt.azul[href="#/leer/'+encodeURIComponent(abierto)+'"]')?.focus({preventScroll:false});
 }
 function salirDelLector(){
   if(L.desdeBiblioteca){ L.desdeBiblioteca = false; history.back(); }
@@ -689,8 +735,9 @@ async function pintarPaginas(){
   let info;
   try{ info = await Promise.all(nums.map(tamano)); }catch(e){ return; }
   if(t!==L.token) return;
-  const estrecho = escena.clientWidth < 760;
-  const padX = estrecho ? 24 : 144, padY = estrecho ? 150 : 56;   // en móvil deja sitio a las flechas de abajo
+  const bajo = matchMedia("(max-height:520px) and (orientation:landscape)").matches;   // móvil en horizontal: flechas a los lados
+  const estrecho = !bajo && escena.clientWidth < 760;
+  const padX = bajo ? 112 : estrecho ? 24 : 144, padY = bajo ? 12 : estrecho ? 150 : 56;   // en móvil vertical deja sitio a las flechas de abajo
   const W = Math.max(100, escena.clientWidth - padX), H = Math.max(100, escena.clientHeight - padY);
   const totalW = info.reduce((s,i)=>s+i.v.width, 0), maxH = Math.max(...info.map(i=>i.v.height));
   const escala = Math.min(W/totalW, H/maxH) * L.zoom;
@@ -981,7 +1028,9 @@ function ruta(){
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
   if(m){
     if(!/^#\/leer\//.test(rutaPrevia)) L.desdeBiblioteca = rutaPrevia !== location.hash && rutaPrevia !== "__inicio__";
-    abrirLector(decodeURIComponent(m[1]), m[2] ? +m[2] : null);
+    let archivo;
+    try{ archivo = decodeURIComponent(m[1]); }catch(e){ location.replace("#/"); return; }   // enlace mal copiado
+    abrirLector(archivo, m[2] ? +m[2] : null);
   } else cerrarLector();
   rutaPrevia = location.hash;
 }
@@ -998,8 +1047,7 @@ fetch("catalogo.json", {cache:"no-cache"})
     pintarLista();
     rutaPrevia = "__inicio__";
     ruta();
-  })
-  .catch(e=>{
+  }, e=>{   // solo los fallos de carga del catálogo muestran este aviso
     console.error(e);
     $("cuenta").textContent = "";
     $("grupos").innerHTML = '<p class="vacio">No se ha podido cargar la lista de materiales. Vuelve a intentarlo en unos minutos.</p>';

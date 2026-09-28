@@ -26,6 +26,16 @@ cuenta las páginas y lo añade a `catalogo.json`. El progreso se ve en la pesta
 - **Nombre del archivo:** se quitan tildes, espacios y símbolos para que los enlaces sean limpios
   («Mi ficha (v2).pdf» → `Mi_ficha_v2.pdf`).
 
+### Subir una presentación con su ficha (un recurso)
+
+Para que salgan juntas en la misma tarjeta, súbelas a una subcarpeta con el nombre del recurso:
+`subir/2-primaria/La suma en árbol/`. En la pantalla de subida de GitHub, escribe al final de la
+ruta el nombre de la carpeta seguido de `/` (por ejemplo `La suma en árbol/`) y después arrastra
+los dos PDF. En el lector aparecen unas pestañas para pasar de la presentación a la ficha.
+
+Para agrupar materiales que ya están subidos, pon el mismo `"recurso"` en sus bloques de
+`catalogo.json` (ver abajo).
+
 ### Sustituir un material por una versión corregida
 
 Súbelo a `subir/<curso>/` **con el mismo nombre de archivo** que el que está en `materiales/`.
@@ -41,6 +51,7 @@ Edita `catalogo.json` con el lápiz de GitHub. Cada material es un bloque así:
     "titulo": "Mi ficha",
     "etapas": ["1.º", "2.º"],
     "tipo": "Ficha",
+    "recurso": "Mi recurso",
     "desc": "Descripción breve.",
     "pags": 10,
     "peso": 120,
@@ -50,6 +61,7 @@ Edita `catalogo.json` con el lápiz de GitHub. Cada material es un bloque así:
 
 - `etapas`: «3 años», «4 años», «5 años», «1.º» y/o «2.º». Con varias, sale en «Para varios cursos».
 - `tipo`: Cuaderno, Ficha, Presentación, Juego o Programación.
+- `recurso` (opcional): los materiales con el mismo nombre salen juntos en una tarjeta con ese título.
 - `pags` y `peso` se calculan solos. `fecha` es el día en que se añadió (quítala para quitar «Nuevo»).
 - El orden de los bloques es el orden en que se ven dentro de cada curso.
 

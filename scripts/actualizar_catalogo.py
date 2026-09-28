@@ -6,6 +6,8 @@ pero también se puede lanzar a mano:  pip install pypdfium2 pillow && python sc
 Qué hace:
   1. Mueve los PDF de subir/<curso>/ a materiales/ y los añade al catálogo
      (o sustituye el archivo si ya existía uno con el mismo nombre, sin tocar sus datos).
+     Los PDF de una subcarpeta, subir/<curso>/<Nombre del recurso>/, se agrupan en un
+     mismo recurso (por ejemplo, una presentación y su ficha).
   2. Añade al catálogo los PDF que estén en materiales/ y no figuren en él.
   3. Quita del catálogo los materiales cuyo PDF se ha borrado.
   4. Recalcula páginas y peso, y genera las portadas que falten.
@@ -77,7 +79,7 @@ def deducir_tipo(archivo, titulo, apaisado):
     return "Presentación" if apaisado else "Ficha"
 
 
-def entrada_nueva(ruta, etapas):
+def entrada_nueva(ruta, etapas, recurso=None):
     doc = abrir_pdf(ruta)
     meta = doc.get_metadata_dict()
     ancho, alto = doc[0].get_size()
@@ -93,6 +95,7 @@ def entrada_nueva(ruta, etapas):
         "titulo": titulo,
         "etapas": etapas,
         "tipo": deducir_tipo(ruta.name, titulo, ancho > alto),
+        **({"recurso": recurso} if recurso else {}),
         "desc": (meta.get("Subject") or "").strip(),
         "pags": 0,
         "peso": 0,
@@ -142,6 +145,8 @@ def validar(catalogo):
             errores.append(f"{nombre}: «tipo» debe ser uno de {TIPOS}.")
         if "desc" in m and not isinstance(m["desc"], str):
             errores.append(f"{nombre}: «desc» debe ser un texto entre comillas.")
+        if "recurso" in m and (not isinstance(m["recurso"], str) or not m["recurso"].strip()):
+            errores.append(f"{nombre}: «recurso» debe ser un nombre entre comillas.")
         if "fecha" in m:
             try:
                 datetime.date.fromisoformat(m["fecha"])
@@ -151,7 +156,7 @@ def validar(catalogo):
 
 def escribir_catalogo(catalogo):
     """Un material por bloque y las listas cortas en una línea, para que sea fácil de editar a mano."""
-    orden = ["archivo", "titulo", "etapas", "tipo", "desc", "pags", "peso", "fecha"]
+    orden = ["archivo", "titulo", "etapas", "tipo", "recurso", "desc", "pags", "peso", "fecha"]
     bloques = []
     for m in catalogo:
         claves = [k for k in orden if k in m] + [k for k in m if k not in orden]
@@ -173,6 +178,7 @@ def main():
             continue
         partes = pdf.relative_to(SUBIR).parts
         carpeta = partes[0] if len(partes) > 1 else ""
+        recurso = partes[1].strip() if len(partes) > 2 else None
         etapas = CARPETAS.get(carpeta)
         if etapas is None:
             avisos.append(f"{pdf.relative_to(RAIZ)}: la carpeta «{carpeta or 'subir'}» no es de ningún curso; "
@@ -184,10 +190,10 @@ def main():
             regenerar.add(destino.name)
             cambios.append(f"Sustituido: {destino.name} (se conservan título, curso y descripción)")
         else:
-            m = entrada_nueva(destino, etapas)
+            m = entrada_nueva(destino, etapas, recurso)
             catalogo.append(m); por_archivo[m["archivo"]] = m
             cambios.append(f"Nuevo: {m['archivo']} → «{m['titulo']}», {m['tipo']}, "
-                           f"{', '.join(etapas) or 'sin curso'}")
+                           f"{', '.join(etapas) or 'sin curso'}" + (f", recurso «{recurso}»" if recurso else ""))
 
     # 2. PDF subidos directamente a materiales/
     for pdf in sorted(MATERIALES.glob("*")):

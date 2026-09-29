@@ -96,6 +96,14 @@ Su entrada del catálogo y su portada se quitan solas.
   - **Lector tipo libro digital**: barra lateral (Inicio, Contenido, Marcador, Buscar, Notas),
     vista de una o dos páginas, zoom, pantalla completa, «Última página vista», paso de página
     con flechas, teclado o deslizando el dedo. Funciona igual en ordenador, tableta y móvil.
+  - **Seguir donde lo dejé**: al volver a la biblioteca, un aviso lleva al último material y página.
+  - **Modo proyección** (botón *Proyectar* o tecla **P**): solo la página, a pantalla completa y sobre
+    negro, para la pizarra digital. Las flechas se esconden solas; funcionan el teclado
+    (flechas, espacio, Av Pág/Re Pág, Inicio/Fin) y los mandos de presentación. **Esc** sale.
+  - **Sin conexión**: los materiales abiertos se guardan en el dispositivo y se pueden volver a abrir
+    sin internet (llevan la marca «✓ sin conexión»). Al final de la biblioteca, *Guardar todos los
+    materiales* los deja todos listos antes de clase. En el iPad o el móvil se puede instalar como
+    app: *Compartir → Añadir a pantalla de inicio*.
   - Modo claro y oscuro.
 - `catalogo.json` — la lista de materiales.
 - `materiales/` — los PDF. `portadas/` — una imagen JPG por material.
@@ -103,6 +111,7 @@ Su entrada del catálogo y su portada se quitan solas.
 - `lib/` — el visor PDF.js (Mozilla, licencia Apache 2.0), alojado aquí mismo:
   la web no carga nada de servidores externos.
 - `scripts/actualizar_catalogo.py` y `.github/workflows/publicar.yml` — la automatización.
+- `sw.js`, `manifest.webmanifest` e `icono-*.png` — el uso sin conexión y la app instalable.
 
 Los marcadores, las notas, la última página vista y las marcas de «trabajado»
 se guardan solo en el navegador de cada dispositivo.

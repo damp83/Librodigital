@@ -20,6 +20,11 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Aula de Matemáticas Manipulativas: regletas de colores">
 <meta name="twitter:card" content="summary_large_image">
+<!-- Se puede instalar como app (pantalla de inicio del iPad o del móvil) -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icono-180.png">
+<meta name="theme-color" content="#1565e0">
+<meta name="apple-mobile-web-app-title" content="Aula Mates">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='4' width='6' height='5' rx='1' fill='%23e3261f'/%3E%3Crect x='2' y='11' width='12' height='5' rx='1' fill='%23f2c200'/%3E%3Crect x='2' y='18' width='20' height='5' rx='1' fill='%232e8b3a'/%3E%3Crect x='2' y='25' width='28' height='5' rx='1' fill='%232f7fd1'/%3E%3C/svg%3E">
 <script>
   try { var t = localStorage.getItem("aula-tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
@@ -141,6 +146,24 @@ footer.pie p{margin:0 0 6px;max-width:80ch}
   .parte .p-bts{flex-basis:100%}
   .parte .bt{flex:1}
 }
+
+/* Seguir donde lo dejé */
+.seguir{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-left:6px solid var(--r10);border-radius:4px;
+  background:var(--card);padding:12px 8px 12px 14px;margin:16px 0 6px}
+.seguir .s-mini{width:60px;height:60px;object-fit:cover;object-position:top;border:1px solid var(--line2);flex:none;background:var(--bg2)}
+.seguir .s-texto{flex:1;min-width:0}
+.seguir p{margin:0}
+.seguir .s-eti{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.seguir .s-tit{font-weight:700;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seguir .s-pag{color:var(--muted);font-size:14px}
+.seguir .bt{min-height:44px;font-size:16px;padding:0 18px}
+@media (max-width:640px){ .seguir{flex-wrap:wrap} .seguir .bt{order:3;flex-basis:100%} }
+
+/* Sin conexión */
+.sin-red{margin:14px 0 0;padding:10px 14px;border-radius:4px;background:color-mix(in srgb,var(--r5) 22%,var(--card));border:1px solid var(--r5);font-size:15px}
+.offline{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}
+.offline .bt{font-size:15px;min-height:44px;margin-top:6px}
+.guardado-ic{color:var(--ok);font-weight:600}
 
 /* ---------- Lector ---------- */
 #lector{position:fixed;inset:0;z-index:50;background:var(--stage);display:grid;grid-template-rows:auto 1fr auto;height:100%}
@@ -276,6 +299,24 @@ footer.pie p{margin:0 0 6px;max-width:80ch}
   .paginador input{font-size:16px;width:3.8em}
   .paginador label{display:none}
 }
+/* Modo proyección: solo la página, sobre negro; los controles se esconden solos */
+.p-salir,.p-num{display:none}
+#lector.proyeccion{background:#000;grid-template-rows:1fr}
+#lector.proyeccion .l-cab,#lector.proyeccion .lateral,#lector.proyeccion .barra,
+#lector.proyeccion .zoom,#lector.proyeccion .panel{display:none}
+#lector.proyeccion .hoja,#lector.proyeccion .hoja + .hoja{box-shadow:none}
+#lector.proyeccion .flecha{background:rgba(20,24,30,.62);color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.25);width:56px;height:56px;
+  top:50%;bottom:auto;transform:translateY(-50%)}
+#lector.proyeccion .flecha.izq{left:12px}
+#lector.proyeccion .flecha.der{left:auto;right:12px}
+#lector.proyeccion .p-salir{display:flex;align-items:center;gap:6px;position:absolute;top:12px;right:12px;z-index:2;border:0;border-radius:999px;
+  background:rgba(20,24,30,.62);box-shadow:0 0 0 1px rgba(255,255,255,.25);color:#fff;padding:8px 16px 8px 10px;font-size:15px;font-weight:600}
+#lector.proyeccion .p-num{display:block;position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:1;color:#fff;
+  background:rgba(0,0,0,.55);padding:4px 12px;border-radius:999px;font-size:15px}
+#lector.proyeccion .flecha,#lector.proyeccion .p-salir,#lector.proyeccion .p-num{transition:opacity .3s}
+#lector.proyeccion.quieto .flecha,#lector.proyeccion.quieto .p-salir,#lector.proyeccion.quieto .p-num{opacity:0;pointer-events:none}
+#lector.proyeccion.quieto{cursor:none}
+
 @media (prefers-reduced-motion: reduce){ *{animation:none !important;transition:none !important} }
 </style>
 </head>
@@ -313,6 +354,8 @@ footer.pie p{margin:0 0 6px;max-width:80ch}
   </section>
 
   <main class="lista" id="lista">
+    <p class="sin-red" id="sinRed" role="status" hidden>Sin conexión: puedes abrir los materiales guardados en este dispositivo (marcados con ✓).</p>
+    <section class="seguir" id="seguir" aria-label="Seguir donde lo dejaste" hidden></section>
     <p class="cuenta" id="cuenta" aria-live="polite"></p>
     <div id="grupos"></div>
     <div class="vacio" id="vacio" hidden>
@@ -327,6 +370,11 @@ footer.pie p{margin:0 0 6px;max-width:80ch}
       <p>Licencia <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>:
          puedes usarlos y adaptarlos citando la autoría, sin fines comerciales y compartiendo con la misma licencia.</p>
       <p>Las marcas de «trabajado», los marcadores y las notas se guardan solo en este dispositivo.</p>
+      <div class="offline" id="offline" hidden>
+        <p><strong>Usar sin conexión.</strong> Los materiales que abres se guardan en este dispositivo y se pueden volver a abrir sin internet.
+           Para preparar la clase, guárdalos todos de una vez. <span id="oEstado" aria-live="polite"></span></p>
+        <button class="bt borde" id="oGuardar"></button>
+      </div>
     </div>
   </footer>
 </div>
@@ -359,6 +407,8 @@ footer.pie p{margin:0 0 6px;max-width:80ch}
       <div class="escena" id="escena" tabindex="-1"><div class="paginas" id="paginas"></div></div>
       <button class="flecha izq" id="lAnt" data-icon="izq" aria-label="Página anterior"></button>
       <button class="flecha der" id="lSig" data-icon="der" aria-label="Página siguiente"></button>
+      <button class="p-salir" id="pSalir"><svg class="ic" data-icon="x"></svg>Salir</button>
+      <div class="p-num" id="pNum" aria-hidden="true"></div>
       <div class="zoom">
         <button class="ibtn pantalla" id="lPantalla" data-icon="pantalla" aria-label="Pantalla completa"></button>
         <button class="ibtn" id="lMas" data-icon="mas" aria-label="Ampliar"></button>
@@ -378,6 +428,7 @@ footer.pie p{margin:0 0 6px;max-width:80ch}
       <label for="lPag">Página actual</label>
     </div>
     <button class="b-btn" id="lDoble"><svg class="ic" data-icon="una"></svg><span>Una página</span></button>
+    <button class="b-btn" id="lProyectar" title="Modo proyección (tecla P)"><svg class="ic" data-icon="proyectar"></svg><span>Proyectar</span></button>
     <a class="b-btn" id="lDescargar" download><svg class="ic" data-icon="descargar"></svg><span>Descargar</span></a>
     <button class="b-btn" id="lHecho" aria-pressed="false"><svg class="ic" data-icon="check"></svg><span>Trabajado</span></button>
   </footer>
@@ -414,6 +465,7 @@ const ICON = {
   una:'<rect x="6.5" y="3" width="11" height="18" rx="1"/>',
   dos:'<rect x="2" y="4" width="9.5" height="16" rx="1"/><rect x="12.5" y="4" width="9.5" height="16" rx="1"/>',
   descargar:'<path d="M12 3v12M7 10l5 5 5-5M4 16v4h16v-4"/>',
+  proyectar:'<rect x="3" y="4" width="18" height="12" rx="1"/><path d="M12 16v4M8 21h8"/>',
   luna:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
   sol:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   check:'<path d="M5 12.5l4.5 4.5L19 7"/>', abrir:'<path d="M3 5.5C5.5 4 8.5 4 12 6c3.5-2 6.5-2 9-.5V19c-2.5-1.5-5.5-1.5-9 .5-3.5-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/>'
@@ -523,7 +575,7 @@ function tarjeta(m){
       '<p class="tipo">'+(esNuevo(m) ? '<span class="nuevo">Nuevo</span>' : '')+esc(m.tipo)+(m.etapas.length>1 ? ", "+esc(textoEtapas(m)) : "")+'</p>'+
       '<h3>'+esc(m.titulo)+'</h3>'+
       (m.desc ? '<p class="desc">'+esc(m.desc)+'</p>' : '')+
-      '<p class="meta">'+pagsTexto(m.pags)+', '+pesoTexto(m.peso)+'</p>'+
+      '<p class="meta">'+pagsTexto(m.pags)+', '+pesoTexto(m.peso)+marcaGuardado(m)+'</p>'+
       '<div class="botones">'+
         '<a class="bt azul" href="#/leer/'+encodeURIComponent(m.archivo)+'">'+svg("abrir")+'Abrir</a>'+
         '<a class="bt negro" href="'+BASE+encodeURIComponent(m.archivo)+'" download>'+svg("descargar")+'Descargar</a>'+
@@ -555,7 +607,7 @@ function tarjetaRecurso(u){
       '<h3>'+esc(u.recurso)+'</h3>'+
       '<ul class="partes">'+partes.map(p=>
         '<li class="parte"><div class="p-info">'+
-          '<p class="p-tipo"><b>'+esc(p.tipo)+'</b> · '+pagsTexto(p.pags)+', '+pesoTexto(p.peso)+'</p>'+
+          '<p class="p-tipo"><b>'+esc(p.tipo)+'</b> · '+pagsTexto(p.pags)+', '+pesoTexto(p.peso)+marcaGuardado(p)+'</p>'+
           (norm(p.titulo)!==norm(u.recurso) ? '<p class="p-tit">'+esc(p.titulo)+'</p>' : '')+
           (p.desc ? '<p class="desc">'+esc(p.desc)+'</p>' : '')+
         '</div><div class="p-bts">'+
@@ -574,8 +626,26 @@ function tarjetaRecurso(u){
   return art;
 }
 
+/* Seguir donde lo dejé */
+function pintarSeguir(filtrando){
+  const cont = $("seguir"), r = leer("aula-reciente", null);
+  const m = r && MATERIALES.find(x=>x.archivo===r.archivo);
+  if(!m || filtrando){ cont.hidden = true; return; }
+  const pag = Math.min(Math.max(1, +r.pag || 1), m.pags || 1);
+  cont.innerHTML =
+    '<img class="s-mini" alt="" src="'+PORTADAS+encodeURIComponent(nombreBase(m.archivo))+'.jpg">'+
+    '<div class="s-texto"><p class="s-eti">Seguir donde lo dejaste</p><p class="s-tit">'+esc(m.titulo)+'</p>'+
+      '<p class="s-pag">'+esc(m.tipo)+' · página '+pag+' de '+m.pags+'</p></div>'+
+    '<a class="bt azul" href="#/leer/'+encodeURIComponent(m.archivo)+'/'+pag+'">'+svg("abrir")+'Continuar</a>'+
+    '<button class="ibtn" aria-label="Quitar este aviso">'+svg("x")+'</button>';
+  cont.querySelector("img").onerror = e => e.target.remove();
+  cont.querySelector(".ibtn").onclick = ()=>{ try{ localStorage.removeItem("aula-reciente"); }catch(e){} cont.hidden = true; };
+  cont.hidden = false;
+}
+
 function pintarLista(){
   const q = norm($("q").value.trim());
+  pintarSeguir(!!(q || filtroEtapa.size || filtroTipo.size || soloPendientes));
   const pasa = m=>{
     if(filtroEtapa.size && !m.etapas.some(e=>filtroEtapa.has(e))) return false;
     if(filtroTipo.size && !filtroTipo.has(m.tipo)) return false;
@@ -619,7 +689,8 @@ async function cargarPdfjs(){
 function abrirDocumento(archivo){
   return pdfjs.getDocument({ url: BASE + encodeURIComponent(archivo),
     standardFontDataUrl: new URL("lib/standard_fonts/", document.baseURI).href,
-    isEvalSupported: false }).promise;   // defensa extra: nunca ejecuta código generado a partir del PDF
+    isEvalSupported: false,
+    disableRange: true, disableStream: true }).promise;   // pide el PDF entero: así el service worker lo puede guardar para usarlo sin conexión   // defensa extra: nunca ejecuta código generado a partir del PDF
 }
 async function portadaDesdePDF(m, portada, img){
   try{
@@ -682,6 +753,11 @@ async function abrirLector(archivo, pag){
     irA(pag || 1);
   }catch(e){
     console.error(e);
+    if(!navigator.onLine){
+      avisoEscena('Sin conexión: este material todavía no está guardado en el dispositivo.<br>'+
+        'Ábrelo una vez con internet, o usa «Guardar todos los materiales» al final de la biblioteca.');
+      return;
+    }
     avisoEscena('No se ha podido mostrar el material aquí.<br>Puedes abrirlo directamente como PDF.'+
       '<br><a class="bt azul" href="'+BASE+encodeURIComponent(m.archivo)+'" target="_blank" rel="noopener">Abrir el PDF</a>');
   }
@@ -697,10 +773,13 @@ function cerrarLector(){
   if($("lector").hidden) return;
   if(document.fullscreenElement) document.exitFullscreen?.();
   const abierto = L.m && L.m.archivo;
+  $("lector").classList.remove("proyeccion","quieto"); clearTimeout(tQuieto);
   cerrarDocumento(); cerrarPanel();
   $("lector").hidden = true; $("biblioteca").removeAttribute("aria-hidden"); $("biblioteca").inert = false;
   document.body.style.overflow = "";
   pintarLista();
+  actualizarGuardados(false).then(()=>{ if(guardados.size) pintarLista();
+    if(abierto) document.querySelector('a.bt.azul[href="#/leer/'+encodeURIComponent(abierto)+'"]')?.focus(); });
   if(abierto) document.querySelector('a.bt.azul[href="#/leer/'+encodeURIComponent(abierto)+'"]')?.focus({preventScroll:false});
 }
 function salirDelLector(){
@@ -718,6 +797,8 @@ function irA(p){
   $("lAnt").disabled = v[0]<=1; $("lSig").disabled = v[v.length-1]>=L.n;
   history.replaceState(history.state, "", "#/leer/"+encodeURIComponent(L.m.archivo)+"/"+L.pag);
   const u = leer("aula-ultima", {}); u[L.m.archivo] = L.pag; guardar("aula-ultima", u);
+  guardar("aula-reciente", {archivo: L.m.archivo, pag: L.pag});
+  $("pNum").textContent = v.join("-")+" / "+L.n;
   refrescarPanel();
 }
 function siguiente(){ const v = visibles(L.pag); if(v[v.length-1] < L.n) irA(v[v.length-1]+1); }
@@ -729,6 +810,7 @@ async function tamano(n){
 }
 
 async function pintarPaginas(){
+  if(!L.doc || !L.m) return;   // p. ej. un cambio de tamaño que llega justo después de cerrar el lector
   const t = ++L.token;
   L.tareas.forEach(x=>{ try{ x.cancel(); }catch(e){} }); L.tareas = [];
   const nums = visibles(L.pag);
@@ -737,7 +819,8 @@ async function pintarPaginas(){
   if(t!==L.token) return;
   const bajo = matchMedia("(max-height:520px) and (orientation:landscape)").matches;   // móvil en horizontal: flechas a los lados
   const estrecho = !bajo && escena.clientWidth < 760;
-  const padX = bajo ? 112 : estrecho ? 24 : 144, padY = bajo ? 12 : estrecho ? 150 : 56;   // en móvil vertical deja sitio a las flechas de abajo
+  const proy = $("lector").classList.contains("proyeccion");   // proyección: la página ocupa toda la pantalla
+  const padX = proy ? 16 : bajo ? 112 : estrecho ? 24 : 144, padY = proy ? 16 : bajo ? 12 : estrecho ? 150 : 56;   // en móvil vertical deja sitio a las flechas de abajo
   const W = Math.max(100, escena.clientWidth - padX), H = Math.max(100, escena.clientHeight - padY);
   const totalW = info.reduce((s,i)=>s+i.v.width, 0), maxH = Math.max(...info.map(i=>i.v.height));
   const escala = Math.min(W/totalW, H/maxH) * L.zoom;
@@ -825,6 +908,36 @@ if(document.fullscreenEnabled){
   $("lPantalla").onclick = ()=>{ document.fullscreenElement ? document.exitFullscreen() : $("lector").requestFullscreen(); };
 } else $("lPantalla").hidden = true;
 
+/* Modo proyección */
+let tQuieto = null, fsPorProyeccion = false;
+function despertar(){   // muestra flechas y «Salir» un momento
+  const l = $("lector"); l.classList.remove("quieto");
+  clearTimeout(tQuieto); tQuieto = setTimeout(()=>l.classList.add("quieto"), 2500);
+}
+function modoProyeccion(si){
+  const l = $("lector");
+  if(!L.doc || si===l.classList.contains("proyeccion")) return;
+  cerrarPanel();
+  l.classList.toggle("proyeccion", si);
+  if(si){
+    despertar(); escena.focus({preventScroll:true});
+    if(document.fullscreenEnabled && !document.fullscreenElement)
+      l.requestFullscreen().then(()=>{ fsPorProyeccion = true; }).catch(()=>{});
+  } else {
+    clearTimeout(tQuieto); l.classList.remove("quieto");
+    if(fsPorProyeccion && document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+    fsPorProyeccion = false;
+    $("lProyectar").focus();
+  }
+  pintarPaginas();
+}
+$("lProyectar").onclick = ()=> modoProyeccion(true);
+$("pSalir").onclick = ()=> modoProyeccion(false);
+["pointermove","pointerdown"].forEach(t=> $("lector").addEventListener(t, ()=>{ if($("lector").classList.contains("proyeccion")) despertar(); }));
+document.addEventListener("fullscreenchange", ()=>{   // Esc en pantalla completa lo gestiona el navegador: sale también de proyección
+  if(!document.fullscreenElement && fsPorProyeccion){ fsPorProyeccion = false; modoProyeccion(false); }
+});
+
 /* Redimensionar */
 let tRes = null;
 new ResizeObserver(()=>{ if(!L.doc) return; clearTimeout(tRes); tRes = setTimeout(pintarPaginas, 150); }).observe(escena);
@@ -833,10 +946,16 @@ new ResizeObserver(()=>{ if(!L.doc) return; clearTimeout(tRes); tRes = setTimeou
 document.addEventListener("keydown", e=>{
   if($("lector").hidden) return;
   const enCampo = /^(input|textarea)$/i.test(e.target.tagName);
-  if(e.key==="Escape"){ e.preventDefault(); if(L.panel) cerrarPanel(true); else salirDelLector(); return; }
+  if(e.key===" " && /^(button|a)$/i.test(e.target.tagName)) return;   // el espacio pulsa el botón que tiene el foco
+  const proy = $("lector").classList.contains("proyeccion");
+  if(e.key==="Escape"){ e.preventDefault(); if(proy) modoProyeccion(false); else if(L.panel) cerrarPanel(true); else salirDelLector(); return; }
   if(enCampo) return;
-  if(e.key==="ArrowRight"||e.key==="PageDown"){ e.preventDefault(); siguiente(); }
-  else if(e.key==="ArrowLeft"||e.key==="PageUp"){ e.preventDefault(); anterior(); }
+  // los mandos de presentación envían flechas, Av Pág / Re Pág o espacio
+  if(e.key==="ArrowRight"||e.key==="PageDown"||(e.key===" " && !e.shiftKey)||(proy && e.key==="ArrowDown")){ e.preventDefault(); siguiente(); }
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"||(e.key===" " && e.shiftKey)||(proy && e.key==="ArrowUp")){ e.preventDefault(); anterior(); }
+  else if(e.key==="Home"){ e.preventDefault(); irA(1); }
+  else if(e.key==="End"){ e.preventDefault(); irA(L.n); }
+  else if(e.key==="p"||e.key==="P"){ modoProyeccion(!proy); }
   else if(e.key==="+"||e.key==="="){ ponerZoom(L.zoom+.25); }
   else if(e.key==="-"){ ponerZoom(L.zoom-.25); }
   else if(e.key==="0"){ ponerZoom(1); }
@@ -1036,6 +1155,50 @@ function ruta(){
 }
 window.addEventListener("hashchange", ruta);
 
+/* =====================================================================
+   SIN CONEXIÓN: sw.js guarda lo que se abre; aquí se puede guardar todo de una vez.
+   Los nombres de las cachés deben coincidir con los de sw.js.
+   ===================================================================== */
+const CACHE_APP = "aula-app-v1", CACHE_PDF = "aula-pdf-v1";
+let guardados = new Set();
+const urlMaterial = m => new URL(BASE+encodeURIComponent(m.archivo), document.baseURI).href;
+const marcaGuardado = m => guardados.has(urlMaterial(m)) ? ' · <span class="guardado-ic" title="Se puede abrir sin conexión">✓ sin conexión</span>' : '';
+async function actualizarGuardados(repintar){
+  if(!("caches" in window)) return;
+  try{ guardados = new Set((await (await caches.open(CACHE_PDF)).keys()).map(r=>r.url)); }catch(e){ return; }
+  const n = MATERIALES.filter(m=>guardados.has(urlMaterial(m))).length, total = MATERIALES.length;
+  const kb = MATERIALES.reduce((s,m)=>s+(m.peso||0), 0);
+  $("oEstado").textContent = n ? "Guardados en este dispositivo: "+n+" de "+total+"." : "";
+  const b = $("oGuardar");
+  b.innerHTML = svg("descargar") + (n===total ? "Actualizar los materiales guardados" : "Guardar todos los materiales ("+pesoTexto(kb)+")");
+  if(repintar) pintarLista();
+}
+async function guardarTodo(){
+  const b = $("oGuardar"); b.disabled = true;
+  try{ await navigator.storage?.persist?.(); }catch(e){}   // pide que el navegador no lo borre por falta de espacio
+  const pdf = await caches.open(CACHE_PDF), app = await caches.open(CACHE_APP);
+  let hechos = 0, fallos = 0;
+  for(const m of MATERIALES){
+    b.textContent = "Guardando… "+(++hechos)+" de "+MATERIALES.length;
+    try{
+      const r = await fetch(BASE+encodeURIComponent(m.archivo), {cache:"no-cache"});
+      if(!r.ok) throw 0;
+      await pdf.put(urlMaterial(m), r);
+      const pr = await fetch(PORTADAS+encodeURIComponent(nombreBase(m.archivo))+".jpg");
+      if(pr.ok) await app.put(pr.url, pr);
+    }catch(e){ fallos++; }
+  }
+  b.disabled = false;
+  await actualizarGuardados(true);
+  if(fallos) $("oEstado").textContent += " No se han podido guardar "+fallos+" (¿sin conexión?).";
+}
+$("oGuardar").onclick = guardarTodo;
+function pintarRed(){ $("sinRed").hidden = navigator.onLine; }
+addEventListener("online", pintarRed); addEventListener("offline", pintarRed);
+if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost")){
+  navigator.serviceWorker.register("sw.js").then(()=>{ $("offline").hidden = false; actualizarGuardados(true); }).catch(()=>{});
+}
+
 /* Arranque */
 pintarIconos(document);
 pintarBotonTema();
@@ -1044,7 +1207,9 @@ fetch("catalogo.json", {cache:"no-cache"})
   .then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
   .then(lista=>{
     MATERIALES = lista;
+    pintarRed();
     pintarLista();
+    actualizarGuardados(true);
     rutaPrevia = "__inicio__";
     ruta();
   }, e=>{   // solo los fallos de carga del catálogo muestran este aviso

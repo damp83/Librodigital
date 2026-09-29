@@ -1,0 +1,16 @@
+{
+  "name": "Aula de Matemáticas Manipulativas",
+  "short_name": "Aula Mates",
+  "description": "Cuadernos, fichas, presentaciones y juegos con regletas Cuisenaire, de 3 años a 2.º de Primaria.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1565e0",
+  "icons": [
+    {"src": "icono-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

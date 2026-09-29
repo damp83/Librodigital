@@ -302,7 +302,7 @@ footer.pie .marca{margin-bottom:12px}
 
 .zona{flex:1;min-width:0;position:relative}
 .escena:focus{outline:none}
-.escena{position:absolute;inset:0;overflow:auto;display:flex;touch-action:pan-x pan-y pinch-zoom;overscroll-behavior:contain}
+.escena{position:absolute;inset:0;z-index:0;overflow:auto;display:flex;touch-action:pan-x pan-y pinch-zoom;overscroll-behavior:contain}
 .paginas{margin:auto;display:flex;padding:28px 72px;flex:none}
 .hoja{position:relative;background:#fff;box-shadow:0 1px 3px rgba(15,27,45,.12),0 12px 32px -12px rgba(15,27,45,.35)}
 .hoja canvas{display:block}
@@ -391,7 +391,7 @@ footer.pie .marca{margin-bottom:12px}
   .paginador label{display:none}
 }
 /* Modo proyección: solo la página, sobre negro; los controles se esconden solos */
-.p-salir,.p-num{display:none}
+.p-botones,.p-num{display:none}
 #lector.proyeccion{background:#000;grid-template-rows:1fr}
 #lector.proyeccion .l-cab,#lector.proyeccion .lateral,#lector.proyeccion .barra,
 #lector.proyeccion .zoom,#lector.proyeccion .panel{display:none}
@@ -400,14 +400,147 @@ footer.pie .marca{margin-bottom:12px}
   top:50%;bottom:auto;transform:translateY(-50%)}
 #lector.proyeccion .flecha.izq{left:12px}
 #lector.proyeccion .flecha.der{left:auto;right:12px}
-#lector.proyeccion .p-salir{display:flex;align-items:center;gap:6px;position:absolute;top:12px;right:12px;z-index:2;border:0;border-radius:999px;
+#lector.proyeccion .p-botones{display:flex;gap:8px;position:absolute;top:12px;right:12px;z-index:3}
+.p-boton{display:flex;align-items:center;gap:6px;border:0;border-radius:999px;
   background:rgba(20,24,30,.62);box-shadow:0 0 0 1px rgba(255,255,255,.25);color:#fff;padding:8px 16px 8px 10px;font-size:15px;font-weight:600}
+.p-boton[aria-pressed="true"]{background:#fff;color:#111827}
 #lector.proyeccion .p-num{display:block;position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:1;color:#fff;
   background:rgba(0,0,0,.55);padding:4px 12px;border-radius:999px;font-size:15px}
-#lector.proyeccion .flecha,#lector.proyeccion .p-salir,#lector.proyeccion .p-num{transition:opacity .3s}
-#lector.proyeccion.quieto .flecha,#lector.proyeccion.quieto .p-salir,#lector.proyeccion.quieto .p-num{opacity:0;pointer-events:none}
+#lector.proyeccion .flecha,#lector.proyeccion .p-botones,#lector.proyeccion .p-num{transition:opacity .3s}
+#lector.proyeccion.quieto .flecha,#lector.proyeccion.quieto .p-botones,#lector.proyeccion.quieto .p-num{opacity:0;pointer-events:none}
 #lector.proyeccion.quieto{cursor:none}
 
+/* ---------- Herramientas en la biblioteca ---------- */
+.herr{margin-top:28px}
+.herr h2{font-size:21px;font-weight:600;margin:0 0 14px}
+.herr-rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.herr-ficha{display:flex;align-items:center;gap:16px;padding:14px 16px 14px 14px;border:1px solid var(--line);border-radius:var(--radio);
+  background:var(--surface);box-shadow:var(--sh-1);text-decoration:none;color:var(--ink);transition:transform .2s,box-shadow .2s}
+.herr-ficha:hover{transform:translateY(-2px);box-shadow:var(--sh-2)}
+.herr-ilus{flex:none;width:76px;height:64px;border-radius:12px;display:grid;align-content:center;gap:4px;padding:0 10px;
+  background:color-mix(in srgb,var(--accent) 10%,var(--surface));border:1px solid var(--line)}
+.herr-ilus i{display:block;height:9px;border-radius:2px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.15)}
+.herr-bola{place-items:center;font-family:var(--font-titulos);font-weight:700;font-size:26px;color:var(--accent)}
+.herr-txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.herr-txt b{font-family:var(--font-titulos);font-weight:600;font-size:16.5px}
+.herr-txt span{color:var(--muted);font-size:14px;line-height:1.45}
+.herr-flecha{color:var(--muted)}
+.libro .botones .icbtn.compartir{margin-left:0}
+
+/* ---------- Vistas de herramientas (pantalla completa) ---------- */
+.vista{position:fixed;inset:0;z-index:55;background:var(--bg);display:grid;grid-template-rows:auto auto 1fr}
+.v-cab{background:var(--surface);border-bottom:1px solid var(--line);display:grid;grid-template-columns:64px 1fr 64px;align-items:center;
+  min-height:58px;padding-top:env(safe-area-inset-top,0px)}
+.v-cab h1{margin:0;text-align:center;font-size:18px;font-weight:600}
+.v-cab .ibtn{justify-self:center}
+
+/* Regletas virtuales */
+.reg-barra{display:flex;align-items:center;gap:12px 20px;flex-wrap:wrap;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.reg-paleta{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
+.reg-pieza{border:0;padding:0;height:28px;border-radius:4px;touch-action:none;cursor:grab;font:600 12px var(--font);
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.18),0 1px 2px rgba(0,0,0,.2);display:grid;place-items:center}
+.reg-pieza:hover{transform:translateY(-1px)}
+.reg-acc{display:flex;gap:6px;flex-wrap:wrap}
+.reg-acc .icbtn[aria-pressed="true"]{background:var(--brand-soft);color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+.reg-acc .icbtn:disabled{opacity:.4;cursor:default}
+.reg-sep,.rotu-sep{width:1px;align-self:stretch;background:var(--line-strong);margin:4px 2px}
+.reg-tablero{--u:40px;position:relative;overflow:hidden;touch-action:none;outline:none;background-color:var(--surface);
+  background-image:linear-gradient(color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1px),
+                   linear-gradient(90deg,color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1px);
+  background-size:var(--u) var(--u)}
+.reg-tablero:focus-visible{box-shadow:inset 0 0 0 3px var(--accent)}
+.regleta-v{position:absolute;border-radius:6px;display:grid;place-items:center;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;
+  font:600 calc(var(--u)*.42) var(--font-titulos);box-shadow:inset 0 -4px 0 rgba(0,0,0,.18),inset 0 2px 0 rgba(255,255,255,.35),0 2px 4px rgba(0,0,0,.25);
+  transition:box-shadow .15s}
+.regleta-v.arrastrando{cursor:grabbing;z-index:5;box-shadow:inset 0 -4px 0 rgba(0,0,0,.18),0 12px 24px rgba(0,0,0,.3)}
+.regleta-v.elegida{outline:3px solid var(--accent);outline-offset:2px;z-index:4}
+.reg-tablero.sin-numeros .regleta-v span{visibility:hidden}
+.reg-regla{position:absolute;left:0;right:0;top:0;height:var(--u);display:flex;pointer-events:none;z-index:1;
+  background:color-mix(in srgb,var(--surface) 88%,transparent);border-bottom:1px solid var(--line-strong)}
+.reg-regla span{flex:none;width:var(--u);position:relative;font:600 12px var(--font);color:var(--ink-2)}
+.reg-regla span::before{content:"";position:absolute;left:0;bottom:0;width:1px;height:40%;background:var(--ink-2)}
+.reg-regla span b{position:absolute;left:3px;top:4px;font-weight:600}
+.reg-papelera{position:absolute;right:16px;bottom:16px;display:flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;
+  border:2px dashed var(--line-strong);color:var(--muted);background:var(--surface);font-size:14px;font-weight:600;opacity:0;transition:opacity .2s,background .2s;pointer-events:none}
+.reg-tablero.moviendo .reg-papelera{opacity:1}
+.reg-papelera.encima{background:#fde2e1;border-color:#e3261f;color:#b3140f}
+.reg-vacio{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;color:var(--muted);text-align:center;max-width:32ch;font-size:16px;pointer-events:none}
+
+/* Bombo del bingo */
+.bombo{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr);gap:24px;padding:24px;overflow:auto;min-height:0}
+.b-principal{display:flex;flex-direction:column;align-items:center;gap:18px;background:var(--surface);border:1px solid var(--line);border-radius:18px;
+  padding:20px 24px 28px;box-shadow:var(--sh-1)}
+.b-modos{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:100%}
+.b-select{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--muted)}
+.b-select select{height:36px;border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);color:var(--ink);padding:0 12px;font:500 14px var(--font)}
+.b-modos .chip svg.ic{width:16px;height:16px}
+.b-bola{display:flex;flex-direction:column;align-items:center;text-align:center}
+.b-bola p{margin:0}
+.b-eti{font-size:15px;font-weight:600;color:var(--accent);min-height:1.4em}
+.b-num{font-family:var(--font-titulos);font-weight:700;font-size:clamp(96px,18vw,200px);line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.b-num.girando{color:var(--muted)}
+.b-sub{color:var(--muted);font-size:16px;margin-top:6px!important;min-height:1.5em}
+.b-regletas{--u:30px;display:flex;flex-direction:column;gap:4px;align-items:flex-start;min-height:calc(var(--u)*1.2)}
+.b-fila{display:flex;gap:4px}
+.b-reg{height:calc(var(--u)*.8);border-radius:6px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.18),inset 0 2px 0 rgba(255,255,255,.35),0 2px 4px rgba(0,0,0,.2);
+  display:grid;place-items:center;font:600 14px var(--font-titulos)}
+.b-acciones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.b-sacar{min-height:56px;padding:0 28px;font-size:18px}
+.b-lado{display:flex;flex-direction:column;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--sh-1);min-height:0}
+.b-tab-cab{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.b-tab-cab h2{margin:0;font-size:18px;font-weight:600}
+.b-tab-cab span{color:var(--muted);font-size:14px}
+.b-rejilla{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.b-casilla{aspect-ratio:1;display:grid;place-items:center;border-radius:6px;font:600 13px var(--font);color:var(--muted);background:var(--surface-2);font-variant-numeric:tabular-nums}
+.b-casilla.fuera{visibility:hidden}
+.b-casilla.salio{background:var(--accent);color:#fff}
+.b-casilla.ultima{background:var(--r10);color:#1c1204;box-shadow:0 0 0 3px color-mix(in srgb,var(--r10) 35%,transparent)}
+.b-lado .bt{align-self:flex-start}
+
+/* Compartir */
+.dialogo{border:0;border-radius:18px;padding:0;width:min(440px,calc(100% - 32px));background:var(--surface);color:var(--ink);box-shadow:var(--sh-2)}
+.dialogo::backdrop{background:rgba(8,14,24,.55);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.d-cab{display:flex;align-items:center;justify-content:space-between;padding:12px 10px 4px 22px}
+.d-cab h2{margin:0;font-size:18px;font-weight:600}
+.d-cuerpo{padding:0 22px 22px;display:flex;flex-direction:column;gap:14px}
+.d-que{margin:0;color:var(--muted);font-size:14.5px}
+.d-que b{color:var(--ink)}
+.d-qr{align-self:center;background:#fff;padding:12px;border-radius:12px;border:1px solid var(--line);line-height:0}
+.d-qr canvas{width:200px;height:200px;image-rendering:pixelated}
+.d-enlace{display:flex;gap:8px}
+.d-enlace input{flex:1;min-width:0;border:1px solid var(--line-strong);border-radius:var(--radio-s);padding:0 12px;height:44px;background:var(--surface-2);font-size:14px;color:var(--ink-2)}
+.d-botones{display:flex;flex-wrap:wrap;gap:8px}
+.d-botones .bt{flex:1 1 auto}
+.d-nota{margin:0;color:var(--muted);font-size:13px}
+
+/* Rotulador */
+.hoja canvas.anot{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+#lector.rotulando .hoja canvas.anot{pointer-events:auto;touch-action:none;cursor:crosshair}
+.rotu-barra{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:6px;padding:6px 8px;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh-2)}
+.rotu-color{width:30px;height:30px;border-radius:50%;border:2px solid var(--surface);background:var(--col);box-shadow:0 0 0 1px var(--line-strong)}
+.rotu-color[aria-pressed="true"]{box-shadow:0 0 0 3px var(--accent)}
+.rotu-grosor,.rotu-acc{width:36px;height:36px;border-radius:10px;border:0;background:transparent;color:var(--ink-2);display:grid;place-items:center}
+.rotu-grosor:hover,.rotu-acc:hover{background:var(--surface-2)}
+.rotu-acc svg.ic{width:20px;height:20px}
+.rotu-grosor i{display:block;width:18px;height:3px;border-radius:3px;background:var(--ink-2)}
+.rotu-grosor.grueso i{height:7px}
+.b-btn[aria-pressed="true"]{color:var(--accent);background:var(--brand-soft)}
+#lector.proyeccion.quieto.rotulando .p-botones{opacity:1;pointer-events:auto}
+
+@media (max-width:860px){
+  .bombo{grid-template-columns:minmax(0,1fr);padding:14px;gap:14px}
+  .b-regletas{--u:24px}
+  .reg-barra{padding:8px 12px}
+  .reg-pieza{height:24px}
+}
+@media (max-width:760px){
+  .rotu-barra{top:auto;bottom:70px;max-width:calc(100% - 16px);overflow-x:auto}
+  .herr-rejilla{grid-template-columns:minmax(0,1fr)}
+  .reg-acc{gap:4px}
+  .reg-acc .icbtn{width:38px;height:38px}
+  #regPantalla,.reg-acc .reg-sep{display:none}
+}
 @media (prefers-reduced-motion: reduce){ *{animation:none !important;transition:none !important} }
 </style>
 </head>
@@ -460,6 +593,19 @@ footer.pie .marca{margin-bottom:12px}
   <main class="lista contenedor" id="lista">
     <p class="sin-red" id="sinRed" role="status" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5h.01M3 3l18 18"/></svg>Sin conexión: puedes abrir los materiales guardados en este dispositivo (marcados con ✓).</p>
     <section class="seguir" id="seguir" aria-label="Seguir donde lo dejaste" hidden></section>
+    <section class="herr" id="herr" aria-labelledby="herrTit">
+      <h2 id="herrTit">Herramientas para el aula</h2>
+      <div class="herr-rejilla">
+        <a class="herr-ficha" href="#/regletas">
+          <span class="herr-ilus" aria-hidden="true"><i style="width:20%;background:var(--r2)"></i><i style="width:50%;background:var(--r5)"></i><i style="width:70%;background:#2b2b2b"></i><i style="width:100%;background:var(--r10)"></i></span>
+          <span class="herr-txt"><b>Regletas virtuales</b><span>Arrastra, gira y combina las diez regletas en la pizarra digital.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a class="herr-ficha" href="#/bombo">
+          <span class="herr-ilus herr-bola" aria-hidden="true">34</span>
+          <span class="herr-txt"><b>Bombo del bingo</b><span>Saca números sin repetir para «El bingo de las regletas», con sus regletas y el tablero.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </section>
     <p class="cuenta" id="cuenta" aria-live="polite"></p>
     <div id="grupos"></div>
     <div class="vacio" id="vacio" hidden>
@@ -523,7 +669,21 @@ footer.pie .marca{margin-bottom:12px}
       <div class="escena" id="escena" tabindex="-1"><div class="paginas" id="paginas"></div></div>
       <button class="flecha izq" id="lAnt" data-icon="izq" aria-label="Página anterior"></button>
       <button class="flecha der" id="lSig" data-icon="der" aria-label="Página siguiente"></button>
-      <button class="p-salir" id="pSalir"><svg class="ic" data-icon="x"></svg>Salir</button>
+      <div class="p-botones"><button class="p-boton" id="pRotu" aria-pressed="false"><svg class="ic" data-icon="rotulador"></svg>Rotulador</button>
+        <button class="p-boton p-salir" id="pSalir"><svg class="ic" data-icon="x"></svg>Salir</button></div>
+      <div class="rotu-barra" id="rotuBarra" role="toolbar" aria-label="Rotulador" hidden>
+        <button class="rotu-color" data-color="#e3261f" aria-label="Rojo" style="--col:#e3261f" aria-pressed="true"></button>
+        <button class="rotu-color" data-color="#1b5fd6" aria-label="Azul" style="--col:#1b5fd6" aria-pressed="false"></button>
+        <button class="rotu-color" data-color="#1d8a3a" aria-label="Verde" style="--col:#1d8a3a" aria-pressed="false"></button>
+        <button class="rotu-color" data-color="#111827" aria-label="Negro" style="--col:#111827" aria-pressed="false"></button>
+        <button class="rotu-color" data-color="rgba(255,214,0,.45)" aria-label="Subrayador amarillo" style="--col:#ffd600" aria-pressed="false"></button>
+        <span class="rotu-sep"></span>
+        <button class="rotu-grosor" id="rotuGrosor" aria-label="Trazo fino" title="Grosor del trazo"><i></i></button>
+        <button class="rotu-acc" id="rotuDeshacer" data-icon="deshacer" aria-label="Deshacer" title="Deshacer"></button>
+        <button class="rotu-acc" id="rotuBorrar" data-icon="papelera" aria-label="Borrar lo dibujado en esta página" title="Borrar esta página"></button>
+        <span class="rotu-sep"></span>
+        <button class="rotu-acc" id="rotuCerrar" data-icon="x" aria-label="Dejar el rotulador" title="Dejar el rotulador"></button>
+      </div>
       <div class="p-num" id="pNum" aria-hidden="true"></div>
       <div class="zoom">
         <button class="ibtn pantalla" id="lPantalla" data-icon="pantalla" aria-label="Pantalla completa"></button>
@@ -546,9 +706,94 @@ footer.pie .marca{margin-bottom:12px}
     <button class="b-btn" id="lDoble"><svg class="ic" data-icon="una"></svg><span>Una página</span></button>
     <button class="b-btn" id="lProyectar" title="Modo proyección (tecla P)"><svg class="ic" data-icon="proyectar"></svg><span>Proyectar</span></button>
     <a class="b-btn" id="lDescargar" download><svg class="ic" data-icon="descargar"></svg><span>Descargar</span></a>
+    <button class="b-btn" id="lRotu" aria-pressed="false" title="Rotulador (tecla R)"><svg class="ic" data-icon="rotulador"></svg><span>Rotulador</span></button>
+    <button class="b-btn" id="lCompartir"><svg class="ic" data-icon="compartir"></svg><span>Compartir</span></button>
     <button class="b-btn" id="lHecho" aria-pressed="false"><svg class="ic" data-icon="check"></svg><span>Trabajado</span></button>
   </footer>
 </div>
+
+<!-- ================= REGLETAS VIRTUALES ================= -->
+<div class="vista" id="vRegletas" hidden role="dialog" aria-modal="true" aria-labelledby="vRegTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vRegTit">Regletas virtuales</h1>
+    <button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="reg-paleta" id="regPaleta" role="group" aria-label="Añadir una regleta: arrástrala al tablero o púlsala"></div>
+    <div class="reg-acc" role="toolbar" aria-label="Acciones">
+      <button class="icbtn" id="regGirar" data-icon="girar" aria-label="Girar la regleta elegida (tecla G)" title="Girar (G)"></button>
+      <button class="icbtn" id="regDuplicar" data-icon="duplicar" aria-label="Duplicar la regleta elegida (tecla D)" title="Duplicar (D)"></button>
+      <button class="icbtn" id="regBorrar" data-icon="papelera" aria-label="Quitar la regleta elegida (tecla Supr)" title="Quitar (Supr)"></button>
+      <span class="reg-sep"></span>
+      <button class="icbtn" id="regNumeros" data-icon="numeros" aria-pressed="true" aria-label="Mostrar los números" title="Números"></button>
+      <button class="icbtn" id="regRegla" data-icon="regla" aria-pressed="false" aria-label="Mostrar la regla numerada" title="Regla"></button>
+      <button class="icbtn" id="regMenos" data-icon="menos" aria-label="Regletas más pequeñas" title="Más pequeñas"></button>
+      <button class="icbtn" id="regMas" data-icon="mas" aria-label="Regletas más grandes" title="Más grandes"></button>
+      <span class="reg-sep"></span>
+      <button class="icbtn" id="regLimpiar" data-icon="limpiar" aria-label="Quitar todas las regletas" title="Empezar de nuevo"></button>
+      <button class="icbtn" id="regPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button>
+    </div>
+  </div>
+  <div class="reg-tablero" id="regTablero" tabindex="0" aria-label="Tablero. Elige una regleta y muévela con las flechas; G gira, D duplica, Supr la quita.">
+    <div class="reg-regla" id="regReglaNum" hidden aria-hidden="true"></div>
+    <div class="reg-papelera" id="regPapelera" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"/></svg>Suelta aquí para quitar</div>
+    <p class="reg-vacio" id="regVacio">Arrastra una regleta desde arriba o púlsala para ponerla en el tablero.</p>
+  </div>
+</div>
+
+<!-- ================= BOMBO DEL BINGO ================= -->
+<div class="vista" id="vBombo" hidden role="dialog" aria-modal="true" aria-labelledby="vBomTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vBomTit">Bombo del bingo</h1>
+    <button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="bombo">
+    <section class="b-principal">
+      <div class="b-modos">
+        <label class="b-select"><span>Juego</span>
+          <select id="bModo">
+            <option value="n1">Nivel 1 · del 1 al 10</option>
+            <option value="n2">Nivel 2 · del 11 al 20</option>
+            <option value="n3">Nivel 3 · del 21 al 50</option>
+            <option value="n4">Nivel 4 · del 51 al 99</option>
+            <option value="todo">Todos · del 1 al 99</option>
+            <option value="decenas">Bingo de decenas · 10, 20… 90</option>
+            <option value="amigos">Bingo del amigo del 100</option>
+          </select></label>
+        <button class="chip" id="bReves" aria-pressed="false">Bingo al revés</button>
+        <button class="chip" id="bVoz" aria-pressed="false"><svg class="ic" data-icon="voz"></svg>Voz</button>
+      </div>
+      <div class="b-bola" id="bBola">
+        <p class="b-eti" id="bEti">&nbsp;</p>
+        <p class="b-num" id="bNum" aria-live="assertive">?</p>
+        <p class="b-sub" id="bSub">Pulsa «Sacar número» o la barra espaciadora.</p>
+      </div>
+      <div class="b-regletas" id="bRegletas" aria-hidden="true"></div>
+      <div class="b-acciones">
+        <button class="bt azul b-sacar" id="bSacar"><svg class="ic" data-icon="bola"></svg>Sacar número</button>
+        <button class="bt suave" id="bMostrar" hidden>Mostrar la respuesta</button>
+      </div>
+    </section>
+    <aside class="b-lado" aria-labelledby="bTabTit">
+      <div class="b-tab-cab"><h2 id="bTabTit">Han salido</h2><span id="bCuenta"></span></div>
+      <div class="b-rejilla" id="bRejilla"></div>
+      <button class="bt suave" id="bNueva"><svg class="ic" data-icon="limpiar"></svg>Nueva partida</button>
+    </aside>
+  </div>
+</div>
+
+<!-- ================= COMPARTIR ================= -->
+<dialog class="dialogo" id="dCompartir" aria-labelledby="dcTit">
+  <div class="d-cab"><h2 id="dcTit">Compartir</h2><button class="ibtn" id="dcCerrar" data-icon="x" aria-label="Cerrar"></button></div>
+  <div class="d-cuerpo">
+    <p class="d-que" id="dcQue"></p>
+    <div class="d-qr"><canvas id="dcQr" role="img" aria-label="Código QR del enlace"></canvas></div>
+    <div class="d-enlace"><input id="dcUrl" readonly aria-label="Enlace"><button class="bt suave" id="dcCopiar"><svg class="ic" data-icon="copiar"></svg>Copiar</button></div>
+    <div class="d-botones">
+      <button class="bt azul" id="dcNativo" hidden><svg class="ic" data-icon="compartir"></svg>Compartir…</button>
+      <a class="bt suave" id="dcWhats" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="bt suave" id="dcCorreo">Correo</a>
+      <button class="bt suave" id="dcBajarQr"><svg class="ic" data-icon="descargar"></svg>Descargar QR</button>
+    </div>
+    <p class="d-nota">El QR se puede imprimir y pegar en la agenda o en la puerta de clase.</p>
+  </div>
+</dialog>
 
 <script>
 /* =====================================================================
@@ -567,6 +812,18 @@ const ANCHO_ETAPA  = {"3 años":24,"4 años":40,"5 años":56,"1.º":72,"2.º":88
 
 /* ---------- Iconos ---------- */
 const ICON = {
+  rotulador:'<path d="M15.5 4.5l4 4L9 19H5v-4z"/><path d="M13 7l4 4"/>',
+  compartir:'<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/>',
+  deshacer:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
+  papelera:'<path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"/>',
+  girar:'<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>',
+  duplicar:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+  numeros:'<path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/>',
+  regla:'<rect x="2" y="8" width="20" height="8" rx="1"/><path d="M6 8v3M10 8v4M14 8v3M18 8v4"/>',
+  limpiar:'<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>',
+  voz:'<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>',
+  bola:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
+  copiar:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/>',
   casa:'<path d="M3 11 12 3l9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
   contenido:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
   marcador:'<path d="M6 3h12v18l-6-5-6 5z"/>',
@@ -683,7 +940,7 @@ const colorDe = etapas => etapas.length===1 ? COLOR_ETAPA[etapas[0]] : etapas.le
 const textoCurso = x => x.etapas.length===1 ? NOMBRE_ETAPA[x.etapas[0]] : x.etapas.length ? textoEtapas(x) : "Sin curso asignado";
 const ICONO_TIPO = {"Presentación":"proyectar","Ficha":"notas","Cuaderno":"abrir","Juego":"contenido","Programación":"historial"};
 const srcPortada = m => PORTADAS+encodeURIComponent(nombreBase(m.archivo))+".jpg";
-function imgPortada(m){ return '<img loading="lazy" alt="" width="255" height="360" src="'+srcPortada(m)+'">'; }
+function imgPortada(m){ return '<'+'img loading="lazy" alt="" width="255" height="360" src="'+srcPortada(m)+'">'; }
 function prepararPortadas(art, lista){
   art.querySelectorAll(".portada img").forEach((img,i)=>{
     const ajustar = ()=>{ if(img.naturalWidth > img.naturalHeight) img.classList.add("apaisada");
@@ -722,9 +979,11 @@ function tarjeta(m){
       '<div class="botones">'+
         '<a class="bt azul" href="#/leer/'+encodeURIComponent(m.archivo)+'">'+svg("abrir")+'Abrir</a>'+
         '<a class="icbtn" href="'+BASE+encodeURIComponent(m.archivo)+'" download aria-label="Descargar PDF ('+pesoTexto(m.peso)+')" title="Descargar PDF">'+svg("descargar")+'</a>'+
+        '<button class="icbtn compartir" aria-label="Compartir '+esc(m.titulo)+'" title="Compartir">'+svg("compartir")+'</button>'+
         '<button class="icbtn hecho" aria-pressed="false">'+svg("check")+'</button>'+
       '</div></div>';
   prepararPortadas(art, [m]);
+  art.querySelector(".compartir").onclick = ()=> abrirCompartir(m.titulo, "#/leer/"+encodeURIComponent(m.archivo));
   art.querySelector(".portada").onclick = ()=>{ location.hash = "#/leer/"+encodeURIComponent(m.archivo); };
   botonHecho([m.archivo], art);
   return art;
@@ -751,9 +1010,11 @@ function tarjetaRecurso(u){
             '<svg class="ic flechita" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></a>'+
           '<a class="icbtn" href="'+BASE+encodeURIComponent(p.archivo)+'" download aria-label="Descargar '+esc(p.tipo.toLowerCase()+': '+p.titulo)+' ('+pesoTexto(p.peso)+')" title="Descargar PDF">'+svg("descargar")+'</a>'+
         '</li>').join("")+'</ul>'+
-      '<div class="botones"><button class="bt suave hecho" aria-pressed="false" style="flex:1">'+svg("check")+'<span>Marcar como trabajado</span></button></div>'+
+      '<div class="botones"><button class="bt suave hecho" aria-pressed="false" style="flex:1">'+svg("check")+'<span>Marcar como trabajado</span></button>'+
+        '<button class="icbtn compartir" aria-label="Compartir '+esc(u.recurso)+'" title="Compartir">'+svg("compartir")+'</button></div>'+
     '</div>';
   prepararPortadas(art, conPortada);
+  art.querySelector(".compartir").onclick = ()=> abrirCompartir(u.recurso, "#/leer/"+encodeURIComponent(portadaDe.archivo));
   art.querySelector(".portada").onclick = ()=>{ location.hash = "#/leer/"+encodeURIComponent(portadaDe.archivo); };
   botonHecho(archivos, art);
   const b = art.querySelector(".hecho"), texto = b.querySelector("span");
@@ -766,11 +1027,12 @@ function tarjetaRecurso(u){
 function pintarSeguir(filtrando){
   const cont = $("seguir"), r = leer("aula-reciente", null);
   const m = r && MATERIALES.find(x=>x.archivo===r.archivo);
+  $("herr").hidden = filtrando;
   if(!m || filtrando){ cont.hidden = true; return; }
   const pag = Math.min(Math.max(1, +r.pag || 1), m.pags || 1), pct = Math.round(100*pag/(m.pags||1));
   cont.style.setProperty("--c", colorDe(m.etapas));
   cont.innerHTML =
-    '<img class="s-mini" alt="" src="'+srcPortada(m)+'">'+
+    '<'+'img class="s-mini" alt="" src="'+srcPortada(m)+'">'+
     '<div class="s-texto"><p class="s-eti">Seguir leyendo</p><p class="s-tit">'+esc(m.titulo)+'</p>'+
       '<p class="s-pag"><span>'+esc(m.tipo)+' · página '+pag+' de '+m.pags+'</span>'+
       '<span class="progreso" role="img" aria-label="'+pct+' % del material"><i style="width:'+pct+'%"></i></span></p></div>'+
@@ -914,6 +1176,7 @@ async function abrirLector(archivo, pag){
 function cerrarDocumento(){
   L.token++; L.tareas.forEach(t=>{ try{ t.cancel(); }catch(e){} }); L.tareas = [];
   if(L.doc){ L.doc.destroy(); L.doc = null; }
+  if(typeof olvidarAnotaciones==="function") olvidarAnotaciones();
   if(miniObs){ miniObs.disconnect(); miniObs = null; }
   paginas.innerHTML = ""; L.m = null;
 }
@@ -996,6 +1259,7 @@ async function pintarPaginas(){
   if(t!==L.token) return;
   paginas.replaceChildren(nuevo);
   paginas.style.padding = (padY/2)+"px "+(padX/2)+"px";
+  prepararAnotaciones(nums);   // rotulador (herramientas.js)
 }
 
 /* Pestañas para pasar de la presentación a su ficha (y al revés) sin volver a la biblioteca */
@@ -1092,11 +1356,11 @@ new ResizeObserver(()=>{ if(!L.doc) return; clearTimeout(tRes); tRes = setTimeou
 
 /* Teclado */
 document.addEventListener("keydown", e=>{
-  if($("lector").hidden) return;
+  if($("lector").hidden || document.querySelector("dialog[open]")) return;
   const enCampo = /^(input|textarea)$/i.test(e.target.tagName);
   if(e.key===" " && /^(button|a)$/i.test(e.target.tagName)) return;   // el espacio pulsa el botón que tiene el foco
   const proy = $("lector").classList.contains("proyeccion");
-  if(e.key==="Escape"){ e.preventDefault(); if(proy) modoProyeccion(false); else if(L.panel) cerrarPanel(true); else salirDelLector(); return; }
+  if(e.key==="Escape"){ e.preventDefault(); if(rotulando()) alternarRotulador(false); else if(proy) modoProyeccion(false); else if(L.panel) cerrarPanel(true); else salirDelLector(); return; }
   if(enCampo) return;
   // los mandos de presentación envían flechas, Av Pág / Re Pág o espacio
   if(e.key==="ArrowRight"||e.key==="PageDown"||(e.key===" " && !e.shiftKey)||(proy && e.key==="ArrowDown")){ e.preventDefault(); siguiente(); }
@@ -1104,6 +1368,7 @@ document.addEventListener("keydown", e=>{
   else if(e.key==="Home"){ e.preventDefault(); irA(1); }
   else if(e.key==="End"){ e.preventDefault(); irA(L.n); }
   else if(e.key==="p"||e.key==="P"){ modoProyeccion(!proy); }
+  else if(e.key==="r"||e.key==="R"){ alternarRotulador(); }
   else if(e.key==="+"||e.key==="="){ ponerZoom(L.zoom+.25); }
   else if(e.key==="-"){ ponerZoom(L.zoom-.25); }
   else if(e.key==="0"){ ponerZoom(1); }
@@ -1113,7 +1378,7 @@ document.addEventListener("keydown", e=>{
 let toque = null;
 escena.addEventListener("pointerdown", e=>{ if(e.pointerType==="touch" && e.isPrimary) toque = {x:e.clientX, y:e.clientY, t:Date.now()}; });
 escena.addEventListener("pointerup", e=>{
-  if(!toque || e.pointerType!=="touch") return;
+  if(!toque || e.pointerType!=="touch" || rotulando()){ toque = null; return; }
   const dx = e.clientX-toque.x, dy = e.clientY-toque.y, rapido = Date.now()-toque.t < 700;
   toque = null;
   if(L.zoom<=1 && rapido && Math.abs(dx)>60 && Math.abs(dy)<60){ dx<0 ? siguiente() : anterior(); }
@@ -1292,6 +1557,9 @@ function panelNotas(c){
    ===================================================================== */
 let rutaPrevia = location.hash;
 function ruta(){
+  const h = location.hash.match(/^#\/(regletas|bombo)\/?$/);   // herramientas (herramientas.js)
+  if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
+  cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
   if(m){
     if(!/^#\/leer\//.test(rutaPrevia)) L.desdeBiblioteca = rutaPrevia !== location.hash && rutaPrevia !== "__inicio__";
@@ -1351,7 +1619,9 @@ if("serviceWorker" in navigator && (location.protocol==="https:" || location.hos
 pintarIconos(document);
 pintarBotonTema();
 crearChips();
-fetch("catalogo.json", {cache:"no-cache"})
+// el catálogo se pide cuando ya se han cargado todos los scripts (también herramientas.js)
+const listo = new Promise(ok=> document.readyState==="loading" ? document.addEventListener("DOMContentLoaded", ok) : ok());
+listo.then(()=> fetch("catalogo.json", {cache:"no-cache"}))
   .then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
   .then(lista=>{
     MATERIALES = lista;
@@ -1367,5 +1637,6 @@ fetch("catalogo.json", {cache:"no-cache"})
     $("grupos").innerHTML = '<p class="vacio">No se ha podido cargar la lista de materiales. Vuelve a intentarlo en unos minutos.</p>';
   });
 </script>
+<script src="herramientas.js"></script>
 </body>
 </html>

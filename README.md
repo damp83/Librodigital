@@ -112,6 +112,7 @@ Su entrada del catálogo y su portada se quitan solas.
   la web no carga nada de servidores externos.
 - `scripts/actualizar_catalogo.py` y `.github/workflows/publicar.yml` — la automatización.
 - `sw.js`, `manifest.webmanifest` e `icono-*.png` — el uso sin conexión y la app instalable.
+- `lib/fuentes/` — la tipografía Poppins (la misma de los materiales), con su licencia libre SIL OFL.
 
 Los marcadores, las notas, la última página vista y las marcas de «trabajado»
 se guardan solo en el navegador de cada dispositivo.

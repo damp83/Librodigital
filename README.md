@@ -104,6 +104,18 @@ Su entrada del catálogo y su portada se quitan solas.
     sin internet (llevan la marca «✓ sin conexión»). Al final de la biblioteca, *Guardar todos los
     materiales* los deja todos listos antes de clase. En el iPad o el móvil se puede instalar como
     app: *Compartir → Añadir a pantalla de inicio*.
+  - **Rotulador** (botón *Rotulador* o tecla **R**, también en proyección): escribir y subrayar sobre la
+    página con el dedo, el lápiz o el ratón. Se mantiene al pasar de página o hacer zoom y se borra al
+    cerrar el material.
+  - **Compartir**: en cada tarjeta y en el lector (con la página actual). Enlace, WhatsApp, correo y
+    código QR descargable para imprimir.
+  - **Herramientas para el aula**:
+    - *Regletas virtuales* (`#/regletas`): arrastrar, girar (doble toque o **G**), duplicar (**D**),
+      quitar (papelera o **Supr**), regla numerada y tamaño ajustable. Las teclas 1–9 y 0 ponen regletas.
+      Se guarda lo que hay en el tablero.
+    - *Bombo del bingo* (`#/bombo`): los cuatro niveles del bingo de las regletas, todos del 1 al 99,
+      bingo de decenas, del amigo del 100 y al revés. Números sin repetir con sus regletas, tablero de
+      los que han salido y voz opcional. Barra espaciadora para sacar número.
   - Modo claro y oscuro.
 - `catalogo.json` — la lista de materiales.
 - `materiales/` — los PDF. `portadas/` — una imagen JPG por material.
@@ -111,6 +123,7 @@ Su entrada del catálogo y su portada se quitan solas.
 - `lib/` — el visor PDF.js (Mozilla, licencia Apache 2.0), alojado aquí mismo:
   la web no carga nada de servidores externos.
 - `scripts/actualizar_catalogo.py` y `.github/workflows/publicar.yml` — la automatización.
+- `herramientas.js` — regletas virtuales, bombo, compartir y rotulador. `lib/qrcode.js` genera los QR (MIT).
 - `sw.js`, `manifest.webmanifest` e `icono-*.png` — el uso sin conexión y la app instalable.
 - `lib/fuentes/` — la tipografía Poppins (la misma de los materiales), con su licencia libre SIL OFL.
 

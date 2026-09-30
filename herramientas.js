@@ -451,7 +451,7 @@ function prepararAnotaciones(nums){
       e.preventDefault(); c.setPointerCapture(e.pointerId);
       const sub = esSubrayador(ROTU.color);
       actual = {color: ROTU.color, g: sub ? (ROTU.grueso ? .035 : .022) : (ROTU.grueso ? .009 : .0045), pts:[punto(e)]};
-      (ANOT[c.dataset.clave] ||= []).push(actual); HISTORIAL.push(c.dataset.clave);
+      (ANOT[c.dataset.clave] = ANOT[c.dataset.clave] || []).push(actual); HISTORIAL.push(c.dataset.clave);
       dibujarTrazos(c);
     });
     c.addEventListener("pointermove", e=>{ if(!actual) return; actual.pts.push(punto(e)); dibujarTrazos(c); });

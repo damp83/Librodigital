@@ -153,12 +153,59 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await accesibilidad(p);
 }));
 
+/* ---------- Código compatible con los navegadores de 2020 (iPhone con iOS 13.4 o posterior) ---------- */
+await prueba("El código no usa sintaxis que los móviles algo antiguos no entienden", ()=>{
+  const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
+                 [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
+  const fallos = [];
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "aula.js", "sw.js"]){
+    readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
+  }
+  exigir(!fallos.length, fallos.join("; "));
+});
+
 /* ---------- Móvil ---------- */
-await prueba("En el móvil nada se sale de la pantalla", ()=> conPagina({viewport:{width:390, height:844}, isMobile:true, hasTouch:true}, async p=>{
+const MOVIL = {viewport:{width:390, height:844}, isMobile:true, hasTouch:true};
+await prueba("En el móvil nada se sale de la pantalla", ()=> conPagina(MOVIL, async p=>{
   await p.goto(WEB); await p.waitForSelector(".libro");
   exigir(await p.evaluate(()=> document.documentElement.scrollWidth <= innerWidth), "la biblioteca tiene desplazamiento horizontal");
   await p.goto(WEB+"#/leer/"+encodeURIComponent(catalogo[0].archivo)); await p.waitForSelector(".hoja canvas");
 }));
+
+await prueba("En el móvil, tocar cada ficha de herramienta la abre", ()=> conPagina(MOVIL, async p=>{
+  await p.goto(WEB); await p.waitForSelector(".libro");
+  const fichas = await p.$$eval("#herr .herr-ficha", a=> a.map(x=> x.getAttribute("href")));
+  exigir(fichas.length >= 7, "solo hay "+fichas.length+" fichas de herramientas");
+  const fallan = [];
+  for(const h of fichas){
+    await p.goto(WEB); await p.waitForSelector(".libro");
+    const f = p.locator('#herr .herr-ficha[href="'+h+'"]');
+    await f.scrollIntoViewIfNeeded(); await f.tap();
+    try{ await p.waitForFunction(()=> [...document.querySelectorAll(".vista")].some(v=> !v.hidden), null, {timeout:4000}); }
+    catch(e){ fallan.push(h); }
+  }
+  exigir(!fallan.length, "no se abren al tocarlas: "+fallan.join(", "));
+  return fichas.length+" fichas";
+}));
+
+/* Un móvil que conserva una copia antigua de aula.js (sin las herramientas nuevas): la web se repara sola
+   recargando una vez y, si no puede, avisa en pantalla en lugar de dejar las fichas sin hacer nada */
+await prueba("Si el móvil tiene código antiguo guardado, la web se repara o avisa", async ()=>{
+  const {p, ctx} = await pagina(MOVIL);
+  try{
+    let servidas = 0;
+    await p.route(/\/aula\.js(\?.*)?$/, r=>{ servidas++; r.fulfill({contentType:"text/javascript", body:"/* copia antigua */"}); });
+    await p.goto(WEB); await p.waitForSelector(".libro");
+    await p.waitForSelector("#avisoCodigo:not([hidden])", {timeout:8000});
+    exigir(servidas >= 2, "no ha intentado recargar el código ("+servidas+" carga)");
+    await p.goto(WEB+"#/calculo"); await p.waitForTimeout(300);
+    exigir(await p.isVisible("#avisoCodigo"), "al tocar una herramienta que falta no se avisa");
+    await p.unroute(/\/aula\.js(\?.*)?$/);
+    await p.evaluate(()=> sessionStorage.clear());
+    await p.goto(WEB+"#/"); await p.reload(); await p.waitForSelector(".libro");
+    exigir(await p.isHidden("#avisoCodigo"), "el aviso sale aunque el código esté completo");
+  }finally{ await ctx.close(); }
+});
 
 await navegador.close();
 

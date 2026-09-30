@@ -852,6 +852,7 @@ footer.pie .marca{margin-bottom:12px}
 
   <main class="lista contenedor" id="lista">
     <p class="sin-red" id="sinRed" role="status" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5h.01M3 3l18 18"/></svg>Sin conexión: puedes abrir los materiales guardados en este dispositivo (marcados con ✓).</p>
+    <p class="sin-red" id="avisoCodigo" role="alert" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5M12 16.5h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg><span>Este navegador no ha podido cargar las herramientas (Cálculo mental, Panel del 100…). Cierra la web del todo y vuelve a abrirla. Si sigue igual, actualiza el navegador: en iPhone o iPad, <b>Ajustes → General → Actualización de software</b>; en Android, actualiza Chrome desde Google Play.</span></p>
     <section class="seguir" id="seguir" aria-label="Seguir donde lo dejaste" hidden></section>
     <section class="reto" id="reto" aria-labelledby="retoTit" hidden></section>
     <section class="herr" id="herr" aria-labelledby="herrTit">
@@ -2071,6 +2072,8 @@ function panelNotas(c){
    ===================================================================== */
 let rutaPrevia = location.hash;
 function ruta(){
+  // herramientas, secciones y modo aula viven en herramientas.js, secciones.js y aula.js: si alguno no ha cargado, se avisa
+  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
   // modo aula: la tableta recuerda su clase y vuelve a ella en lugar de ir a la biblioteca
   const cl = location.hash.match(/^#\/aula\/([\w-]+)\/?$/);
   if(cl){ cerrarLector(); abrirClase(cl[1]); rutaPrevia = location.hash; return; }
@@ -2078,7 +2081,7 @@ function ruta(){
   if(claseGuardada && (location.hash==="" || location.hash==="#/" || location.hash==="#")){ location.replace("#/aula/"+claseGuardada); return; }
   const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
-  cerrarHerramienta();
+  if(typeof cerrarHerramienta==="function") cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
   if(m){
     if(!/^#\/leer\//.test(rutaPrevia)) L.desdeBiblioteca = rutaPrevia !== location.hash && rutaPrevia !== "__inicio__";
@@ -2094,7 +2097,7 @@ window.addEventListener("hashchange", ruta);
    SIN CONEXIÓN: sw.js guarda lo que se abre; aquí se puede guardar todo de una vez.
    Los nombres de las cachés deben coincidir con los de sw.js.
    ===================================================================== */
-const CACHE_APP = "aula-app-v2", CACHE_PDF = "aula-pdf-v1";
+const CACHE_APP = "aula-app-v3", CACHE_PDF = "aula-pdf-v1";
 let guardados = new Set();
 const urlMaterial = m => new URL(BASE+encodeURIComponent(m.archivo), document.baseURI).href;
 const marcaGuardado = m => guardados.has(urlMaterial(m)) ? ' <span class="guardado-ic" title="Se puede abrir sin conexión">✓ sin conexión</span>' : '';
@@ -2131,11 +2134,35 @@ $("oGuardar").onclick = guardarTodo;
 function pintarRed(){ $("sinRed").hidden = navigator.onLine; }
 addEventListener("online", pintarRed); addEventListener("offline", pintarRed);
 if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost")){
-  navigator.serviceWorker.register("sw.js").then(()=>{ $("offline").hidden = false; actualizarGuardados(true); }).catch(()=>{});
+  navigator.serviceWorker.register("sw.js", {updateViaCache:"none"}).then(()=>{ $("offline").hidden = false; actualizarGuardados(true); }).catch(()=>{});
   // Al publicar una versión nueva del service worker, se recarga una vez para no mezclar versiones
   const habiaControlador = !!navigator.serviceWorker.controller;
   let recargada = false;
   navigator.serviceWorker.addEventListener("controllerchange", ()=>{ if(habiaControlador && !recargada){ recargada = true; location.reload(); } });
+}
+
+/* Comprobación del código: en algunos móviles el navegador guarda una copia antigua de herramientas.js,
+   secciones.js o aula.js y la mezcla con la página nueva (o un navegador muy antiguo no entiende alguno).
+   Entonces las fichas de las herramientas no hacen nada. Si pasa, se borran las copias guardadas del código
+   (los PDF guardados se conservan) y se recarga una vez; si aun así falta algo, se avisa en pantalla. */
+const PIEZAS = ["abrirHerramienta", "cerrarHerramienta", "iniciarRegletas", "iniciarBombo", "iniciarRuta", "iniciarFamilias",
+                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros"];
+function codigoIncompleto(){ return PIEZAS.filter(n=> typeof window[n] !== "function"); }
+function avisarCodigo(){
+  const a = $("avisoCodigo"); if(!a.hidden) return;
+  a.hidden = false; a.scrollIntoView({block:"center"});
+}
+async function repararCodigo(){
+  const faltan = codigoIncompleto();
+  let reparada = null; try{ reparada = sessionStorage.getItem("aula-reparada"); }catch(e){}
+  if(!faltan.length){ if(reparada) try{ sessionStorage.removeItem("aula-reparada"); }catch(e){} return true; }
+  console.error("No se ha cargado todo el código de la web; falta: "+faltan.join(", "));
+  if(reparada){ avisarCodigo(); return true; }   // ya se intentó: se sigue con lo que haya y se avisa
+  try{ sessionStorage.setItem("aula-reparada", "1"); }catch(e){ avisarCodigo(); return true; }
+  try{ await Promise.all((await navigator.serviceWorker.getRegistrations()).map(r=> r.unregister())); }catch(e){}
+  try{ await Promise.all((await caches.keys()).filter(k=> k.startsWith("aula-app")).map(k=> caches.delete(k))); }catch(e){}
+  location.reload();
+  return false;
 }
 
 /* Arranque */
@@ -2144,14 +2171,14 @@ pintarBotonTema();
 crearChips();
 // el catálogo se pide cuando ya se han cargado todos los scripts (también herramientas.js)
 const listo = new Promise(ok=> document.readyState==="loading" ? document.addEventListener("DOMContentLoaded", ok) : ok());
-listo.then(()=> fetch("catalogo.json", {cache:"no-cache"}))
+listo.then(repararCodigo).then(seguir=> seguir ? fetch("catalogo.json", {cache:"no-cache"}) : new Promise(()=>{}))
   .then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
   .then(lista=>{
     MATERIALES = lista;
     pintarRed();
     pintarCifras();
     crearChipsTemas();
-    cargarReto();
+    if(typeof cargarReto==="function") cargarReto();
     pintarLista();
     actualizarGuardados(true);
     rutaPrevia = "__inicio__";

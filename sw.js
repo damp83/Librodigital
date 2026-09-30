@@ -4,12 +4,12 @@
    - PDF, portadas, fuentes, iconos y visor (lib/): la copia guardada al momento y, por detrás,
      se actualiza desde la red.
    Si cambias la lógica de este archivo, sube la versión de las cachés (y en index.html). */
-const CACHE_APP = "aula-app-v2", CACHE_PDF = "aula-pdf-v1";   // v2: el código de la web ya no sale de la copia
+const CACHE_APP = "aula-app-v3", CACHE_PDF = "aula-pdf-v1";   // v3: la copia inicial se pide siempre a la red, nunca a la caché del navegador
 const BASICO = ["./", "catalogo.json", "ruta.json", "reto.json", "herramientas.js", "secciones.js", "aula.js", "lib/pdf.min.js", "lib/pdf.worker.min.js",
                 "lib/qrcode.js", "manifest.webmanifest", "icono-192.png"];
 
 self.addEventListener("install", e=>{
-  e.waitUntil(caches.open(CACHE_APP).then(c=>c.addAll(BASICO)).then(()=>self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE_APP).then(c=>c.addAll(BASICO.map(u=> new Request(u, {cache:"reload"})))).then(()=>self.skipWaiting()));
 });
 
 self.addEventListener("activate", e=>{

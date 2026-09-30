@@ -1,0 +1,42 @@
+# Pasa las pruebas automáticas en cada pull request, antes de fusionarlo.
+# Es lo mismo que hace «Publicar el aula», pero sin guardar nada ni publicar.
+name: Pruebas de la web
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Comprobar el catálogo
+        run: |
+          pip install "pypdfium2>=5,<6" "pillow>=10" "pikepdf>=9"
+          python scripts/actualizar_catalogo.py
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: pruebas/package-lock.json
+
+      - name: Preparar las pruebas
+        run: |
+          npm ci --prefix pruebas
+          cd pruebas && npx playwright install --with-deps chromium
+
+      - name: Probar la web
+        run: |
+          python3 -m http.server 8000 >/dev/null 2>&1 &
+          sleep 1
+          node pruebas/pruebas.mjs

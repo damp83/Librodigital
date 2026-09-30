@@ -146,6 +146,8 @@ svg.ic{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-wid
 .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
 .chip .punto{width:10px;height:10px;border-radius:3px}
 .chips .sep{width:1px;background:var(--line-strong);margin:6px 4px}
+.chips{position:relative;padding-left:104px}
+.chips-eti{position:absolute;left:0;top:9px;font-size:12.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 
 /* ---------- Lista ---------- */
 main.lista{padding-top:8px;padding-bottom:56px}
@@ -244,6 +246,8 @@ footer.pie .marca{margin-bottom:12px}
     -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 24px),transparent)}
   .chips::-webkit-scrollbar{display:none}
   .chip{flex:none}
+  .chips{padding-left:16px}
+  .chips-eti{position:static;flex:none;align-self:center;margin-right:2px}
   .cifras{gap:8px 22px}
   .hero .eti{font-size:12px}
 }
@@ -541,6 +545,101 @@ footer.pie .marca{margin-bottom:12px}
   .reg-acc .icbtn{width:38px;height:38px}
   #regPantalla,.reg-acc .reg-sep{display:none}
 }
+/* ---------- Navegación de la cabecera ---------- */
+.cab-nav{display:flex;gap:4px;margin-right:4px}
+.cab-nav a{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 12px;border-radius:10px;color:var(--ink-2);
+  text-decoration:none;font-size:14.5px;font-weight:600}
+.cab-nav a:hover{background:var(--surface-2);color:var(--ink)}
+.cab-nav svg.ic{width:20px;height:20px}
+
+/* ---------- Páginas (ruta y familias) ---------- */
+.vista-pagina{grid-template-rows:auto 1fr}
+.v-scroll{overflow:auto;min-height:0;-webkit-overflow-scrolling:touch}
+.pagina{padding-top:32px;padding-bottom:64px;max-width:1000px}
+.eti-pag{margin:0 0 8px;font-size:13px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.p-cabeza h2{margin:0;font-size:clamp(26px,3.6vw,38px);font-weight:700;line-height:1.15;letter-spacing:-.02em}
+.p-intro{margin:12px 0 0;color:var(--ink-2);font-size:17px;max-width:62ch}
+.p-nota{color:var(--muted);font-size:14px}
+.bloque{margin-top:36px;padding-top:28px;border-top:1px solid var(--line)}
+.bloque h3{margin:0 0 12px;font-size:21px;font-weight:600}
+.bloque p{max-width:70ch}
+.tabla-regletas{display:grid;gap:8px;margin-top:18px}
+.tr-fila{display:grid;grid-template-columns:118px 1fr;align-items:center;gap:14px}
+.tr-fila span{font-size:14px;color:var(--ink-2)}
+.tr-fila span b{color:var(--ink);font-family:var(--font-titulos)}
+.tr-reg{height:26px;border-radius:5px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18),0 1px 2px rgba(0,0,0,.2);
+  display:grid;place-items:center;font:600 13px var(--font-titulos)}
+.pasos{margin:0;padding:0;list-style:none;counter-reset:paso;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.pasos li{counter-increment:paso;background:var(--surface);border:1px solid var(--line);border-radius:var(--radio);padding:16px 18px;box-shadow:var(--sh-1);color:var(--ink-2)}
+.pasos li::before{content:counter(paso);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;margin-bottom:10px;
+  background:var(--brand-soft);color:var(--accent);font:700 16px var(--font-titulos)}
+.pasos li b{display:block;color:var(--ink);font-family:var(--font-titulos);font-weight:600;margin-bottom:2px}
+.consejos{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.consejos li{position:relative;padding-left:30px;color:var(--ink-2)}
+.consejos li::before{content:"";position:absolute;left:4px;top:.45em;width:14px;height:8px;border-radius:2px;background:var(--r10);
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,.15)}
+.consejos li:nth-child(2n)::before{background:var(--r9)} .consejos li:nth-child(3n)::before{background:var(--r6)}
+.consejos b{color:var(--ink)}
+
+/* Ruta del curso */
+.ruta-cursos{display:flex;gap:4px;padding:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;overflow-x:auto;margin:22px 0 0}
+.ruta-cursos button{flex:1 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;border:0;background:transparent;color:var(--ink-2);
+  border-radius:10px;padding:9px 14px;font-size:14.5px;font-weight:600;white-space:nowrap}
+.ruta-cursos button i{width:10px;height:10px;border-radius:3px}
+.ruta-cursos button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--sh-1)}
+.ruta-enfoque{margin:22px 0 0;padding:16px 18px;border-radius:var(--radio);background:color-mix(in srgb,var(--c) 10%,var(--surface));
+  border:1px solid color-mix(in srgb,var(--c) 30%,var(--line));color:var(--ink-2)}
+.ruta-enfoque b{color:var(--ink)}
+.trimestres{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:22px}
+.trim{position:relative;display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radio);
+  padding:18px;box-shadow:var(--sh-1)}
+.trim.ahora{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent),var(--sh-1)}
+.trim-cab{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.trim-num{font-size:12.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.trim .ahora-eti{font-size:12px;font-weight:700;color:#fff;background:var(--accent);padding:3px 9px;border-radius:999px}
+.trim h3{margin:0;font-size:18px;font-weight:600;line-height:1.3}
+.trim p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.trim .indicador{font-size:13.5px;color:var(--muted);padding:10px 12px;background:var(--surface-2);border-radius:10px}
+.trim .indicador b{color:var(--ink-2)}
+.trim-enlaces{display:flex;flex-direction:column;gap:6px;margin-top:auto;padding-top:6px}
+.trim-enlace{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);
+  color:var(--ink);text-decoration:none;font-size:14px;font-weight:500}
+.trim-enlace:hover{background:var(--surface);border-color:var(--line-strong)}
+.trim-enlace svg.ic{width:18px;height:18px;color:var(--c,var(--accent));flex:none}
+.trim-enlace span{flex:1;min-width:0}
+.trim-enlace small{display:block;color:var(--muted);font-size:12.5px;font-weight:400}
+.ruta-todo{margin-top:28px}
+.ruta-todo h3{font-size:18px;font-weight:600;margin:0 0 10px}
+.ruta-todo .trim-enlaces{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+
+/* Imprimir */
+.d-opciones{border:0;margin:0;padding:0;display:grid;gap:10px}
+.d-opciones legend{font-weight:600;margin-bottom:8px}
+.d-opciones label{display:flex;align-items:center;gap:10px;font-size:15px}
+.d-opciones input[type=radio]{width:18px;height:18px;accent-color:var(--accent)}
+.d-opciones input[type=number]{width:4.2em;height:36px;border:1px solid var(--line-strong);border-radius:8px;padding:0 8px;background:var(--surface);font-size:15px}
+#impresion{display:none}
+@media print{
+  @page{margin:10mm}
+  body.imprimiendo > *:not(#impresion){display:none !important}
+  body.imprimiendo{background:#fff}
+  body.imprimiendo #impresion{display:block}
+  #impresion img{display:block;width:100%;height:auto;max-height:275mm;object-fit:contain;margin:0 auto;break-after:page;page-break-after:always}
+  #impresion img:last-child{break-after:auto;page-break-after:auto}
+  .recortables{font-family:var(--font);color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+.recortables h1{font:700 18pt var(--font-titulos);margin:0 0 2mm}
+.recortables p{font-size:10pt;margin:0 0 5mm;color:#444}
+.rc-fila{display:flex;gap:0;margin-bottom:2.5mm;height:10mm}
+.rc-pieza{box-sizing:border-box;height:10mm;border:.3mm solid #333;display:flex;align-items:center;justify-content:flex-end;padding-right:1.2mm;
+  font:600 7pt var(--font);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+@media (max-width:980px){ .trimestres{grid-template-columns:minmax(0,1fr)} }
+@media (max-width:640px){
+  .cab-nav span{display:none}
+  .cab-nav a{padding:0;width:40px;justify-content:center}
+  .tr-fila{grid-template-columns:92px 1fr}
+}
 @media (prefers-reduced-motion: reduce){ *{animation:none !important;transition:none !important} }
 </style>
 </head>
@@ -560,6 +659,10 @@ footer.pie .marca{margin-bottom:12px}
         <span><b>Aula de Matemáticas</b><small>Manipulativas · Regletas Cuisenaire</small></span>
       </a>
       <div class="acciones">
+        <nav class="cab-nav" aria-label="Secciones">
+          <a href="#/ruta" aria-label="Ruta del curso"><svg class="ic" data-icon="ruta"></svg><span>Ruta del curso</span></a>
+          <a href="#/familias" aria-label="Para las familias"><svg class="ic" data-icon="familias"></svg><span>Familias</span></a>
+        </nav>
         <button class="ibtn" id="btnTema" data-icon="luna" aria-label="Activar modo oscuro"></button>
       </div>
     </div>
@@ -586,8 +689,9 @@ footer.pie .marca{margin-bottom:12px}
   </section>
 
   <section class="filtros contenedor" aria-label="Filtrar">
-    <div class="chips" id="fEtapa" role="group" aria-label="Filtrar por curso"></div>
-    <div class="chips" id="fTipo" role="group" aria-label="Filtrar por tipo"></div>
+    <div class="chips" id="fEtapa" role="group" aria-label="Filtrar por curso"><span class="chips-eti" aria-hidden="true">Curso</span></div>
+    <div class="chips" id="fTipo" role="group" aria-label="Filtrar por tipo"><span class="chips-eti" aria-hidden="true">Tipo</span></div>
+    <div class="chips" id="fTema" role="group" aria-label="Filtrar por contenido" hidden><span class="chips-eti" aria-hidden="true">Contenido</span></div>
   </section>
 
   <main class="lista contenedor" id="lista">
@@ -705,7 +809,7 @@ footer.pie .marca{margin-bottom:12px}
     </div>
     <button class="b-btn" id="lDoble"><svg class="ic" data-icon="una"></svg><span>Una página</span></button>
     <button class="b-btn" id="lProyectar" title="Modo proyección (tecla P)"><svg class="ic" data-icon="proyectar"></svg><span>Proyectar</span></button>
-    <a class="b-btn" id="lDescargar" download><svg class="ic" data-icon="descargar"></svg><span>Descargar</span></a>
+    <button class="b-btn" id="lImprimir"><svg class="ic" data-icon="imprimir"></svg><span>Imprimir</span></button>
     <button class="b-btn" id="lRotu" aria-pressed="false" title="Rotulador (tecla R)"><svg class="ic" data-icon="rotulador"></svg><span>Rotulador</span></button>
     <button class="b-btn" id="lCompartir"><svg class="ic" data-icon="compartir"></svg><span>Compartir</span></button>
     <button class="b-btn" id="lHecho" aria-pressed="false"><svg class="ic" data-icon="check"></svg><span>Trabajado</span></button>
@@ -778,6 +882,99 @@ footer.pie .marca{margin-bottom:12px}
   </div>
 </div>
 
+<!-- ================= RUTA DEL CURSO ================= -->
+<div class="vista vista-pagina" id="vRuta" hidden role="dialog" aria-modal="true" aria-labelledby="vRutaTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vRutaTit">Ruta del curso</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="v-scroll"><div class="contenedor pagina ruta" id="rutaCuerpo"></div></div>
+</div>
+
+<!-- ================= PARA LAS FAMILIAS ================= -->
+<div class="vista vista-pagina" id="vFamilias" hidden role="dialog" aria-modal="true" aria-labelledby="vFamTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vFamTit">Para las familias</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="v-scroll"><article class="contenedor pagina familias">
+    <header class="p-cabeza">
+      <p class="eti-pag">Guía para acompañar en casa</p>
+      <h2>Matemáticas con las manos: cómo ayudar desde casa</h2>
+      <p class="p-intro">En clase aprendemos las matemáticas tocándolas: primero con material, después con palabras y, al final, en el papel.
+         Esta guía explica qué son las regletas, cómo trabajamos y cómo usar las fichas en casa.</p>
+    </header>
+
+    <section class="bloque">
+      <h3>¿Qué son las regletas?</h3>
+      <p>Son diez barritas de colores. Cada color tiene una longitud y un valor: la blanca mide 1, la roja 2… hasta la naranja, que mide 10.
+         Al juntarlas y compararlas, los niños <b>ven</b> y <b>tocan</b> los números: que dos amarillas miden lo mismo que una naranja
+         (5 + 5 = 10) se descubre con las manos antes de escribirlo.</p>
+      <div class="tabla-regletas" id="famRegletas"></div>
+    </section>
+
+    <section class="bloque">
+      <h3>Cómo trabajamos en clase</h3>
+      <ol class="pasos">
+        <li><b>Vivir y manipular.</b> Primero con el cuerpo y con las regletas en la mesa: juntar, separar, comparar.</li>
+        <li><b>Decirlo con palabras.</b> Explicar lo que ha pasado: «he cambiado dos rojas por una rosa».</li>
+        <li><b>Representarlo.</b> Dibujarlo o usar esquemas como el diagrama <i>partes-todo</i>.</li>
+        <li><b>Registrarlo.</b> Solo al final se escribe la operación: 2 + 2 = 4.</li>
+      </ol>
+      <p class="p-nota">Seguimos la metodología OAOA (Otros Algoritmos para las Operaciones Aritméticas) y las propuestas de J. A. Fernández Bravo.
+         No se trata de memorizar reglas, sino de entender por qué funcionan.</p>
+    </section>
+
+    <section class="bloque">
+      <h3>Cómo usar las fichas en casa</h3>
+      <ul class="consejos">
+        <li><b>Primero con material.</b> Si tenéis regletas, que lo hagan con ellas antes de escribir. Si no, podéis imprimir unas de papel (más abajo).</li>
+        <li><b>Preguntad, no expliquéis.</b> «¿Cómo lo sabes?», «¿Hay otra forma?». Que lo cuenten vale más que acertar.</li>
+        <li><b>No deis la respuesta.</b> Si se atascan, volved a las regletas o a un número más pequeño.</li>
+        <li><b>Cada ficha tiene tres niveles.</b> <i>Apoyo</i> (con más ayuda), el nivel de todo el grupo y <i>reto</i> (para quien quiera más). Ninguno es mejor que otro.</li>
+        <li><b>Poco y a menudo.</b> Diez o quince minutos bastan. Mejor parar con ganas que con cansancio.</li>
+        <li><b>El error es parte del camino.</b> Buscar dónde está el fallo es una de las mejores actividades matemáticas.</li>
+      </ul>
+    </section>
+
+    <section class="bloque">
+      <h3>¿Qué material hace falta?</h3>
+      <p>Una caja de regletas Cuisenaire es suficiente para todos los cursos, desde 3 años hasta 2.º de Primaria.
+         Si no tenéis, estas regletas de papel sirven para empezar: impreso a tamaño real, cada cuadradito mide 1 cm.</p>
+      <p><button class="bt azul" id="famRecortables"><svg class="ic" data-icon="imprimir"></svg>Imprimir regletas para recortar</button></p>
+      <p class="p-nota">Consejo: imprimid en cartulina o pegad la hoja sobre cartón antes de recortar. Comprobad que la impresora está al 100 % («tamaño real»).</p>
+    </section>
+
+    <section class="bloque">
+      <h3>Cómo usar esta web</h3>
+      <ul class="consejos">
+        <li><b>Abrir un material:</b> pulsad en su portada o en «Abrir». Se lee como un libro: con las flechas o deslizando el dedo.</li>
+        <li><b>Seguir donde lo dejasteis:</b> al volver, arriba aparece «Seguir leyendo» con la última página.</li>
+        <li><b>Imprimir solo unas páginas:</b> en el lector, botón «Imprimir».</li>
+        <li><b>Usar sin internet:</b> lo que abrís queda guardado en el dispositivo. En el móvil o la tableta podéis instalarla como app: <i>Compartir → Añadir a pantalla de inicio</i>.</li>
+        <li><b>Jugar y practicar:</b> las <a href="#/regletas">regletas virtuales</a> y el <a href="#/bombo">bombo del bingo</a> funcionan también en casa.</li>
+      </ul>
+      <p class="p-nota">Esta web no usa cookies ni recoge datos. Las notas y marcas se guardan solo en vuestro dispositivo.
+         Si tenéis dudas, preguntad al tutor o a la tutora.</p>
+    </section>
+  </article></div>
+</div>
+
+<!-- ================= IMPRIMIR ================= -->
+<dialog class="dialogo" id="dImprimir" aria-labelledby="diTit">
+  <div class="d-cab"><h2 id="diTit">Imprimir o descargar</h2><button class="ibtn" id="diCerrar" data-icon="x" aria-label="Cerrar"></button></div>
+  <div class="d-cuerpo">
+    <fieldset class="d-opciones"><legend>¿Qué páginas quieres imprimir?</legend>
+      <label><input type="radio" name="diQue" value="actual" checked> <span id="diActual">Esta página</span></label>
+      <label><input type="radio" name="diQue" value="rango"> <span>Desde la
+        <input id="diDesde" type="number" min="1" inputmode="numeric" aria-label="Primera página"> hasta la
+        <input id="diHasta" type="number" min="1" inputmode="numeric" aria-label="Última página"></span></label>
+      <label><input type="radio" name="diQue" value="todo"> <span id="diTodo">Todo el material</span></label>
+    </fieldset>
+    <p class="d-nota" id="diEstado" aria-live="polite"></p>
+    <div class="d-botones">
+      <button class="bt azul" id="diImprimir"><svg class="ic" data-icon="imprimir"></svg>Imprimir</button>
+      <a class="bt suave" id="diDescargar" download><svg class="ic" data-icon="descargar"></svg>Descargar el PDF</a>
+    </div>
+    <p class="d-nota">Para guardar solo esas páginas como PDF, elige «Guardar como PDF» en la ventana de impresión.</p>
+  </div>
+</dialog>
+<div id="impresion" aria-hidden="true"></div>
+
 <!-- ================= COMPARTIR ================= -->
 <dialog class="dialogo" id="dCompartir" aria-labelledby="dcTit">
   <div class="d-cab"><h2 id="dcTit">Compartir</h2><button class="ibtn" id="dcCerrar" data-icon="x" aria-label="Cerrar"></button></div>
@@ -812,6 +1009,10 @@ const ANCHO_ETAPA  = {"3 años":24,"4 años":40,"5 años":56,"1.º":72,"2.º":88
 
 /* ---------- Iconos ---------- */
 const ICON = {
+  ruta:'<circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H16a3.5 3.5 0 0 0 0-7H8a3.5 3.5 0 0 1 0-7h7.5"/>',
+  familias:'<circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0M13.5 20a4 4 0 0 1 8 0"/>',
+  imprimir:'<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>',
+  enlace:'<path d="M10 14a4 4 0 0 0 5.7 0l3.6-3.6a4 4 0 0 0-5.7-5.7L12 6.3"/><path d="M14 10a4 4 0 0 0-5.7 0l-3.6 3.6a4 4 0 0 0 5.7 5.7l1.6-1.6"/>',
   rotulador:'<path d="M15.5 4.5l4 4L9 19H5v-4z"/><path d="M13 7l4 4"/>',
   compartir:'<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/>',
   deshacer:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
@@ -910,7 +1111,10 @@ mqOscuro.addEventListener?.("change", pintarBotonTema);
 /* =====================================================================
    BIBLIOTECA
    ===================================================================== */
-const filtroEtapa = new Set(), filtroTipo = new Set();
+const filtroEtapa = new Set(), filtroTipo = new Set(), filtroTema = new Set();
+/* Orden de los temas de contenido (el mismo que en scripts/actualizar_catalogo.py) */
+const TEMAS_ORDEN = ["Espacio y series","Cantidad y conteo","Composición y descomposición","Parejas del 10","Suma y resta",
+                     "Diagrama partes-todo","Problemas","Decenas y valor posicional"];
 let soloPendientes = false;
 
 function crearChips(){
@@ -933,6 +1137,23 @@ function crearChips(){
   p.className = "chip"; p.id = "soloPend"; p.textContent = "Sin trabajar"; p.setAttribute("aria-pressed","false");
   p.onclick = ()=>{ soloPendientes = !soloPendientes; p.setAttribute("aria-pressed", soloPendientes); pintarLista(); };
   cT.appendChild(p);
+}
+
+function crearChipsTemas(){   // salen del catálogo: solo los temas que tienen algún material
+  const c = $("fTema"), cuenta = {};
+  MATERIALES.forEach(m=> (m.temas||[]).forEach(t=> cuenta[t] = (cuenta[t]||0) + 1));
+  const temas = Object.keys(cuenta).sort((a,b)=>{
+    const ia = TEMAS_ORDEN.indexOf(a), ib = TEMAS_ORDEN.indexOf(b);
+    return (ia<0 ? 99 : ia) - (ib<0 ? 99 : ib) || a.localeCompare(b, "es");
+  });
+  c.querySelectorAll(".chip").forEach(x=>x.remove());
+  temas.forEach(t=>{
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = t; b.setAttribute("aria-pressed", filtroTema.has(t));
+    b.onclick = ()=>{ filtroTema.has(t) ? filtroTema.delete(t) : filtroTema.add(t); b.setAttribute("aria-pressed", filtroTema.has(t)); pintarLista(); };
+    c.appendChild(b);
+  });
+  c.hidden = !temas.length;
 }
 
 /* ---------- Tarjetas ---------- */
@@ -1053,12 +1274,13 @@ function pintarCifras(){
 
 function pintarLista(){
   const q = norm($("q").value.trim());
-  pintarSeguir(!!(q || filtroEtapa.size || filtroTipo.size || soloPendientes));
+  pintarSeguir(!!(q || filtroEtapa.size || filtroTipo.size || filtroTema.size || soloPendientes));
   const pasa = m=>{
     if(filtroEtapa.size && !m.etapas.some(e=>filtroEtapa.has(e))) return false;
     if(filtroTipo.size && !filtroTipo.has(m.tipo)) return false;
+    if(filtroTema.size && !(m.temas||[]).some(t=>filtroTema.has(t))) return false;
     if(soloPendientes && esHecho(m.archivo)) return false;
-    if(q && !norm([m.titulo,m.desc,m.tipo,m.recurso,m.etapas.map(e=>NOMBRE_ETAPA[e]).join(" ")].join(" ")).includes(q)) return false;
+    if(q && !norm([m.titulo,m.desc,m.tipo,m.recurso,(m.temas||[]).join(" "),m.etapas.map(e=>NOMBRE_ETAPA[e]).join(" ")].join(" ")).includes(q)) return false;
     return true;
   };
   const todas = unidades();
@@ -1081,7 +1303,7 @@ function pintarLista(){
 }
 $("q").addEventListener("input", pintarLista);
 $("limpiar").onclick = ()=>{
-  filtroEtapa.clear(); filtroTipo.clear(); soloPendientes=false; $("q").value="";
+  filtroEtapa.clear(); filtroTipo.clear(); filtroTema.clear(); soloPendientes=false; $("q").value="";
   document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false")); pintarLista();
 };
 
@@ -1142,8 +1364,8 @@ async function abrirLector(archivo, pag){
   $("lector").hidden = false; document.body.style.overflow = "hidden";
   $("lTitulo").textContent = m.titulo;
   pintarPartesLector(m);
-  $("lDescargar").href = BASE + encodeURIComponent(m.archivo);
-  $("lDescargar").setAttribute("download", m.archivo);
+  $("diDescargar").href = BASE + encodeURIComponent(m.archivo);
+  $("diDescargar").setAttribute("download", m.archivo);
   pintarHechoLector(); cerrarPanel(); $("lZoom").textContent = "100%";
   $("lTotal").textContent = m.pags; $("lPag").value = "";
   avisoEscena('<div class="girando"></div>Abriendo el material…');
@@ -1557,7 +1779,7 @@ function panelNotas(c){
    ===================================================================== */
 let rutaPrevia = location.hash;
 function ruta(){
-  const h = location.hash.match(/^#\/(regletas|bombo)\/?$/);   // herramientas (herramientas.js)
+  const h = location.hash.match(/^#\/(regletas|bombo|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
@@ -1627,6 +1849,7 @@ listo.then(()=> fetch("catalogo.json", {cache:"no-cache"}))
     MATERIALES = lista;
     pintarRed();
     pintarCifras();
+    crearChipsTemas();
     pintarLista();
     actualizarGuardados(true);
     rutaPrevia = "__inicio__";
@@ -1638,5 +1861,6 @@ listo.then(()=> fetch("catalogo.json", {cache:"no-cache"}))
   });
 </script>
 <script src="herramientas.js"></script>
+<script src="secciones.js"></script>
 </body>
 </html>

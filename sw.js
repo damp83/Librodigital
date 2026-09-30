@@ -44,7 +44,7 @@ self.addEventListener("fetch", e=>{
   const req = e.request, url = new URL(req.url);
   if(req.method!=="GET" || url.origin!==location.origin || req.headers.has("range")) return;
   const ruta = url.pathname.slice(new URL(self.registration.scope).pathname.length);
-  if(req.mode==="navigate" || ruta==="" || ruta==="index.html" || ruta==="catalogo.json" || ruta==="sw.js")
+  if(req.mode==="navigate" || ruta==="" || ruta==="index.html" || ruta==="catalogo.json" || ruta==="ruta.json" || ruta==="sw.js")
     e.respondWith(redPrimero(req));
   else if(ruta.startsWith("materiales/"))
     e.respondWith(guardadoPrimero(e, CACHE_PDF));

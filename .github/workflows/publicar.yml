@@ -1,7 +1,8 @@
 # Publica el aula en GitHub Pages cada vez que cambia la rama main.
 # Antes de publicar, actualiza el catálogo (scripts/actualizar_catalogo.py): recoge los PDF
 # de subir/<curso>/, los comprime sin pérdida, genera portadas, recalcula páginas y comprueba catalogo.json.
-# Si el catálogo tiene un error, no se publica nada y la web sigue como estaba.
+# Después pasa las pruebas automáticas (pruebas/pruebas.mjs) sobre la web ya actualizada.
+# Si el catálogo tiene un error o falla alguna prueba, no se publica nada y la web sigue como estaba.
 name: Publicar el aula
 
 on:
@@ -36,6 +37,27 @@ jobs:
 
       - name: Actualizar el catálogo
         run: python scripts/actualizar_catalogo.py
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: pruebas/package-lock.json
+
+      - name: Preparar las pruebas
+        run: |
+          npm ci --prefix pruebas
+          cd pruebas && npx playwright install --with-deps chromium
+
+      - name: Probar la web
+        run: |
+          python3 -m http.server 8000 >/dev/null 2>&1 &
+          sleep 1
+          node pruebas/pruebas.mjs
+
+      - name: Quitar las herramientas de prueba (no se publican)
+        if: always()
+        run: rm -rf pruebas/node_modules
 
       - name: Guardar el catálogo actualizado en el repositorio
         run: |

@@ -1,0 +1,100 @@
+{
+  "_ayuda": "Ruta del curso: las 15 unidades de la Secuencia didáctica OAOA. «secuencia» es la página de la unidad en el PDF de la secuencia; «cuaderno» son las páginas del cuaderno anual de ese trimestre; «recursos» son nombres de recurso o nombres de archivo del catálogo. Los materiales que sirven para varios cursos (como el bingo) salen solos en «Todo el curso».",
+  "secuencia": "Secuencia_OAOA_3anios_a_2Primaria.pdf",
+  "cursos": [
+    {
+      "etapa": "3 años",
+      "enfoque": "Exploración sensorial, orientación espacial y construcción intuitiva de la cantidad, sin forzar la numeración mecánica.",
+      "cuaderno": "Cuaderno_Infantil_3anios_multinivel.pdf",
+      "trimestres": [
+        {"meses": "septiembre – diciembre", "titulo": "Exploro con mi cuerpo y con las regletas", "secuencia": 3, "cuaderno": [3, 9],
+         "objetivo": "Explorar libremente las regletas, orientarse en el espacio y reconocer colores, series de dos elementos y la ausencia de cantidad (cero).",
+         "indicador": "Se sitúa en el espacio (encima, debajo, al lado, entre), continúa series de dos elementos y distingue muchos, pocos y ninguno.",
+         "recursos": []},
+        {"meses": "enero – marzo", "titulo": "Largo, corto y la inicial de mi nombre", "secuencia": 4, "cuaderno": [10, 15],
+         "objetivo": "Comparar longitudes y tamaños, construir la inicial del nombre con regletas y comparar cantidades por retirada alternativa.",
+         "indicador": "Compara y clasifica regletas por longitud y tamaño y decide dónde hay más mediante correspondencia.",
+         "recursos": []},
+        {"meses": "abril – junio", "titulo": "La regleta blanca cuenta conmigo", "secuencia": 4, "cuaderno": [16, 22],
+         "objetivo": "Usar la regleta blanca como elemento coordinable y establecer la correspondencia uno a uno con el patrón verbal «1 y 1 y 1».",
+         "indicador": "Establece la correspondencia uno a uno y verbaliza el patrón «1 y 1 y 1» sin recitar la serie numérica de memoria.",
+         "recursos": []}
+      ]
+    },
+    {
+      "etapa": "4 años",
+      "enfoque": "Comparación de magnitudes, clasificación por atributos lógicos, simetría colaborativa y primera asignación cardinal.",
+      "cuaderno": "Cuaderno_Infantil_4anios_multinivel.pdf",
+      "trimestres": [
+        {"meses": "septiembre – diciembre", "titulo": "Clasifico, ordeno y toco", "secuencia": 5, "cuaderno": [4, 31],
+         "objetivo": "Clasificar por atributos con bloques lógicos y ordenar la escalera de regletas de forma visual y táctil.",
+         "indicador": "Clasifica por un atributo, ordena la escalera de regletas y compara longitudes también por el tacto.",
+         "recursos": []},
+        {"meses": "enero – marzo", "titulo": "Espejos, dobles y repartos", "secuencia": 5, "cuaderno": [32, 55],
+         "objetivo": "Reproducir simetrías en pareja, estimar qué regleta falta para igualar otra y repartir con y sin sobrante.",
+         "indicador": "Reproduce simetrías, encuentra la regleta que iguala a otra y reparte identificando si hay sobrante.",
+         "recursos": []},
+        {"meses": "abril – junio", "titulo": "Cada regleta tiene su número", "secuencia": 6, "cuaderno": [56, 73],
+         "objetivo": "Asignar valor cardinal a las regletas a partir de la blanca = 1 y anticipar transformaciones de +1 y −1.",
+         "indicador": "Asigna valor numérico a las regletas hasta el 5 y predice el resultado de añadir o quitar uno.",
+         "recursos": []}
+      ]
+    },
+    {
+      "etapa": "5 años",
+      "enfoque": "Composición y descomposición manipulativa, estructuración del 10, marco del 10 e introducción al diagrama partes-todo.",
+      "cuaderno": "Cuaderno_Infantil_5anios_multinivel.pdf",
+      "trimestres": [
+        {"meses": "septiembre – diciembre", "titulo": "El «2 por 1» y los muros numéricos", "secuencia": 7, "cuaderno": [4, 31],
+         "objetivo": "Componer cantidades con el juego del «2 por 1», construir los muros del 3, 4 y 5 y usar el marco del 10.",
+         "indicador": "Compone cantidades hasta el 5 con regletas y reconoce de un vistazo cantidades en el marco del 10.",
+         "recursos": []},
+        {"meses": "enero – marzo", "titulo": "El «1 por 2», el muro del 10 y ¡Abracadabra!", "secuencia": 7, "cuaderno": [32, 55],
+         "objetivo": "Descomponer cantidades, construir todas las parejas del 10 y deducir la parte oculta.",
+         "indicador": "Descompone cantidades hasta el 10, construye el muro del 10 y deduce la parte oculta sin contar de uno en uno.",
+         "recursos": []},
+        {"meses": "abril – junio", "titulo": "Partes, todo e historias matemáticas", "secuencia": 8, "cuaderno": [56, 73],
+         "objetivo": "Usar la plantilla partes-todo para anticipar la parte que falta y resolver problemas en tres viñetas.",
+         "indicador": "Usa el diagrama partes-todo para anticipar la parte que falta y resuelve problemas sencillos en viñetas.",
+         "recursos": []}
+      ]
+    },
+    {
+      "etapa": "1.º",
+      "enfoque": "Registro simbólico en una sola línea, automatización comprensiva de las parejas del 10, reversibilidad suma-resta y panel del 100.",
+      "cuaderno": "Cuaderno_1Primaria_multinivel.pdf",
+      "trimestres": [
+        {"meses": "septiembre – diciembre", "titulo": "Del juego a la pizarra: registro en una línea", "secuencia": 9, "cuaderno": [4, 31],
+         "objetivo": "Traducir el «2 por 1» y el «1 por 2» al registro simbólico en una sola línea y automatizar las parejas del 10.",
+         "indicador": "Registra los cambios en una sola línea y utiliza las parejas del 10 para simplificar la suma.",
+         "recursos": []},
+        {"meses": "enero – marzo", "titulo": "Sumas que se dan la vuelta", "secuencia": 9, "cuaderno": [32, 53],
+         "objetivo": "Descubrir la relación inversa entre suma y resta en el diagrama partes-todo y consolidar la agilidad mental diaria.",
+         "indicador": "Escribe la familia de operaciones de un diagrama y elige suma o resta según lo que se busca.",
+         "recursos": []},
+        {"meses": "abril – junio", "titulo": "El panel del 100 y las decenas", "secuencia": 10, "cuaderno": [54, 73],
+         "objetivo": "Usar el panel del 100 (hasta el 30/50) como hoja de respuesta y representar números como decenas completas más unidades.",
+         "indicador": "Lee, escribe y representa números hasta el 50 como decenas más unidades y se orienta en el panel del 100.",
+         "recursos": []}
+      ]
+    },
+    {
+      "etapa": "2.º",
+      "enfoque": "Generalización al cero, amigos del 100, descomposiciones flexibles, algoritmos alternativos e investigación con calculadora.",
+      "trimestres": [
+        {"meses": "septiembre – diciembre", "titulo": "El truco del cero y los Amigos del 100", "secuencia": 11,
+         "objetivo": "Generalizar las sumas y restas sencillas a las decenas completas y descubrir los amigos del 100 con 10 regletas naranjas.",
+         "indicador": "Generaliza sumas y restas a decenas completas y reconoce los amigos del 100.",
+         "recursos": ["Los amigos del 100", "Juntar y separar: la suma y la resta"]},
+        {"meses": "enero – marzo", "titulo": "Cruces numéricas y «Los vestidos de los números»", "secuencia": 11,
+         "objetivo": "Moverse por el panel del 100 con las cruces numéricas y descomponer números de forma canónica y no canónica.",
+         "indicador": "Se desplaza con seguridad por el panel del 100 y descompone números de dos cifras de varias formas equivalentes.",
+         "recursos": ["Los vestidos de los números", "Las parejas del 10"]},
+        {"meses": "abril – junio", "titulo": "Algoritmos alternativos e investigación", "secuencia": 12,
+         "objetivo": "Calcular con la suma en árbol, el paso por la decena y la resta pensando, y formular conjeturas con la calculadora.",
+         "indicador": "Elige y explica estrategias flexibles de cálculo y formula conjeturas sencillas que comprueba.",
+         "recursos": ["La suma en árbol", "Problemas con el diagrama partes-todo"]}
+      ]
+    }
+  ]
+}

@@ -104,6 +104,9 @@ Su entrada del catálogo y su portada se quitan solas.
     sin internet (llevan la marca «✓ sin conexión»). Al final de la biblioteca, *Guardar todos los
     materiales* los deja todos listos antes de clase. En el iPad o el móvil se puede instalar como
     app: *Compartir → Añadir a pantalla de inicio*.
+    Si un móvil conserva una copia antigua del código y la mezcla con la página nueva (las fichas de
+    las herramientas no harían nada), la web lo detecta, borra esa copia (los PDF guardados se quedan)
+    y se recarga sola una vez; si aun así no puede, lo avisa en pantalla.
   - **Filtro «Contenido»**: además de curso y tipo, se filtra por tema (descomposición, parejas del 10,
     problemas…). Los temas se asignan solos al subir un PDF y se corrigen en `catalogo.json` (campo `"temas"`).
   - **Ruta del curso** (`#/ruta`, enlace en la cabecera): las 15 unidades de la *Secuencia didáctica OAOA*,

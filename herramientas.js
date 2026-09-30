@@ -17,18 +17,18 @@ const REGLETA = [null,
 /* ---------------------------------------------------------------------
    Vistas de herramientas
    --------------------------------------------------------------------- */
-const VISTAS = {regletas: "vRegletas", bombo: "vBombo"};
+const VISTAS = {regletas: "vRegletas", bombo: "vBombo", ruta: "vRuta", familias: "vFamilias"};
 let vistaAbierta = null, vistaDesdeBiblioteca = false;
 
 function abrirHerramienta(nombre){
   if(vistaAbierta===nombre) return;
   cerrarHerramienta();
-  vistaDesdeBiblioteca = rutaPrevia!=="__inicio__" && !/^#\/(regletas|bombo)/.test(rutaPrevia);
+  vistaDesdeBiblioteca = rutaPrevia!=="__inicio__" && !/^#\/(regletas|bombo|ruta|familias)/.test(rutaPrevia);
   const v = $(VISTAS[nombre]);
   v.hidden = false; vistaAbierta = nombre;
   $("biblioteca").setAttribute("aria-hidden","true"); $("biblioteca").inert = true;
   document.body.style.overflow = "hidden";
-  (nombre==="regletas" ? iniciarRegletas : iniciarBombo)();
+  ({regletas: iniciarRegletas, bombo: iniciarBombo, ruta: iniciarRuta, familias: iniciarFamilias})[nombre]();
   v.querySelector(".v-cerrar").focus();
 }
 function cerrarHerramienta(){
@@ -39,7 +39,7 @@ function cerrarHerramienta(){
   if(window.speechSynthesis) speechSynthesis.cancel();
   $("biblioteca").removeAttribute("aria-hidden"); $("biblioteca").inert = false;
   document.body.style.overflow = "";
-  document.querySelector('.herr-ficha[href="#/'+nombre+'"]')?.focus();
+  document.querySelector('#biblioteca a[href="#/'+nombre+'"]')?.focus();
 }
 function salirDeHerramienta(){
   if(vistaDesdeBiblioteca){ vistaDesdeBiblioteca = false; history.back(); }
@@ -49,7 +49,7 @@ document.querySelectorAll(".v-cerrar").forEach(b=> b.onclick = salirDeHerramient
 document.addEventListener("keydown", e=>{
   if(!vistaAbierta || document.querySelector("dialog[open]")) return;
   if(e.key==="Escape"){ e.preventDefault(); salirDeHerramienta(); return; }
-  if(vistaAbierta==="bombo") tecladoBombo(e); else tecladoRegletas(e);
+  if(vistaAbierta==="bombo") tecladoBombo(e); else if(vistaAbierta==="regletas") tecladoRegletas(e);
 });
 
 /* ---------------------------------------------------------------------

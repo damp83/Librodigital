@@ -42,6 +42,18 @@ CARPETAS = {
     "2-primaria": ["2.º"],
     "varios-cursos": list(ETAPAS),
 }
+# Temas de contenido (filtro «Contenido» de la web). Se asignan solos a los materiales nuevos
+# buscando estas palabras en el título y la descripción; después se pueden corregir en catalogo.json.
+TEMAS = {   # expresiones regulares sobre el texto sin tildes y en minúsculas
+    "Espacio y series": [r"\bposiciones\b", r"\borientacion", r"\bseries?\b", r"\bsimetri", r"\bclasifica", r"\bordenar\b", r"\bescalera\b"],
+    "Cantidad y conteo": [r"\bcantidad", r"\bcorrespondencia\b", r"\bcontar\b", r"\bconteo\b", r"\bcardinal\b", r"\bvalor hasta\b"],
+    "Composición y descomposición": [r"\bdescompo", r"\bcompo(ner|sicion)", r"\b2 por 1\b", r"\b1 por 2\b", r"\bmuros?\b", r"\bvestidos\b", r"\bdobles\b", r"\brepartos?\b"],
+    "Parejas del 10": [r"\bparejas del 10\b", r"\bamigos del 10\b"],
+    "Suma y resta": [r"\bsuma", r"\bresta", r"\boperaciones\b", r"\bjuntar\b", r"\bseparar\b", r"\bcalculo\b"],
+    "Diagrama partes-todo": [r"\bpartes[- ]todo\b", r"\bparte que falta\b"],
+    "Problemas": [r"\bproblemas?\b"],
+    "Decenas y valor posicional": [r"\bdecenas?\b", r"\bdieces\b", r"\bdiez y unos\b", r"\bvalor posicional\b", r"\bpanel del 100\b", r"\bamigos del 100\b", r"\bcentenas?\b", r"\bdel 1 al 99\b"],
+}
 LADO_PORTADA = 360        # píxeles del lado mayor de la portada
 AVISO_PESO_KB = 2048      # a partir de aquí se avisa de que conviene comprimir el PDF
 # «La decena - presentación.pdf» -> recurso «La decena», tipo Presentación
@@ -103,6 +115,11 @@ def convencion(stem):
     """Devuelve (recurso, tipo) si el nombre sigue la forma «Recurso - tipo»; si no, (None, None)."""
     c = CONVENCION.match(stem.replace("_", " ").strip())
     return (c.group(1).strip(), TIPO_DE_PALABRA[norm(c.group(2))]) if c else (None, None)
+
+
+def deducir_temas(m):
+    texto = norm(" ".join(str(m.get(k, "")) for k in ("titulo", "desc", "recurso")))
+    return [t for t, patrones in TEMAS.items() if any(re.search(p, texto) for p in patrones)]
 
 
 def titulo_limpio(t):
@@ -193,6 +210,10 @@ def validar(catalogo):
             errores.append(f"{nombre}: «desc» debe ser un texto entre comillas.")
         if "recurso" in m and (not isinstance(m["recurso"], str) or not m["recurso"].strip()):
             errores.append(f"{nombre}: «recurso» debe ser un nombre entre comillas.")
+        if "temas" in m and (not isinstance(m["temas"], list) or not all(isinstance(t, str) and t.strip() for t in m["temas"])):
+            errores.append(f"{nombre}: «temas» debe ser una lista de textos entre comillas, por ejemplo [\"Suma y resta\"].")
+        elif any(t not in TEMAS for t in m.get("temas", [])):
+            avisos.append(f"{nombre}: tema nuevo {[t for t in m['temas'] if t not in TEMAS]}; aparecerá como filtro aparte.")
         if "fecha" in m:
             try:
                 datetime.date.fromisoformat(m["fecha"])
@@ -202,7 +223,7 @@ def validar(catalogo):
 
 def escribir_catalogo(catalogo):
     """Un material por bloque y las listas cortas en una línea, para que sea fácil de editar a mano."""
-    orden = ["archivo", "titulo", "etapas", "tipo", "recurso", "desc", "pags", "peso", "fecha"]
+    orden = ["archivo", "titulo", "etapas", "tipo", "recurso", "temas", "desc", "pags", "peso", "fecha"]
     bloques = []
     for m in catalogo:
         claves = [k for k in orden if k in m] + [k for k in m if k not in orden]
@@ -308,6 +329,13 @@ def main():
     for jpg in PORTADAS.glob("*.jpg"):
         if jpg.stem not in vivos:
             jpg.unlink()
+
+    # Temas de contenido para los materiales que aún no los tienen
+    for m in catalogo:
+        if isinstance(m, dict) and "temas" not in m and m.get("tipo") != "Programación":
+            m["temas"] = deducir_temas(m)
+            if m["temas"]:
+                cambios.append(f"Temas: {m['archivo']} → {', '.join(m['temas'])}")
 
     # 5. Comprobación final
     validar(catalogo)

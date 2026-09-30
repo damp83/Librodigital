@@ -4,6 +4,7 @@
     "titulo": "Cuaderno anual · 3 años",
     "etapas": ["3 años"],
     "tipo": "Cuaderno",
+    "temas": ["Espacio y series", "Cantidad y conteo"],
     "desc": "20 fichas de septiembre a junio: posiciones, series, cantidad y correspondencia uno a uno. Con guía y registro de observación.",
     "pags": 23,
     "peso": 88
@@ -13,6 +14,7 @@
     "titulo": "Cuaderno anual · 4 años",
     "etapas": ["4 años"],
     "tipo": "Cuaderno",
+    "temas": ["Espacio y series", "Cantidad y conteo", "Composición y descomposición"],
     "desc": "70 fichas (dos por semana): clasificación, orden, simetría, dobles, repartos, valor hasta el 5, muros y recta numérica.",
     "pags": 74,
     "peso": 251
@@ -22,6 +24,7 @@
     "titulo": "Cuaderno anual · 5 años",
     "etapas": ["5 años"],
     "tipo": "Cuaderno",
+    "temas": ["Composición y descomposición", "Parejas del 10", "Diagrama partes-todo", "Decenas y valor posicional"],
     "desc": "70 fichas (dos por semana): 2 por 1 y 1 por 2, muros, parejas del 10, partes-todo, un diez y unos, máquinas y letras.",
     "pags": 74,
     "peso": 268
@@ -31,6 +34,7 @@
     "titulo": "Cuaderno anual · 1.º de Primaria",
     "etapas": ["1.º"],
     "tipo": "Cuaderno",
+    "temas": ["Parejas del 10", "Suma y resta", "Decenas y valor posicional"],
     "desc": "70 fichas: registro en una línea, parejas del 10, familias de operaciones, paso por el diez, panel del 100 y dieces y unos.",
     "pags": 74,
     "peso": 286
@@ -40,6 +44,7 @@
     "titulo": "El bingo de las regletas",
     "etapas": ["4 años", "5 años", "1.º", "2.º"],
     "tipo": "Juego",
+    "temas": ["Cantidad y conteo", "Decenas y valor posicional"],
     "desc": "20 cartones en cuatro niveles, del 1 al 99. Sale un número y se marca el conjunto de regletas que lo representa.",
     "pags": 16,
     "peso": 198
@@ -59,6 +64,7 @@
     "etapas": ["2.º"],
     "tipo": "Ficha",
     "recurso": "Los amigos del 100",
+    "temas": ["Suma y resta", "Decenas y valor posicional"],
     "desc": "12 actividades multinivel: el truco del cero, los amigos del 100 y el valor de las decenas.",
     "pags": 7,
     "peso": 71
@@ -69,6 +75,7 @@
     "etapas": ["2.º"],
     "tipo": "Ficha",
     "recurso": "La suma en árbol",
+    "temas": ["Suma y resta", "Problemas", "Decenas y valor posicional"],
     "desc": "13 actividades: sumar dieces y unidades separando las ramas del árbol, con problemas y creación propia.",
     "pags": 10,
     "peso": 83
@@ -79,6 +86,7 @@
     "etapas": ["2.º"],
     "tipo": "Ficha",
     "recurso": "Las parejas del 10",
+    "temas": ["Parejas del 10", "Decenas y valor posicional"],
     "desc": "13 actividades: buscar parejas del 10 en cadenas, unir los intrusos y leer el valor posicional.",
     "pags": 10,
     "peso": 83
@@ -89,6 +97,7 @@
     "etapas": ["2.º"],
     "tipo": "Ficha",
     "recurso": "Juntar y separar: la suma y la resta",
+    "temas": ["Suma y resta", "Decenas y valor posicional"],
     "desc": "15 actividades con policubos, regletas y el supertruco de los ceros hasta las centenas.",
     "pags": 9,
     "peso": 82
@@ -99,6 +108,7 @@
     "etapas": ["2.º"],
     "tipo": "Ficha",
     "recurso": "Problemas con el diagrama partes-todo",
+    "temas": ["Diagrama partes-todo", "Problemas"],
     "desc": "10 actividades: los cuatro pasos del detective de problemas, decidir si se busca el todo o una parte.",
     "pags": 9,
     "peso": 76
@@ -109,6 +119,7 @@
     "etapas": ["2.º"],
     "tipo": "Ficha",
     "recurso": "Los vestidos de los números",
+    "temas": ["Composición y descomposición", "Decenas y valor posicional"],
     "desc": "11 actividades de descomposición canónica y no canónica, con el juego de la prenda que falta.",
     "pags": 8,
     "peso": 74
@@ -119,6 +130,7 @@
     "etapas": ["2.º"],
     "tipo": "Presentación",
     "recurso": "Los amigos del 100",
+    "temas": ["Parejas del 10", "Suma y resta", "Decenas y valor posicional"],
     "desc": "El poder del cero: de las parejas del 10 a los amigos del 100 con regletas a escala.",
     "pags": 15,
     "peso": 87
@@ -129,6 +141,7 @@
     "etapas": ["2.º"],
     "tipo": "Presentación",
     "recurso": "La suma en árbol",
+    "temas": ["Suma y resta", "Decenas y valor posicional"],
     "desc": "Cómo crece el árbol: rama de las decenas, rama de las unidades y tronco con el total.",
     "pags": 14,
     "peso": 148
@@ -139,6 +152,7 @@
     "etapas": ["2.º"],
     "tipo": "Presentación",
     "recurso": "Las parejas del 10",
+    "temas": ["Parejas del 10", "Suma y resta", "Decenas y valor posicional"],
     "desc": "Buscar parejas del 10, unir intrusos y leer el valor posicional, con el juego final de operaciones.",
     "pags": 15,
     "peso": 94
@@ -149,6 +163,7 @@
     "etapas": ["2.º"],
     "tipo": "Presentación",
     "recurso": "Juntar y separar: la suma y la resta",
+    "temas": ["Suma y resta", "Diagrama partes-todo"],
     "desc": "La magia de juntar y separar: partes-todo con policubos, regletas y generalización al cero.",
     "pags": 14,
     "peso": 97
@@ -159,6 +174,7 @@
     "etapas": ["2.º"],
     "tipo": "Presentación",
     "recurso": "Problemas con el diagrama partes-todo",
+    "temas": ["Diagrama partes-todo", "Problemas"],
     "desc": "Resolver misterios matemáticos con el diagrama partes-todo, con retos y soluciones.",
     "pags": 16,
     "peso": 2715
@@ -169,6 +185,7 @@
     "etapas": ["2.º"],
     "tipo": "Presentación",
     "recurso": "Los vestidos de los números",
+    "temas": ["Composición y descomposición", "Decenas y valor posicional"],
     "desc": "Descomposición de números de dos cifras: el vestido favorito y los cambios de ropa.",
     "pags": 18,
     "peso": 1411

@@ -104,6 +104,16 @@ Su entrada del catálogo y su portada se quitan solas.
     sin internet (llevan la marca «✓ sin conexión»). Al final de la biblioteca, *Guardar todos los
     materiales* los deja todos listos antes de clase. En el iPad o el móvil se puede instalar como
     app: *Compartir → Añadir a pantalla de inicio*.
+  - **Filtro «Contenido»**: además de curso y tipo, se filtra por tema (descomposición, parejas del 10,
+    problemas…). Los temas se asignan solos al subir un PDF y se corrigen en `catalogo.json` (campo `"temas"`).
+  - **Ruta del curso** (`#/ruta`, enlace en la cabecera): las 15 unidades de la *Secuencia didáctica OAOA*,
+    trimestre a trimestre, con objetivo, indicador de logro, la página de la unidad en la secuencia, las
+    fichas del cuaderno anual de ese trimestre y los recursos relacionados. Marca el trimestre actual.
+    Los datos están en `ruta.json` (se puede editar; las pruebas avisan si algo no existe).
+  - **Para las familias** (`#/familias`): guía para acompañar en casa, las diez regletas con su valor,
+    consejos y un botón para imprimir regletas de papel a tamaño real para recortar.
+  - **Imprimir páginas sueltas**: en el lector, botón *Imprimir*: esta página, un rango o todo el material
+    (y *Guardar como PDF* para quedarse solo con esas páginas). Desde ahí también se descarga el PDF.
   - **Rotulador** (botón *Rotulador* o tecla **R**, también en proyección): escribir y subrayar sobre la
     página con el dedo, el lápiz o el ratón. Se mantiene al pasar de página o hacer zoom y se borra al
     cerrar el material.
@@ -129,6 +139,14 @@ Su entrada del catálogo y su portada se quitan solas.
 
 Los marcadores, las notas, la última página vista y las marcas de «trabajado»
 se guardan solo en el navegador de cada dispositivo.
+
+## Pruebas automáticas
+
+Antes de cada publicación, GitHub comprueba la web con `pruebas/pruebas.mjs`: que `ruta.json` apunta a
+materiales y páginas que existen, que la biblioteca carga sin errores y es accesible, que **todos** los
+PDF se abren en el lector, que las herramientas funcionan y que en el móvil nada se sale de la pantalla.
+Si algo falla, **no se publica** y la web sigue como estaba; el motivo aparece en *Actions*. Las mismas
+pruebas se pasan en cada pull request.
 
 ## Publicación
 

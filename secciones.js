@@ -51,6 +51,8 @@ function pintarRuta(etapa){
     '<div class="ruta-cursos" role="group" aria-label="Curso">'+RUTA.cursos.map(c=>
       '<button data-etapa="'+esc(c.etapa)+'" aria-pressed="'+(c.etapa===etapa)+'"><i style="background:'+COLOR_ETAPA[c.etapa]+'"></i>'+esc(NOMBRE_ETAPA[c.etapa])+'</button>').join("")+'</div>'+
     '<p class="ruta-enfoque"><b>Enfoque del curso:</b> '+esc(curso.enfoque)+'</p>'+
+    '<div class="reto-botones"><a class="bt azul" href="#/aula/'+SLUG_DE[etapa]+'">'+svg("candado")+'Modo aula de '+esc(NOMBRE_ETAPA[etapa])+'</a>'+
+      '<button class="bt suave" id="rutaEnlaceAula">'+svg("compartir")+'Enlace y QR para las tabletas</button></div>'+
     '<div class="trimestres">'+curso.trimestres.map((t,i)=>{
       const enlaces = [];
       if(secuencia && t.secuencia) enlaces.push(enlaceMaterial(secuencia.archivo, t.secuencia, "La unidad en la secuencia", "Actividades por niveles · pág. "+t.secuencia, "ruta"));
@@ -73,6 +75,7 @@ function pintarRuta(etapa){
         (["5 años","1.º"].includes(etapa) ? '<a class="trim-enlace" href="#/marco">'+svg("contenido")+'<span>Marco del 10<small>Cantidades de un vistazo</small></span></a>' : '')+
         (["5 años","1.º"].includes(etapa) ? '<a class="trim-enlace" href="#/muros">'+svg("contenido")+'<span>Muros numéricos<small>'+(etapa==="1.º" ? "El muro del 10 y las parejas" : "Muros del 3 al 10")+'</small></span></a>' : '')+
       '</div></section>';
+  $("rutaEnlaceAula").onclick = ()=> abrirCompartir("Modo aula · "+NOMBRE_ETAPA[etapa], "#/aula/"+SLUG_DE[etapa]);
   cont.querySelectorAll(".ruta-cursos button").forEach(b=> b.onclick = ()=>{ pintarRuta(b.dataset.etapa); cont.querySelector('.ruta-cursos [aria-pressed="true"]')?.focus(); });
 }
 
@@ -183,6 +186,7 @@ async function cargarReto(){
     RETO = (datos.semanas||[]).filter(s=> s.desde <= dia && (s.retos||[]).length).sort((a,b)=> a.desde < b.desde ? 1 : -1)[0] || null;
   }catch(e){ RETO = null; }
   pintarReto();
+  if(vistaAbierta==="clase") iniciarClase();   // el reto de la clase, si llegó después
 }
 function mostrarReto(filtrando){ retoFiltrando = filtrando; pintarReto(); }
 function pintarReto(){
@@ -215,3 +219,91 @@ function pintarReto(){
   $("retoCompartir").onclick = ()=> abrirCompartir("Reto de la semana: "+r.titulo, "#/");
   cont.hidden = false;
 }
+
+
+/* ---------------------------------------------------------------------
+   MODO AULA (#/aula/5-anios): una pantalla sencilla con lo de una clase.
+   La tableta recuerda su clase (aula-clase) y vuelve a ella; para salir,
+   mantener pulsado «Salir» 3 segundos.
+   --------------------------------------------------------------------- */
+const SLUG_DE = {"3 años":"3-anios", "4 años":"4-anios", "5 años":"5-anios", "1.º":"1-primaria", "2.º":"2-primaria"};
+const ETAPA_DE = Object.fromEntries(Object.entries(SLUG_DE).map(([e,s])=>[s,e]));
+/* Herramientas de cada curso (según la secuencia) */
+const HERR_CURSO = {
+  "3 años": ["regletas"],
+  "4 años": ["regletas", "calculo", "bombo"],
+  "5 años": ["regletas", "marco", "muros", "partes", "calculo", "bombo"],
+  "1.º":    ["regletas", "calculo", "marco", "muros", "partes", "panel", "bombo"],
+  "2.º":    ["regletas", "calculo", "panel", "partes", "bombo"]};
+let claseSlug = null;
+
+async function obtenerRuta(){
+  if(!RUTA){ try{ RUTA = await (await fetch("ruta.json", {cache:"no-cache"})).json(); }catch(e){ return null; } }
+  return RUTA;
+}
+function abrirClase(slug){
+  if(!ETAPA_DE[slug]){ location.replace("#/"); return; }
+  claseSlug = slug;
+  guardar("aula-clase", slug);
+  if(vistaAbierta==="clase") iniciarClase(); else abrirHerramienta("clase");
+}
+async function iniciarClase(){
+  const etapa = ETAPA_DE[claseSlug], cont = $("clCuerpo"), color = COLOR_ETAPA[etapa];
+  $("clTit").textContent = "Clase de "+(etapa.includes("años") ? etapa : NOMBRE_ETAPA[etapa]);
+  $("clRegleta").style.background = color;
+  cont.style.setProperty("--c", color);
+  cont.classList.toggle("cl-infantil", etapa.includes("años"));
+  const ruta = await obtenerRuta(), curso = ruta?.cursos.find(c=>c.etapa===etapa), t = trimestreActual();
+  const trim = curso && t>=0 ? curso.trimestres[t] : null;
+  const imagen = m => '<img alt="" src="'+srcPortada(m)+'" loading="lazy">';
+  const ficha = (href, dentro, texto, extra, grande)=> '<a class="cl-ficha'+(grande ? ' grande' : '')+'" href="'+href+'">'+dentro+'<span>'+esc(texto)+(extra ? '<small>'+esc(extra)+'</small>' : '')+'</span></a>';
+
+  // Este trimestre: las fichas del cuaderno y los recursos de la unidad
+  const trimestre = [];
+  if(trim && curso.cuaderno){
+    const cu = MATERIALES.find(m=>m.archivo===curso.cuaderno);
+    if(cu) trimestre.push(ficha("#/leer/"+encodeURIComponent(cu.archivo)+"/"+trim.cuaderno[0], imagen(cu), "Nuestras fichas", "Páginas "+trim.cuaderno[0]+" a "+trim.cuaderno[1], true));
+  }
+  (trim?.recursos || []).forEach(r=>{
+    const m = MATERIALES.filter(x=>x.recurso===r || x.archivo===r).sort((a,b)=>ORDEN_TIPO(a.tipo)-ORDEN_TIPO(b.tipo))[0];
+    if(m) trimestre.push(ficha("#/leer/"+encodeURIComponent(m.archivo), imagen(m), m.recurso || m.titulo, m.recurso ? "Presentación y ficha" : m.tipo, true));
+  });
+  // Seguir donde lo dejó la clase (si el último material abierto es de este curso)
+  const reciente = leer("aula-reciente", null), mr = reciente && MATERIALES.find(m=>m.archivo===reciente.archivo && m.etapas.includes(etapa));
+  if(mr) trimestre.unshift(ficha("#/leer/"+encodeURIComponent(mr.archivo)+"/"+(reciente.pag||1), imagen(mr), "Seguir", (mr.recurso || mr.titulo)+" · página "+(reciente.pag||1), true));
+
+  // Todos los materiales del curso (sin la programación, que es para el docente)
+  const materiales = unidades().filter(u=> u.etapas.includes(etapa) && u.partes.some(p=>p.tipo!=="Programación"))
+    .map(u=>{ const m = u.partes[0]; return ficha("#/leer/"+encodeURIComponent(m.archivo), imagen(m), u.recurso || m.titulo, u.recurso ? "Presentación y ficha" : m.tipo); });
+
+  // Herramientas: el mismo dibujo que en la biblioteca, en grande
+  const herramientas = (HERR_CURSO[etapa]||[]).map(id=>{
+    const f = document.querySelector('#herr .herr-ficha[href="#/'+id+'"]');
+    return f ? ficha("#/"+id, f.querySelector(".herr-ilus").outerHTML, f.querySelector(".herr-txt b").textContent) : "";
+  });
+
+  // Reto de la semana en el nivel de la clase
+  const nivel = etapa.includes("años") ? "Infantil" : "Primaria", reto = RETO?.retos.find(r=>r.nivel===nivel);
+
+  cont.innerHTML =
+    (trimestre.length ? '<h2>Este trimestre</h2>'+(trim ? '<p class="cl-trimestre">'+esc(trim.titulo)+'</p>' : '')+'<div class="cl-rejilla">'+trimestre.join("")+'</div>' : '')+
+    (herramientas.length ? '<h2>Para jugar</h2><div class="cl-rejilla herr-cl">'+herramientas.join("")+'</div>' : '')+
+    (reto ? '<h2>Reto de la semana</h2><div class="cl-reto"><p class="reto-titulo">'+esc(reto.titulo)+'</p><p class="reto-texto">'+esc(reto.texto)+'</p>'+
+      (reto.solucion ? '<p class="reto-extra" id="clSol" hidden><b>Solución:</b> '+esc(reto.solucion)+'</p><div class="reto-botones"><button class="bt suave" id="clVerSol" aria-expanded="false" aria-controls="clSol">Ver la solución</button></div>' : '')+'</div>' : '')+
+    (materiales.length ? '<h2>Nuestros materiales</h2><div class="cl-rejilla">'+materiales.join("")+'</div>' : '');
+  cont.querySelectorAll("img").forEach(i=> i.onerror = ()=> i.remove());
+  $("clVerSol")?.addEventListener("click", e=>{ const b = e.currentTarget, a = b.getAttribute("aria-expanded")!=="true"; b.setAttribute("aria-expanded", a); $("clSol").hidden = !a; });
+}
+
+/* Candado: mantener pulsado 3 s (con el dedo, el ratón o Intro/espacio) */
+(function(){
+  const b = $("clSalir"); let t = null;
+  const empezar = e=>{ if(e.type==="keydown" && (e.repeat || !(e.key==="Enter" || e.key===" "))) return; e.preventDefault();
+    b.classList.add("pulsando"); clearTimeout(t);
+    t = setTimeout(()=>{ b.classList.remove("pulsando"); try{ localStorage.removeItem("aula-clase"); }catch(err){} claseSlug = null; location.hash = "#/"; }, 3000); };
+  const soltar = ()=>{ clearTimeout(t); b.classList.remove("pulsando"); };
+  b.addEventListener("pointerdown", empezar); b.addEventListener("keydown", empezar);
+  ["pointerup","pointerleave","pointercancel","keyup","blur"].forEach(ev=> b.addEventListener(ev, soltar));
+  b.addEventListener("click", e=> e.preventDefault());
+  b.addEventListener("contextmenu", e=> e.preventDefault());
+})();

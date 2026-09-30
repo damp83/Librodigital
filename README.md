@@ -138,6 +138,11 @@ Su entrada del catálogo y su portada se quitan solas.
       y la suma de colores; juego *Relámpago*: la cantidad se ve 1–5 s y se tapa («¿cuántas había?»).
     - *Muros numéricos* (`#/muros`): del muro del 2 al del 10 (las parejas del 10), completos o con
       «¡Abracadabra!» (la segunda regleta de cada fila oculta), con sumas y en orden o desordenados.
+  - **Modo aula por curso** (`#/aula/3-anios`, `4-anios`, `5-anios`, `1-primaria`, `2-primaria`): una pantalla
+    sencilla para las tabletas o la pizarra de una clase, con las fichas del trimestre actual, «Seguir» con
+    la última ficha abierta, los materiales y las herramientas de ese curso con iconos grandes y el reto en
+    su nivel. La tableta recuerda su clase y vuelve a ella aunque se abra la web desde el principio. Para
+    salir, mantener pulsado «Salir» 3 segundos. El enlace y su QR están en la ruta de cada curso.
   - **Reto de la semana**: en la portada, un reto para Infantil y otro para Primaria, con pista, solución,
     enlace a una herramienta y botón de compartir. Se edita en `reto.json` (una entrada por semana con su
     fecha de inicio); la web muestra sola la semana en curso.

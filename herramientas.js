@@ -19,21 +19,21 @@ const REGLETA = [null,
    Vistas de herramientas
    --------------------------------------------------------------------- */
 const VISTAS = {regletas: "vRegletas", bombo: "vBombo", calculo: "vCalculo", panel: "vPanel", partes: "vPartes", marco: "vMarco", muros: "vMuros",
-                ruta: "vRuta", familias: "vFamilias"};
+                ruta: "vRuta", familias: "vFamilias", clase: "vClase"};
 let vistaAbierta = null, vistaDesdeBiblioteca = false;
 
 function abrirHerramienta(nombre){
   if(vistaAbierta===nombre) return;
   cerrarHerramienta();
-  vistaDesdeBiblioteca = rutaPrevia!=="__inicio__" && !/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|ruta|familias)/.test(rutaPrevia);
+  vistaDesdeBiblioteca = rutaPrevia!=="__inicio__" && !/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|ruta|familias|aula)/.test(rutaPrevia);
   const v = $(VISTAS[nombre]);
   v.hidden = false; vistaAbierta = nombre;
   $("biblioteca").setAttribute("aria-hidden","true"); $("biblioteca").inert = true;
   document.body.style.overflow = "hidden";
   ({regletas: iniciarRegletas, bombo: iniciarBombo, calculo: iniciarCalculo, panel: iniciarPanel, partes: iniciarPartes,
     marco: iniciarMarco, muros: iniciarMuros,
-    ruta: iniciarRuta, familias: iniciarFamilias})[nombre]();
-  v.querySelector(".v-cerrar").focus();
+    ruta: iniciarRuta, familias: iniciarFamilias, clase: iniciarClase})[nombre]();
+  (v.querySelector(".v-cerrar") || v.querySelector("h1")).focus?.();
 }
 function cerrarHerramienta(){
   if(!vistaAbierta) return;
@@ -52,7 +52,7 @@ function salirDeHerramienta(){
 document.querySelectorAll(".v-cerrar").forEach(b=> b.onclick = salirDeHerramienta);
 document.addEventListener("keydown", e=>{
   if(!vistaAbierta || document.querySelector("dialog[open]")) return;
-  if(e.key==="Escape"){ e.preventDefault(); salirDeHerramienta(); return; }
+  if(e.key==="Escape"){ e.preventDefault(); if(vistaAbierta!=="clase") salirDeHerramienta(); return; }   // del modo aula solo se sale con el candado
   ({bombo: tecladoBombo, regletas: tecladoRegletas, calculo: tecladoCalculo, panel: tecladoPanel, partes: tecladoPartes,
     marco: tecladoMarco, muros: tecladoMuros})[vistaAbierta]?.(e);
 });

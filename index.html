@@ -668,6 +668,39 @@ footer.pie .marca{margin-bottom:12px}
 .reto-botones{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .reto-botones .bt{min-height:40px;font-size:14.5px;padding:0 14px}
 
+/* Modo aula */
+.cl-cab{display:flex;align-items:center;gap:14px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));background:var(--surface);border-bottom:1px solid var(--line)}
+.cl-regleta{width:56px;height:18px;border-radius:5px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.15)}
+.cl-cab h1{margin:0;flex:1;font-size:clamp(20px,3vw,28px);font-weight:700}
+.cl-salir{position:relative;display:flex;align-items:center;gap:6px;border:1px solid var(--line-strong);background:var(--surface);color:var(--muted);
+  border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+.cl-salir svg.ic{width:18px;height:18px}
+.cl-anillo{position:absolute;inset:0;background:color-mix(in srgb,var(--r2) 22%,transparent);transform-origin:left;transform:scaleX(0)}
+.cl-salir.pulsando .cl-anillo{transform:scaleX(1);transition:transform 3s linear}
+.clase{max-width:1200px}
+.clase h2{font-size:clamp(18px,2.4vw,22px);font-weight:600;margin:30px 0 14px}
+.clase h2:first-child{margin-top:0}
+.cl-trimestre{margin:0 0 4px;color:var(--muted);font-size:15px}
+.cl-rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.cl-rejilla.herr-cl{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.cl-ficha{--c:var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;min-height:170px;padding:16px;text-align:center;
+  border:2px solid var(--line);border-radius:18px;background:var(--surface);box-shadow:var(--sh-1);text-decoration:none;color:var(--ink);
+  font:600 clamp(16px,2vw,19px)/1.25 var(--font-titulos);transition:transform .15s,box-shadow .15s,border-color .15s}
+.cl-ficha:hover,.cl-ficha:focus-visible{transform:translateY(-3px);box-shadow:var(--sh-2);border-color:var(--c)}
+.cl-ficha.grande{min-height:220px;background:color-mix(in srgb,var(--c) 12%,var(--surface));border-color:color-mix(in srgb,var(--c) 45%,var(--line))}
+.cl-ficha img{max-width:88%;max-height:130px;border-radius:4px;box-shadow:0 1px 2px rgba(15,27,45,.12),0 8px 18px -6px rgba(15,27,45,.35);background:#fff}
+.cl-ficha > span:last-child{margin-top:auto}
+.cl-ficha small{display:block;font:500 14px var(--font);color:var(--muted)}
+#clTit:focus{outline:none}
+.cl-ficha .herr-ilus{width:110px;height:90px;border-radius:16px}
+.cl-ficha .herr-ilus i{height:13px}
+.cl-ficha .herr-bola{font-size:34px}
+.cl-reto{border:2px solid var(--r5);border-radius:18px;background:color-mix(in srgb,var(--r5) 12%,var(--surface));padding:18px 20px}
+.cl-reto p{margin:0}
+.cl-reto .reto-titulo{font-size:20px}
+.cl-reto .reto-texto{font-size:17px}
+.cl-infantil .cl-ficha{font-size:20px}
+
 /* ---------- Navegación de la cabecera ---------- */
 .cab-nav{display:flex;gap:4px;margin-right:4px}
 .cab-nav a{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 12px;border-radius:10px;color:var(--ink-2);
@@ -1127,6 +1160,18 @@ footer.pie .marca{margin-bottom:12px}
   </div>
 </div>
 
+<!-- ================= MODO AULA (una clase) ================= -->
+<div class="vista vista-pagina" id="vClase" hidden role="dialog" aria-modal="true" aria-labelledby="clTit">
+  <header class="cl-cab">
+    <span class="cl-regleta" id="clRegleta" aria-hidden="true"></span>
+    <h1 id="clTit" tabindex="-1">Nuestra clase</h1>
+    <button class="cl-salir" id="clSalir" aria-describedby="clSalirAyuda"><span class="cl-anillo" aria-hidden="true"></span>
+      <svg class="ic" data-icon="candado"></svg><span>Salir</span></button>
+    <span class="sr" id="clSalirAyuda">Mantén pulsado 3 segundos para salir del modo aula</span>
+  </header>
+  <div class="v-scroll"><div class="contenedor pagina clase" id="clCuerpo"></div></div>
+</div>
+
 <!-- ================= RUTA DEL CURSO ================= -->
 <div class="vista vista-pagina" id="vRuta" hidden role="dialog" aria-modal="true" aria-labelledby="vRutaTit">
   <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vRutaTit">Ruta del curso</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
@@ -1254,6 +1299,7 @@ const ANCHO_ETAPA  = {"3 años":24,"4 años":40,"5 años":56,"1.º":72,"2.º":88
 
 /* ---------- Iconos ---------- */
 const ICON = {
+  candado:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   ruta:'<circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H16a3.5 3.5 0 0 0 0-7H8a3.5 3.5 0 0 1 0-7h7.5"/>',
   familias:'<circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0M13.5 20a4 4 0 0 1 8 0"/>',
   imprimir:'<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>',
@@ -2025,6 +2071,11 @@ function panelNotas(c){
    ===================================================================== */
 let rutaPrevia = location.hash;
 function ruta(){
+  // modo aula: la tableta recuerda su clase y vuelve a ella en lugar de ir a la biblioteca
+  const cl = location.hash.match(/^#\/aula\/([\w-]+)\/?$/);
+  if(cl){ cerrarLector(); abrirClase(cl[1]); rutaPrevia = location.hash; return; }
+  const claseGuardada = leer("aula-clase", null);
+  if(claseGuardada && (location.hash==="" || location.hash==="#/" || location.hash==="#")){ location.replace("#/aula/"+claseGuardada); return; }
   const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   cerrarHerramienta();

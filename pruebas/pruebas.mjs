@@ -116,7 +116,7 @@ await prueba("Todos los materiales se abren en el lector", ()=> conPagina({}, as
 }));
 
 /* ---------- Herramientas y secciones ---------- */
-await prueba("Herramientas (bombo, regletas, cálculo, panel, partes, marco, muros) y secciones funcionan", ()=> conPagina({}, async p=>{
+await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({}, async p=>{
   await p.goto(WEB+"#/bombo"); await p.waitForSelector("#vBombo:not([hidden])");
   await p.click("#bSacar"); await p.waitForFunction(()=> /^\d+$/.test(document.getElementById("bNum").textContent), null, {timeout:5000});
   await accesibilidad(p);
@@ -140,6 +140,12 @@ await prueba("Herramientas (bombo, regletas, cálculo, panel, partes, marco, mur
   await p.goto(WEB+"#/muros"); await p.waitForSelector(".muro-fila");
   exigir(await p.locator(".muro-fila").count() === await p.evaluate(()=> MU.n), "muros: el muro no tiene una fila por cada forma");
   await accesibilidad(p);
+  await p.goto(WEB+"#/aula/5-anios"); await p.waitForSelector("#vClase:not([hidden]) .cl-ficha");
+  exigir(await p.locator('#vClase .cl-ficha[href="#/marco"]').count() === 1, "modo aula: faltan las herramientas de 5 años");
+  await accesibilidad(p);
+  await p.goto(WEB); await p.waitForTimeout(800);
+  exigir(await p.evaluate(()=> location.hash)==="#/aula/5-anios", "modo aula: la tableta no vuelve a su clase");
+  await p.evaluate(()=> localStorage.removeItem("aula-clase"));
   await p.goto(WEB+"#/ruta"); await p.waitForSelector(".trim", {timeout:8000});
   exigir(await p.locator(".trim").count() === 3, "la ruta no muestra tres trimestres");
   await accesibilidad(p);

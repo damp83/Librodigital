@@ -1,0 +1,90 @@
+{
+  "_ayuda": "Reto de la semana. La web muestra la semana más reciente cuya fecha «desde» (AAAA-MM-DD, un lunes) ya ha llegado. Cada semana tiene un reto para Infantil y otro para Primaria. «pista», «solucion» y «enlace» son opcionales; «enlace» lleva a una herramienta (#/regletas, #/partes, #/marco, #/muros, #/panel, #/calculo, #/bombo) o a un material (#/leer/Archivo.pdf/página).",
+  "semanas": [
+    {
+      "desde": "2026-09-28",
+      "retos": [
+        {"nivel": "Infantil", "titulo": "¿Quién mide lo mismo que la amarilla?",
+         "texto": "Busca dos regletas que, puestas en fila, sean igual de largas que la amarilla. ¿Encuentras más de una pareja?",
+         "pista": "Pon la amarilla en la mesa y prueba a colocar encima la roja. ¿Qué regleta falta para llegar al final?",
+         "solucion": "Hay varias: roja y verde clara (2 + 3), rosa y blanca (4 + 1)… ¡y también al revés! Todas miden 5.",
+         "enlace": {"texto": "Pruébalo con las regletas virtuales", "ruta": "#/regletas"}},
+        {"nivel": "Primaria", "titulo": "Todas las parejas del 10",
+         "texto": "¿Cuántas parejas de regletas forman exactamente una naranja? Constrúyelas todas y escribe cada una como una suma.",
+         "pista": "Empieza por la azul (9): ¿qué regleta le falta para ser tan larga como la naranja?",
+         "solucion": "1 + 9, 2 + 8, 3 + 7, 4 + 6 y 5 + 5. Si cuentas también las del revés (9 + 1, 8 + 2…), son 9 formas.",
+         "enlace": {"texto": "Míralo en el muro del 10", "ruta": "#/muros"}}
+      ]
+    },
+    {
+      "desde": "2026-10-05",
+      "retos": [
+        {"nivel": "Infantil", "titulo": "La escalera a ciegas",
+         "texto": "Con los ojos cerrados, ordena cinco regletas de la más corta a la más larga, solo tocándolas. Después abre los ojos: ¿te ha salido una escalera?",
+         "pista": "Busca primero la más cortita de todas y ponla a la izquierda.",
+         "solucion": "Si usas blanca, roja, verde clara, rosa y amarilla, la escalera va de 1 a 5 y cada escalón es una blanca más alto que el anterior."},
+        {"nivel": "Primaria", "titulo": "El número misterioso",
+         "texto": "Soy un número que se construye con 3 naranjas y una regleta más. Si esa regleta es la amarilla, ¿quién soy? ¿Y si fuera la negra?",
+         "pista": "Cada naranja vale 10. ¿Cuánto valen 3 naranjas?",
+         "solucion": "3 naranjas son 30. Con la amarilla, 30 + 5 = 35. Con la negra, 30 + 7 = 37.",
+         "enlace": {"texto": "Compruébalo en el panel del 100", "ruta": "#/panel"}}
+      ]
+    },
+    {
+      "desde": "2026-10-12",
+      "retos": [
+        {"nivel": "Infantil", "titulo": "¿Cuántas blancas caben?",
+         "texto": "Pon la verde oscura en la mesa. ¿Cuántas regletas blancas necesitas para taparla entera?",
+         "pista": "Ve poniendo blancas una a una encima y cuéntalas: «1 y 1 y 1…».",
+         "solucion": "Caben 6 blancas: la verde oscura vale 6."},
+        {"nivel": "Primaria", "titulo": "Busca los dobles",
+         "texto": "La rosa es el doble de la roja: dos rojas miden lo mismo que una rosa. Encuentra todas las parejas en las que una regleta sea el doble de otra.",
+         "pista": "Prueba con la blanca: ¿qué regleta mide lo mismo que dos blancas?",
+         "solucion": "Blanca y roja (1 y 2), roja y rosa (2 y 4), verde clara y verde oscura (3 y 6), rosa y marrón (4 y 8), amarilla y naranja (5 y 10).",
+         "enlace": {"texto": "Practica los dobles en cálculo mental", "ruta": "#/calculo"}}
+      ]
+    },
+    {
+      "desde": "2026-10-19",
+      "retos": [
+        {"nivel": "Infantil", "titulo": "¿Qué va después?",
+         "texto": "Haz un tren así: roja, amarilla, roja, amarilla, roja… ¿Qué regleta va después? Inventa tú otro tren con dos colores para tu familia.",
+         "pista": "Di los colores en voz alta mientras señalas: «roja, amarilla, roja…».",
+         "solucion": "Después de la roja va la amarilla: la serie repite siempre «roja, amarilla»."},
+        {"nivel": "Primaria", "titulo": "Amigos del 100",
+         "texto": "60 + ? = 100. ¿Y 30 + ? = 100? Construye cada uno con naranjas y explica cómo lo sabes.",
+         "pista": "Piensa en las parejas del 10: si 6 + 4 = 10, ¿cuánto es 60 + 40?",
+         "solucion": "60 + 40 = 100 y 30 + 70 = 100. Es la pareja del 10 con un cero detrás (el truco del cero).",
+         "enlace": {"texto": "Hazlo con el diagrama partes-todo", "ruta": "#/partes"}}
+      ]
+    },
+    {
+      "desde": "2026-10-26",
+      "retos": [
+        {"nivel": "Infantil", "titulo": "El muro de la rosa",
+         "texto": "Construye todas las formas de hacer una rosa con dos regletas, una debajo de otra, como un muro.",
+         "pista": "Empieza con la verde clara: ¿qué regleta le falta para ser igual de larga que la rosa?",
+         "solucion": "Verde clara y blanca (3 + 1), roja y roja (2 + 2), blanca y verde clara (1 + 3). El muro del 4 tiene tres filas.",
+         "enlace": {"texto": "Míralo en los muros numéricos", "ruta": "#/muros"}},
+        {"nivel": "Primaria", "titulo": "¿Cuántos se fueron?",
+         "texto": "En el recreo había 14 niños jugando. Algunos se fueron a beber agua y quedaron 9. ¿Cuántos se fueron? Dibuja el diagrama partes-todo.",
+         "pista": "¿El 14 es el todo o una parte? ¿Qué parte conoces y cuál falta?",
+         "solucion": "El todo es 14 y una parte es 9. La parte que falta es 14 − 9 = 5: se fueron 5 niños.",
+         "enlace": {"texto": "Resuélvelo con el diagrama partes-todo", "ruta": "#/partes"}}
+      ]
+    },
+    {
+      "desde": "2026-11-02",
+      "retos": [
+        {"nivel": "Infantil", "titulo": "¿Qué regleta es igual de larga?",
+         "texto": "Pon en fila la negra y la roja. ¿Qué regleta, ella sola, mide lo mismo que las dos juntas?",
+         "pista": "Pon al lado varias regletas largas hasta que encuentres una que llegue justo al final.",
+         "solucion": "La azul: la negra (7) y la roja (2) juntas miden 9, como la azul."},
+        {"nivel": "Primaria", "titulo": "La suma en árbol",
+         "texto": "Calcula 34 + 25 separando las ramas del árbol: por un lado las decenas y por otro las unidades.",
+         "pista": "Rama de las decenas: 30 + 20. Rama de las unidades: 4 + 5.",
+         "solucion": "30 + 20 = 50 y 4 + 5 = 9. El tronco: 50 + 9 = 59."}
+      ]
+    }
+  ]
+}

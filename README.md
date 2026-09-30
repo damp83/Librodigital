@@ -126,6 +126,26 @@ Su entrada del catálogo y su portada se quitan solas.
     - *Bombo del bingo* (`#/bombo`): los cuatro niveles del bingo de las regletas, todos del 1 al 99,
       bingo de decenas, del amigo del 100 y al revés. Números sin repetir con sus regletas, tablero de
       los que han salido y voz opcional. Barra espaciadora para sacar número.
+    - *Cálculo mental* (`#/calculo`): rondas proyectables de 5 a 20 preguntas de nueve tipos (uno más y uno
+      menos, sumas y restas hasta 10, parejas del 10, dobles, paso por la decena, truco del cero, amigos del
+      100, dieces y unos), con regletas, tiempo opcional por pregunta y resumen final. Barra espaciadora.
+    - *Panel del 100* (`#/panel`): cruz numérica (±1, ±10) con la opción de adivinarla, tapar casillas (a mano
+      o 10 al azar), pintar patrones y rango hasta 30, 50 o 100. Flechas para mover la cruz.
+    - *Partes y todo* (`#/partes`): el diagrama partes-todo en barras de regletas o en círculos, retos por
+      nivel (hasta 5, 10, 20 o decenas), «¡Abracadabra!» para ocultar una parte o el todo, valores editables
+      y la familia de operaciones.
+    - *Marco del 10* (`#/marco`): fichas rojas y azules en uno o dos marcos (hasta 20), con «faltan… para 10»
+      y la suma de colores; juego *Relámpago*: la cantidad se ve 1–5 s y se tapa («¿cuántas había?»).
+    - *Muros numéricos* (`#/muros`): del muro del 2 al del 10 (las parejas del 10), completos o con
+      «¡Abracadabra!» (la segunda regleta de cada fila oculta), con sumas y en orden o desordenados.
+  - **Modo aula por curso** (`#/aula/3-anios`, `4-anios`, `5-anios`, `1-primaria`, `2-primaria`): una pantalla
+    sencilla para las tabletas o la pizarra de una clase, con las fichas del trimestre actual, «Seguir» con
+    la última ficha abierta, los materiales y las herramientas de ese curso con iconos grandes y el reto en
+    su nivel. La tableta recuerda su clase y vuelve a ella aunque se abra la web desde el principio. Para
+    salir, mantener pulsado «Salir» 3 segundos. El enlace y su QR están en la ruta de cada curso.
+  - **Reto de la semana**: en la portada, un reto para Infantil y otro para Primaria, con pista, solución,
+    enlace a una herramienta y botón de compartir. Se edita en `reto.json` (una entrada por semana con su
+    fecha de inicio); la web muestra sola la semana en curso.
   - Modo claro y oscuro.
 - `catalogo.json` — la lista de materiales.
 - `materiales/` — los PDF. `portadas/` — una imagen JPG por material.

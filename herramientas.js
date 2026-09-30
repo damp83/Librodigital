@@ -7,29 +7,33 @@
    ===================================================================== */
 
 /* Las diez regletas Cuisenaire: color de fondo, color del número y nombre */
+/* Colores ajustados para que el número blanco tenga contraste suficiente (WCAG AA, 4,5:1) */
 const REGLETA = [null,
   {c:"#f4f4f4", t:"#1c2330", n:"blanca"},   {c:"#e3261f", t:"#ffffff", n:"roja"},
   {c:"#7cc84a", t:"#10240a", n:"verde clara"}, {c:"#c2185b", t:"#ffffff", n:"rosa"},
-  {c:"#f2c200", t:"#2a2000", n:"amarilla"}, {c:"#2e8b3a", t:"#ffffff", n:"verde oscura"},
+  {c:"#f2c200", t:"#2a2000", n:"amarilla"}, {c:"#2c8537", t:"#ffffff", n:"verde oscura"},
   {c:"#2b2b2b", t:"#ffffff", n:"negra"},    {c:"#8d5a2b", t:"#ffffff", n:"marrón"},
-  {c:"#2f7fd1", t:"#ffffff", n:"azul"},     {c:"#f57c22", t:"#1c1204", n:"naranja"}];
+  {c:"#2c77c4", t:"#ffffff", n:"azul"},     {c:"#f57c22", t:"#1c1204", n:"naranja"}];
 
 /* ---------------------------------------------------------------------
    Vistas de herramientas
    --------------------------------------------------------------------- */
-const VISTAS = {regletas: "vRegletas", bombo: "vBombo", ruta: "vRuta", familias: "vFamilias"};
+const VISTAS = {regletas: "vRegletas", bombo: "vBombo", calculo: "vCalculo", panel: "vPanel", partes: "vPartes", marco: "vMarco", muros: "vMuros",
+                ruta: "vRuta", familias: "vFamilias", clase: "vClase"};
 let vistaAbierta = null, vistaDesdeBiblioteca = false;
 
 function abrirHerramienta(nombre){
   if(vistaAbierta===nombre) return;
   cerrarHerramienta();
-  vistaDesdeBiblioteca = rutaPrevia!=="__inicio__" && !/^#\/(regletas|bombo|ruta|familias)/.test(rutaPrevia);
+  vistaDesdeBiblioteca = rutaPrevia!=="__inicio__" && !/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|ruta|familias|aula)/.test(rutaPrevia);
   const v = $(VISTAS[nombre]);
   v.hidden = false; vistaAbierta = nombre;
   $("biblioteca").setAttribute("aria-hidden","true"); $("biblioteca").inert = true;
   document.body.style.overflow = "hidden";
-  ({regletas: iniciarRegletas, bombo: iniciarBombo, ruta: iniciarRuta, familias: iniciarFamilias})[nombre]();
-  v.querySelector(".v-cerrar").focus();
+  ({regletas: iniciarRegletas, bombo: iniciarBombo, calculo: iniciarCalculo, panel: iniciarPanel, partes: iniciarPartes,
+    marco: iniciarMarco, muros: iniciarMuros,
+    ruta: iniciarRuta, familias: iniciarFamilias, clase: iniciarClase})[nombre]();
+  (v.querySelector(".v-cerrar") || v.querySelector("h1")).focus?.();
 }
 function cerrarHerramienta(){
   if(!vistaAbierta) return;
@@ -48,8 +52,9 @@ function salirDeHerramienta(){
 document.querySelectorAll(".v-cerrar").forEach(b=> b.onclick = salirDeHerramienta);
 document.addEventListener("keydown", e=>{
   if(!vistaAbierta || document.querySelector("dialog[open]")) return;
-  if(e.key==="Escape"){ e.preventDefault(); salirDeHerramienta(); return; }
-  if(vistaAbierta==="bombo") tecladoBombo(e); else if(vistaAbierta==="regletas") tecladoRegletas(e);
+  if(e.key==="Escape"){ e.preventDefault(); if(vistaAbierta!=="clase") salirDeHerramienta(); return; }   // del modo aula solo se sale con el candado
+  ({bombo: tecladoBombo, regletas: tecladoRegletas, calculo: tecladoCalculo, panel: tecladoPanel, partes: tecladoPartes,
+    marco: tecladoMarco, muros: tecladoMuros})[vistaAbierta]?.(e);
 });
 
 /* ---------------------------------------------------------------------

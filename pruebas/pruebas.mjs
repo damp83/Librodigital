@@ -14,7 +14,7 @@ const RAIZ = new URL("../", import.meta.url);
 const leerJSON = f => JSON.parse(readFileSync(new URL(f, RAIZ), "utf8"));
 const AXE = readFileSync(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
 
-const catalogo = leerJSON("catalogo.json"), ruta = leerJSON("ruta.json");
+const catalogo = leerJSON("catalogo.json"), ruta = leerJSON("ruta.json"), reto = leerJSON("reto.json");
 const resultados = [];
 async function prueba(nombre, fn){
   try{ const detalle = await fn(); resultados.push({nombre, ok:true, detalle: detalle || ""}); console.log("✓ "+nombre+(detalle ? " — "+detalle : "")); }
@@ -40,6 +40,27 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
   }
   exigir(!fallos.length, fallos.join("; "));
   return ruta.cursos.length+" cursos, "+ruta.cursos.reduce((s,c)=>s+c.trimestres.length,0)+" trimestres";
+});
+
+/* ---------- Datos: el reto de la semana está bien escrito ---------- */
+await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
+  const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","ruta","familias"];
+  exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
+  reto.semanas.forEach((s,i)=>{
+    const donde = "semana "+(i+1)+" ("+s.desde+")";
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(s.desde||"") || isNaN(Date.parse(s.desde))) fallos.push(donde+": «desde» debe ser AAAA-MM-DD");
+    if(!Array.isArray(s.retos) || !s.retos.length) fallos.push(donde+": no tiene retos");
+    (s.retos||[]).forEach(r=>{
+      ["nivel","titulo","texto"].forEach(k=>{ if(typeof r[k]!=="string" || !r[k].trim()) fallos.push(donde+": falta «"+k+"»"); });
+      if(r.enlace){
+        const m = String(r.enlace.ruta||"").match(/^#\/(leer\/([^/]+)(\/\d+)?|(\w+))$/);
+        if(!m || (m[2] && !archivos.has(decodeURIComponent(m[2]))) || (m[4] && !herramientas.includes(m[4]))) fallos.push(donde+": el enlace «"+r.enlace.ruta+"» no lleva a nada que exista");
+      }
+    });
+  });
+  exigir(!fallos.length, fallos.join("; "));
+  return reto.semanas.length+" semanas";
 });
 
 const navegador = await chromium.launch();
@@ -95,13 +116,36 @@ await prueba("Todos los materiales se abren en el lector", ()=> conPagina({}, as
 }));
 
 /* ---------- Herramientas y secciones ---------- */
-await prueba("Bombo, regletas, ruta y familias funcionan", ()=> conPagina({}, async p=>{
+await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({}, async p=>{
   await p.goto(WEB+"#/bombo"); await p.waitForSelector("#vBombo:not([hidden])");
   await p.click("#bSacar"); await p.waitForFunction(()=> /^\d+$/.test(document.getElementById("bNum").textContent), null, {timeout:5000});
   await accesibilidad(p);
   await p.goto(WEB+"#/regletas"); await p.waitForSelector("#vRegletas:not([hidden])");
   await p.click(".reg-pieza >> nth=4"); exigir(await p.locator(".regleta-v").count() >= 1, "no se añade una regleta al pulsarla");
   await accesibilidad(p);
+  await p.goto(WEB+"#/calculo"); await p.waitForSelector(".cm-tipo");
+  await p.click("#cmEmpezar"); await p.waitForSelector(".cm-pregunta");
+  await p.click("#cmVer"); exigir(!(await p.textContent(".cm-pregunta")).includes("?"), "cálculo mental: no se muestra la respuesta");
+  await accesibilidad(p);
+  await p.goto(WEB+"#/panel"); await p.waitForSelector(".celda");
+  await p.click('.celda[data-n="45"]'); exigir(await p.locator(".celda.cruz").count() === 4, "panel del 100: la cruz del 45 no tiene 4 vecinos");
+  await accesibilidad(p);
+  await p.goto(WEB+"#/partes"); await p.waitForSelector(".pt-bloque");
+  exigir(await p.evaluate(()=> PT.a + PT.b === PT.todo), "partes y todo: las partes no suman el todo");
+  await accesibilidad(p);
+  await p.goto(WEB+"#/marco"); await p.waitForSelector(".hueco10");
+  await p.click("#maMas"); await p.click("#maMas");
+  exigir(await p.locator(".marco .ficha").count() === 2, "marco del 10: «Poner» no coloca las fichas");
+  await accesibilidad(p);
+  await p.goto(WEB+"#/muros"); await p.waitForSelector(".muro-fila");
+  exigir(await p.locator(".muro-fila").count() === await p.evaluate(()=> MU.n), "muros: el muro no tiene una fila por cada forma");
+  await accesibilidad(p);
+  await p.goto(WEB+"#/aula/5-anios"); await p.waitForSelector("#vClase:not([hidden]) .cl-ficha");
+  exigir(await p.locator('#vClase .cl-ficha[href="#/marco"]').count() === 1, "modo aula: faltan las herramientas de 5 años");
+  await accesibilidad(p);
+  await p.goto(WEB); await p.waitForTimeout(800);
+  exigir(await p.evaluate(()=> location.hash)==="#/aula/5-anios", "modo aula: la tableta no vuelve a su clase");
+  await p.evaluate(()=> localStorage.removeItem("aula-clase"));
   await p.goto(WEB+"#/ruta"); await p.waitForSelector(".trim", {timeout:8000});
   exigir(await p.locator(".trim").count() === 3, "la ruta no muestra tres trimestres");
   await accesibilidad(p);

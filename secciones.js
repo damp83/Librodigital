@@ -67,6 +67,9 @@ function pintarRuta(etapa){
         paraVarios.map(m=> enlaceMaterial(m.archivo, null, m.titulo, m.tipo+" · "+textoCurso(m), ICONO_TIPO[m.tipo])).join("")+
         '<a class="trim-enlace" href="#/regletas">'+svg("contenido")+'<span>Regletas virtuales<small>Herramienta para la pizarra digital</small></span></a>'+
         (etapa!=="3 años" ? '<a class="trim-enlace" href="#/bombo">'+svg("bola")+'<span>Bombo del bingo<small>Herramienta para el aula</small></span></a>' : '')+
+        (etapa!=="3 años" ? '<a class="trim-enlace" href="#/calculo">'+svg("contenido")+'<span>Cálculo mental<small>'+(etapa.includes("años") ? "Uno más, sumas y parejas del 10" : "Calentamiento diario de 5 a 10 minutos")+'</small></span></a>' : '')+
+        (["5 años","1.º","2.º"].includes(etapa) ? '<a class="trim-enlace" href="#/partes">'+svg("ruta")+'<span>Partes y todo<small>El diagrama partes-todo con regletas</small></span></a>' : '')+
+        (["1.º","2.º"].includes(etapa) ? '<a class="trim-enlace" href="#/panel">'+svg("contenido")+'<span>Panel del 100<small>Cruces numéricas y patrones</small></span></a>' : '')+
       '</div></section>';
   cont.querySelectorAll(".ruta-cursos button").forEach(b=> b.onclick = ()=>{ pintarRuta(b.dataset.etapa); cont.querySelector('.ruta-cursos [aria-pressed="true"]')?.focus(); });
 }

@@ -126,6 +126,14 @@ Su entrada del catálogo y su portada se quitan solas.
     - *Bombo del bingo* (`#/bombo`): los cuatro niveles del bingo de las regletas, todos del 1 al 99,
       bingo de decenas, del amigo del 100 y al revés. Números sin repetir con sus regletas, tablero de
       los que han salido y voz opcional. Barra espaciadora para sacar número.
+    - *Cálculo mental* (`#/calculo`): rondas proyectables de 5 a 20 preguntas de nueve tipos (uno más y uno
+      menos, sumas y restas hasta 10, parejas del 10, dobles, paso por la decena, truco del cero, amigos del
+      100, dieces y unos), con regletas, tiempo opcional por pregunta y resumen final. Barra espaciadora.
+    - *Panel del 100* (`#/panel`): cruz numérica (±1, ±10) con la opción de adivinarla, tapar casillas (a mano
+      o 10 al azar), pintar patrones y rango hasta 30, 50 o 100. Flechas para mover la cruz.
+    - *Partes y todo* (`#/partes`): el diagrama partes-todo en barras de regletas o en círculos, retos por
+      nivel (hasta 5, 10, 20 o decenas), «¡Abracadabra!» para ocultar una parte o el todo, valores editables
+      y la familia de operaciones.
   - Modo claro y oscuro.
 - `catalogo.json` — la lista de materiales.
 - `materiales/` — los PDF. `portadas/` — una imagen JPG por material.

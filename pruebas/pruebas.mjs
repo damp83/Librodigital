@@ -95,12 +95,22 @@ await prueba("Todos los materiales se abren en el lector", ()=> conPagina({}, as
 }));
 
 /* ---------- Herramientas y secciones ---------- */
-await prueba("Bombo, regletas, ruta y familias funcionan", ()=> conPagina({}, async p=>{
+await prueba("Herramientas (bombo, regletas, cálculo, panel, partes) y secciones funcionan", ()=> conPagina({}, async p=>{
   await p.goto(WEB+"#/bombo"); await p.waitForSelector("#vBombo:not([hidden])");
   await p.click("#bSacar"); await p.waitForFunction(()=> /^\d+$/.test(document.getElementById("bNum").textContent), null, {timeout:5000});
   await accesibilidad(p);
   await p.goto(WEB+"#/regletas"); await p.waitForSelector("#vRegletas:not([hidden])");
   await p.click(".reg-pieza >> nth=4"); exigir(await p.locator(".regleta-v").count() >= 1, "no se añade una regleta al pulsarla");
+  await accesibilidad(p);
+  await p.goto(WEB+"#/calculo"); await p.waitForSelector(".cm-tipo");
+  await p.click("#cmEmpezar"); await p.waitForSelector(".cm-pregunta");
+  await p.click("#cmVer"); exigir(!(await p.textContent(".cm-pregunta")).includes("?"), "cálculo mental: no se muestra la respuesta");
+  await accesibilidad(p);
+  await p.goto(WEB+"#/panel"); await p.waitForSelector(".celda");
+  await p.click('.celda[data-n="45"]'); exigir(await p.locator(".celda.cruz").count() === 4, "panel del 100: la cruz del 45 no tiene 4 vecinos");
+  await accesibilidad(p);
+  await p.goto(WEB+"#/partes"); await p.waitForSelector(".pt-bloque");
+  exigir(await p.evaluate(()=> PT.a + PT.b === PT.todo), "partes y todo: las partes no suman el todo");
   await accesibilidad(p);
   await p.goto(WEB+"#/ruta"); await p.waitForSelector(".trim", {timeout:8000});
   exigir(await p.locator(".trim").count() === 3, "la ruta no muestra tres trimestres");

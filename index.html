@@ -620,6 +620,54 @@ footer.pie .marca{margin-bottom:12px}
 .pt-acciones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .pt-familia{display:grid;grid-template-columns:repeat(2,auto);gap:8px 28px;font:700 clamp(24px,4vw,40px) var(--font-titulos);font-variant-numeric:tabular-nums}
 
+/* Marco del 10 */
+.herr-marco{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;padding:10px 8px}
+.herr-marco i{aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line-strong)}
+.herr-marco i.f{background:var(--r2);border-color:var(--r2)}
+.ma-cuerpo,.mu-cuerpo{overflow:auto;min-height:0;padding:24px;display:flex;flex-direction:column;align-items:center;gap:20px}
+.ma-marcos{display:flex;flex-direction:column;gap:18px;align-items:center}
+.marco{--c:min(calc((100vw - 90px)/5),calc((100vh - 360px)/4),108px);display:grid;grid-template-columns:repeat(5,var(--c));
+  border:4px solid var(--ink);border-radius:10px;background:var(--surface);overflow:hidden}
+.ma-dos .marco{--c:min(calc((100vw - 90px)/5),calc((100vh - 420px)/4),96px)}
+.hueco10{width:var(--c);height:var(--c);border:0;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);background:transparent;
+  display:grid;place-items:center;padding:0;position:relative}
+.hueco10:nth-child(5n){border-right:0}
+.hueco10:nth-child(n+6){border-bottom:0}
+.hueco10:hover{background:var(--surface-2)}
+.ficha{width:74%;height:74%;border-radius:50%;box-shadow:inset 0 -5px 0 rgba(0,0,0,.2),inset 0 3px 0 rgba(255,255,255,.35),0 2px 4px rgba(0,0,0,.25)}
+.marco.tapado .hueco10{background:repeating-linear-gradient(45deg,var(--surface-2) 0 8px,color-mix(in srgb,var(--ink) 9%,var(--surface-2)) 8px 16px)}
+.marco.tapado .ficha{visibility:hidden}
+.ma-info{text-align:center;min-height:3.2em}
+.ma-num{font:700 clamp(48px,8vw,96px)/1 var(--font-titulos);font-variant-numeric:tabular-nums}
+.ma-falta{margin:6px 0 0;color:var(--muted);font-size:17px}
+.color-ficha{width:32px;height:32px;border-radius:50%;border:2px solid var(--surface);background:var(--col);box-shadow:0 0 0 1px var(--line-strong)}
+.color-ficha[aria-pressed="true"]{box-shadow:0 0 0 3px var(--accent)}
+
+/* Muros */
+.muro{--u:min(64px,calc((100vw - 240px)/var(--n)));display:flex;flex-direction:column;gap:6px}
+.muro-fila{display:flex;align-items:center;gap:14px}
+.muro-tren{display:flex;gap:2px}
+.muro-tren .b-reg{height:calc(var(--u)*.85);font-size:clamp(13px,calc(var(--u)*.38),22px)}
+.muro-tren .falta{border:3px dashed var(--brand);color:var(--brand);background:transparent;box-shadow:none;cursor:pointer;font:700 clamp(14px,calc(var(--u)*.4),24px) var(--font-titulos)}
+.muro-suma{min-width:7em;font:600 clamp(16px,2.4vw,26px) var(--font-titulos);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.muro-fila.todo .muro-suma{color:var(--ink)}
+.muro-fila.todo{padding-bottom:6px;margin-bottom:4px;border-bottom:2px solid var(--line-strong)}
+
+/* Reto de la semana */
+.reto{margin-top:22px;border:1px solid var(--line);border-radius:var(--radio);background:var(--surface);box-shadow:var(--sh-1);overflow:hidden}
+.reto-cab{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 18px 0}
+.reto-cab h2{margin:0;font-size:19px;font-weight:600;flex:1;min-width:200px}
+.reto-eti{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#1c1204;background:var(--r5);
+  padding:4px 10px;border-radius:999px}
+.reto-fecha{font-size:13px;color:var(--muted)}
+.reto-cuerpo{padding:12px 18px 18px}
+.reto-titulo{margin:0;font:600 18px var(--font-titulos)}
+.reto-texto{margin:6px 0 0;color:var(--ink-2);font-size:16px;max-width:75ch}
+.reto-extra{margin:12px 0 0;padding:12px 14px;border-radius:10px;background:var(--surface-2);color:var(--ink-2);font-size:15px}
+.reto-extra b{color:var(--ink)}
+.reto-botones{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.reto-botones .bt{min-height:40px;font-size:14.5px;padding:0 14px}
+
 /* ---------- Navegación de la cabecera ---------- */
 .cab-nav{display:flex;gap:4px;margin-right:4px}
 .cab-nav a{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 12px;border-radius:10px;color:var(--ink-2);
@@ -772,6 +820,7 @@ footer.pie .marca{margin-bottom:12px}
   <main class="lista contenedor" id="lista">
     <p class="sin-red" id="sinRed" role="status" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5h.01M3 3l18 18"/></svg>Sin conexión: puedes abrir los materiales guardados en este dispositivo (marcados con ✓).</p>
     <section class="seguir" id="seguir" aria-label="Seguir donde lo dejaste" hidden></section>
+    <section class="reto" id="reto" aria-labelledby="retoTit" hidden></section>
     <section class="herr" id="herr" aria-labelledby="herrTit">
       <h2 id="herrTit">Herramientas para el aula</h2>
       <div class="herr-rejilla">
@@ -794,6 +843,14 @@ footer.pie .marca{margin-bottom:12px}
         <a class="herr-ficha" href="#/partes">
           <span class="herr-ilus" aria-hidden="true"><i style="width:100%;background:#2b2b2b"></i><i style="width:42%;background:var(--r3)"></i></span>
           <span class="herr-txt"><b>Partes y todo</b><span>El diagrama partes-todo con regletas: oculta una parte y que la descubran.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a class="herr-ficha" href="#/marco">
+          <span class="herr-ilus herr-marco" aria-hidden="true"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i></span>
+          <span class="herr-txt"><b>Marco del 10</b><span>Fichas en el marco para ver cantidades de un vistazo, con juego «relámpago».</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a class="herr-ficha" href="#/muros">
+          <span class="herr-ilus" aria-hidden="true"><i style="width:100%;background:var(--r5)"></i><i style="width:78%;background:#c2185b"></i><i style="width:56%;background:var(--r3)"></i></span>
+          <span class="herr-txt"><b>Muros numéricos</b><span>Todas las formas de construir un número con dos regletas, del muro del 2 al del 10.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
         </a>
       </div>
     </section>
@@ -1025,6 +1082,48 @@ footer.pie .marca{margin-bottom:12px}
       <button class="bt suave" id="ptFamilia" aria-pressed="false">Familia de operaciones</button>
     </div>
     <div class="pt-familia" id="ptFamiliaCaja" hidden></div>
+  </div>
+</div>
+
+<!-- ================= MARCO DEL 10 ================= -->
+<div class="vista" id="vMarco" hidden role="dialog" aria-modal="true" aria-labelledby="vMarTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vMarTit">Marco del 10</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Juego">
+      <button data-modo="libre" aria-pressed="true">Libre</button>
+      <button data-modo="relampago" aria-pressed="false">Relámpago</button>
+    </div>
+    <div class="pan-opciones" id="maOpciones"></div>
+    <div class="reg-acc">
+      <button class="chip" id="maDoble" aria-pressed="false">Dos marcos (hasta 20)</button>
+      <button class="icbtn" id="maVaciar" data-icon="limpiar" aria-label="Vaciar el marco" title="Vaciar"></button>
+      <button class="icbtn" id="maPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button>
+    </div>
+  </div>
+  <div class="ma-cuerpo">
+    <div class="ma-marcos" id="maMarcos"></div>
+    <div class="ma-info" id="maInfo" aria-live="polite"></div>
+    <div class="pt-acciones" id="maAcciones"></div>
+  </div>
+</div>
+
+<!-- ================= MUROS NUMÉRICOS ================= -->
+<div class="vista" id="vMuros" hidden role="dialog" aria-modal="true" aria-labelledby="vMurTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vMurTit">Muros numéricos</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <label class="b-select"><span>Muro del</span><select id="muN"></select></label>
+    <div class="segmentos" role="group" aria-label="Cómo se ve el muro">
+      <button data-modo="completo" aria-pressed="true">Completo</button>
+      <button data-modo="adivinar" aria-pressed="false">¡Abracadabra!</button>
+    </div>
+    <button class="chip" id="muSumas" aria-pressed="true">Ver las sumas</button>
+    <button class="chip" id="muDesorden" aria-pressed="false">Desordenado</button>
+    <div class="reg-acc"><button class="icbtn" id="muPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+  </div>
+  <div class="mu-cuerpo">
+    <div class="muro" id="muMuro"></div>
+    <p class="pan-ayuda" id="muAyuda" aria-live="polite"></p>
+    <div class="pt-acciones" id="muAcciones"></div>
   </div>
 </div>
 
@@ -1395,6 +1494,7 @@ function pintarSeguir(filtrando){
   const cont = $("seguir"), r = leer("aula-reciente", null);
   const m = r && MATERIALES.find(x=>x.archivo===r.archivo);
   $("herr").hidden = filtrando;
+  if(typeof mostrarReto==="function") mostrarReto(filtrando);
   if(!m || filtrando){ cont.hidden = true; return; }
   const pag = Math.min(Math.max(1, +r.pag || 1), m.pags || 1), pct = Math.round(100*pag/(m.pags||1));
   cont.style.setProperty("--c", colorDe(m.etapas));
@@ -1925,7 +2025,7 @@ function panelNotas(c){
    ===================================================================== */
 let rutaPrevia = location.hash;
 function ruta(){
-  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
+  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
@@ -2000,6 +2100,7 @@ listo.then(()=> fetch("catalogo.json", {cache:"no-cache"}))
     pintarRed();
     pintarCifras();
     crearChipsTemas();
+    cargarReto();
     pintarLista();
     actualizarGuardados(true);
     rutaPrevia = "__inicio__";

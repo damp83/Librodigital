@@ -134,6 +134,13 @@ Su entrada del catálogo y su portada se quitan solas.
     - *Partes y todo* (`#/partes`): el diagrama partes-todo en barras de regletas o en círculos, retos por
       nivel (hasta 5, 10, 20 o decenas), «¡Abracadabra!» para ocultar una parte o el todo, valores editables
       y la familia de operaciones.
+    - *Marco del 10* (`#/marco`): fichas rojas y azules en uno o dos marcos (hasta 20), con «faltan… para 10»
+      y la suma de colores; juego *Relámpago*: la cantidad se ve 1–5 s y se tapa («¿cuántas había?»).
+    - *Muros numéricos* (`#/muros`): del muro del 2 al del 10 (las parejas del 10), completos o con
+      «¡Abracadabra!» (la segunda regleta de cada fila oculta), con sumas y en orden o desordenados.
+  - **Reto de la semana**: en la portada, un reto para Infantil y otro para Primaria, con pista, solución,
+    enlace a una herramienta y botón de compartir. Se edita en `reto.json` (una entrada por semana con su
+    fecha de inicio); la web muestra sola la semana en curso.
   - Modo claro y oscuro.
 - `catalogo.json` — la lista de materiales.
 - `materiales/` — los PDF. `portadas/` — una imagen JPG por material.

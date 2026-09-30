@@ -18,18 +18,20 @@ const REGLETA = [null,
 /* ---------------------------------------------------------------------
    Vistas de herramientas
    --------------------------------------------------------------------- */
-const VISTAS = {regletas: "vRegletas", bombo: "vBombo", calculo: "vCalculo", panel: "vPanel", partes: "vPartes", ruta: "vRuta", familias: "vFamilias"};
+const VISTAS = {regletas: "vRegletas", bombo: "vBombo", calculo: "vCalculo", panel: "vPanel", partes: "vPartes", marco: "vMarco", muros: "vMuros",
+                ruta: "vRuta", familias: "vFamilias"};
 let vistaAbierta = null, vistaDesdeBiblioteca = false;
 
 function abrirHerramienta(nombre){
   if(vistaAbierta===nombre) return;
   cerrarHerramienta();
-  vistaDesdeBiblioteca = rutaPrevia!=="__inicio__" && !/^#\/(regletas|bombo|calculo|panel|partes|ruta|familias)/.test(rutaPrevia);
+  vistaDesdeBiblioteca = rutaPrevia!=="__inicio__" && !/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|ruta|familias)/.test(rutaPrevia);
   const v = $(VISTAS[nombre]);
   v.hidden = false; vistaAbierta = nombre;
   $("biblioteca").setAttribute("aria-hidden","true"); $("biblioteca").inert = true;
   document.body.style.overflow = "hidden";
   ({regletas: iniciarRegletas, bombo: iniciarBombo, calculo: iniciarCalculo, panel: iniciarPanel, partes: iniciarPartes,
+    marco: iniciarMarco, muros: iniciarMuros,
     ruta: iniciarRuta, familias: iniciarFamilias})[nombre]();
   v.querySelector(".v-cerrar").focus();
 }
@@ -51,7 +53,8 @@ document.querySelectorAll(".v-cerrar").forEach(b=> b.onclick = salirDeHerramient
 document.addEventListener("keydown", e=>{
   if(!vistaAbierta || document.querySelector("dialog[open]")) return;
   if(e.key==="Escape"){ e.preventDefault(); salirDeHerramienta(); return; }
-  ({bombo: tecladoBombo, regletas: tecladoRegletas, calculo: tecladoCalculo, panel: tecladoPanel, partes: tecladoPartes})[vistaAbierta]?.(e);
+  ({bombo: tecladoBombo, regletas: tecladoRegletas, calculo: tecladoCalculo, panel: tecladoPanel, partes: tecladoPartes,
+    marco: tecladoMarco, muros: tecladoMuros})[vistaAbierta]?.(e);
 });
 
 /* ---------------------------------------------------------------------

@@ -321,3 +321,167 @@ function tecladoPartes(e){
   if(e.key===" " || e.key==="Enter"){ e.preventDefault(); if(PT.oculto){ PT.oculto = null; pintarPartes(); } else nuevoReto(); }
   else if(e.key==="n" || e.key==="N") nuevoReto();
 }
+
+/* ---------------------------------------------------------------------
+   MARCO DEL 10 (y dos marcos, hasta 20)
+   Las fichas se colocan en el orden habitual: primera fila de izquierda
+   a derecha y después la segunda, para reconocer la cantidad de un vistazo.
+   --------------------------------------------------------------------- */
+const FICHAS = {a:"#e3261f", b:"#2c77c4"};
+const MA = Object.assign({doble:false, segundos:2, desorden:false}, leer("aula-marco", {}),
+  {modo:"libre", color:"a", huecos:Array(20).fill(null), tapado:false, oculta:false, mostrado:0});
+let marcoListo = false, maTemporizador = null;
+const guardarMA = () => guardar("aula-marco", {doble:MA.doble, segundos:MA.segundos, desorden:MA.desorden});
+const capacidad = () => MA.doble ? 20 : 10;
+const cuantas = () => MA.huecos.slice(0, capacidad()).filter(Boolean).length;
+const faltan = (n, cap) => (cap-n===1 ? "Falta 1" : "Faltan "+(cap-n))+" para "+cap;
+
+function iniciarMarco(){
+  if(!marcoListo){
+    marcoListo = true;
+    pintarIconos($("vMarco"));
+    document.querySelectorAll("#vMarco .segmentos button").forEach(b=> b.onclick = ()=>{
+      MA.modo = b.dataset.modo; clearTimeout(maTemporizador); MA.tapado = false; MA.oculta = false; vaciarMarco(); });
+    $("maDoble").onclick = ()=>{ MA.doble = !MA.doble; guardarMA(); if(!MA.doble) MA.huecos.fill(null, 10); pintarMarco(); };
+    $("maVaciar").onclick = vaciarMarco;
+    if(document.fullscreenEnabled) $("maPantalla").onclick = ()=> pantallaCompleta("vMarco"); else $("maPantalla").hidden = true;
+  }
+  pintarMarco();
+}
+function vaciarMarco(){ MA.huecos.fill(null); MA.tapado = false; MA.oculta = false; pintarMarco(); }
+function ponerFichas(n){   // en orden (o al azar si «desordenadas»)
+  MA.huecos.fill(null);
+  const sitios = [...Array(capacidad()).keys()];
+  if(MA.desorden && MA.modo==="relampago") for(let i=sitios.length-1; i>0; i--){ const j = azar(0,i); [sitios[i], sitios[j]] = [sitios[j], sitios[i]]; }
+  sitios.slice(0, n).forEach(i=> MA.huecos[i] = MA.color);
+}
+function masFicha(){ const i = MA.huecos.slice(0, capacidad()).indexOf(null); if(i>=0){ MA.huecos[i] = MA.color; pintarMarco(); } }
+function menosFicha(){ for(let i=capacidad()-1; i>=0; i--) if(MA.huecos[i]){ MA.huecos[i] = null; break; } pintarMarco(); }
+function relampago(){   // se ve la cantidad unos segundos y se tapa: «¿cuántas había?»
+  clearTimeout(maTemporizador);
+  ponerFichas(azar(1, capacidad()));
+  MA.tapado = false; MA.oculta = true; pintarMarco();
+  maTemporizador = setTimeout(()=>{ MA.tapado = true; pintarMarco(); }, MA.segundos*1000);
+}
+function pintarMarco(){
+  document.querySelectorAll("#vMarco .segmentos button").forEach(b=> b.setAttribute("aria-pressed", b.dataset.modo===MA.modo));
+  $("maDoble").setAttribute("aria-pressed", MA.doble);
+  const op = $("maOpciones");
+  op.innerHTML = MA.modo==="libre"
+    ? Object.entries(FICHAS).map(([k,c])=>'<button class="color-ficha" data-color="'+k+'" style="--col:'+c+'" aria-pressed="'+(MA.color===k)+'" aria-label="Fichas de color '+(k==="a"?"rojo":"azul")+'"></button>').join("")
+    : '<label class="b-select"><span>Se ve</span><select id="maSeg">'+[1,2,3,5].map(s=>'<option value="'+s+'"'+(s===MA.segundos?' selected':'')+'>'+s+' s</option>').join("")+'</select></label>'+
+      '<button class="chip" id="maDesorden" aria-pressed="'+MA.desorden+'">Desordenadas</button>';
+  op.querySelectorAll(".color-ficha").forEach(b=> b.onclick = ()=>{ MA.color = b.dataset.color; pintarMarco(); });
+  $("maSeg")?.addEventListener("change", e=>{ MA.segundos = +e.target.value; guardarMA(); });
+  $("maDesorden")?.addEventListener("click", ()=>{ MA.desorden = !MA.desorden; guardarMA(); pintarMarco(); });
+
+  const cont = $("maMarcos"); cont.classList.toggle("ma-dos", MA.doble);
+  let html = "";
+  for(let m=0; m<(MA.doble ? 2 : 1); m++){
+    html += '<div class="marco'+(MA.tapado ? ' tapado' : '')+'" role="group" aria-label="Marco '+(m+1)+'">';
+    for(let i=m*10; i<m*10+10; i++){
+      const f = MA.huecos[i];
+      html += '<button class="hueco10" data-i="'+i+'" aria-label="Hueco '+(i%10+1)+(f ? ", con ficha" : ", vacío")+'"'+(MA.modo==="relampago" ? ' tabindex="-1"' : '')+'>'+
+              (f ? '<span class="ficha" style="background:'+FICHAS[f]+'"></span>' : '')+'</button>';
+    }
+    html += '</div>';
+  }
+  cont.innerHTML = html;
+  if(MA.modo==="libre") cont.querySelectorAll(".hueco10").forEach(b=> b.onclick = ()=>{
+    const i = +b.dataset.i; MA.huecos[i] = MA.huecos[i]===MA.color ? null : MA.color; pintarMarco();
+    $("maMarcos").querySelector('[data-i="'+i+'"]')?.focus({preventScroll:true});
+  });
+
+  const n = cuantas(), cap = capacidad(), rojas = MA.huecos.filter(x=>x==="a").length, azules = MA.huecos.filter(x=>x==="b").length;
+  const info = $("maInfo"), acc = $("maAcciones");
+  if(MA.modo==="libre"){
+    info.innerHTML = '<div class="ma-num">'+n+'</div><p class="ma-falta">'+
+      (n===cap ? "¡Marco lleno!" : faltan(n, cap))+(rojas && azules ? " · "+rojas+" + "+azules+" = "+n : "")+'</p>';
+    acc.innerHTML = '<button class="bt suave" id="maMenos" aria-label="Quitar una ficha"><svg class="ic" data-icon="menos"></svg>Quitar</button>'+
+                    '<button class="bt azul" id="maMas" aria-label="Poner una ficha"><svg class="ic" data-icon="mas"></svg>Poner</button>';
+    $("maMas").onclick = masFicha; $("maMenos").onclick = menosFicha;
+  } else {
+    info.innerHTML = MA.oculta && MA.tapado ? '<div class="ma-num">?</div><p class="ma-falta">¿Cuántas fichas había?</p>'
+                   : MA.oculta ? '<div class="ma-num">&nbsp;</div><p class="ma-falta">¡Mira bien!</p>'
+                   : n ? '<div class="ma-num">'+n+'</div><p class="ma-falta">'+(n===cap ? "Marco lleno" : faltan(n, cap))+'</p>'
+                   : '<div class="ma-num">&nbsp;</div><p class="ma-falta">Pulsa «¡Mira!»: las fichas se ven '+MA.segundos+' s y se tapan.</p>';
+    acc.innerHTML = '<button class="bt azul" id="maMira"><svg class="ic" data-icon="bola"></svg>¡Mira!</button>'+
+      (MA.oculta && MA.tapado ? '<button class="bt suave" id="maMostrar">Mostrar</button>' : '');
+    $("maMira").onclick = relampago;
+    $("maMostrar")?.addEventListener("click", ()=>{ MA.tapado = false; MA.oculta = false; pintarMarco(); });
+  }
+  pintarIconos(acc);
+}
+function tecladoMarco(e){
+  if(/^(select|input)$/i.test(e.target.tagName)) return;
+  if(MA.modo==="libre"){
+    if(e.key==="+" || e.key==="ArrowUp" || e.key==="ArrowRight"){ e.preventDefault(); masFicha(); }
+    else if(e.key==="-" || e.key==="ArrowDown" || e.key==="ArrowLeft"){ e.preventDefault(); menosFicha(); }
+  } else if((e.key===" " || e.key==="Enter") && !/^(button|a)$/i.test(e.target.tagName)){
+    e.preventDefault();
+    if(MA.oculta && MA.tapado){ MA.tapado = false; MA.oculta = false; pintarMarco(); } else relampago();
+  }
+}
+
+/* ---------------------------------------------------------------------
+   MUROS NUMÉRICOS: todas las formas de hacer un número con dos regletas
+   --------------------------------------------------------------------- */
+const MU = Object.assign({n:5, sumas:true, desorden:false}, leer("aula-muros", {}), {modo:"completo", vistas:new Set(), orden:null});
+let murosListo = false;
+const guardarMU = () => guardar("aula-muros", {n:MU.n, sumas:MU.sumas, desorden:MU.desorden});
+
+function iniciarMuros(){
+  if(!murosListo){
+    murosListo = true;
+    pintarIconos($("vMuros"));
+    $("muN").innerHTML = [2,3,4,5,6,7,8,9,10].map(n=>'<option value="'+n+'">'+n+' ('+REGLETA[n].n+')</option>').join("");
+    $("muN").onchange = e=>{ MU.n = +e.target.value; MU.vistas.clear(); MU.orden = null; guardarMU(); pintarMuros(); };
+    document.querySelectorAll("#vMuros .segmentos button").forEach(b=> b.onclick = ()=>{ MU.modo = b.dataset.modo; MU.vistas.clear(); pintarMuros(); });
+    $("muSumas").onclick = ()=>{ MU.sumas = !MU.sumas; guardarMU(); pintarMuros(); };
+    $("muDesorden").onclick = ()=>{ MU.desorden = !MU.desorden; MU.orden = null; guardarMU(); pintarMuros(); };
+    if(document.fullscreenEnabled) $("muPantalla").onclick = ()=> pantallaCompleta("vMuros"); else $("muPantalla").hidden = true;
+  }
+  pintarMuros();
+}
+function filasMuro(){   // de n−1 + 1 hasta 1 + n−1 (la escalera), o desordenadas
+  const filas = []; for(let a=MU.n-1; a>=1; a--) filas.push(a);
+  if(!MU.desorden) return filas;
+  if(!MU.orden || MU.orden.length!==filas.length){
+    MU.orden = filas.slice();
+    for(let i=MU.orden.length-1; i>0; i--){ const j = azar(0,i); [MU.orden[i], MU.orden[j]] = [MU.orden[j], MU.orden[i]]; }
+  }
+  return MU.orden;
+}
+function pintarMuros(){
+  const n = MU.n, adivinar = MU.modo==="adivinar";
+  $("muN").value = n;
+  document.querySelectorAll("#vMuros .segmentos button").forEach(b=> b.setAttribute("aria-pressed", b.dataset.modo===MU.modo));
+  $("muSumas").setAttribute("aria-pressed", MU.sumas); $("muDesorden").setAttribute("aria-pressed", MU.desorden);
+  const reg = v => { const r = REGLETA[v];
+    return '<span class="b-reg" style="width:calc(var(--u)*'+v+');background:'+r.c+';color:'+r.t+(v===1 ? ';box-shadow:inset 0 0 0 1px #c8ced6,inset 0 -4px 0 rgba(0,0,0,.12)' : '')+'">'+v+'</span>'; };
+  const muro = $("muMuro"); muro.style.setProperty("--n", n);
+  let html = '<div class="muro-fila todo"><div class="muro-tren">'+reg(n)+'</div><span class="muro-suma">'+(MU.sumas ? n : "")+'</span></div>';
+  filasMuro().forEach(a=>{
+    const b = n - a, oculta = adivinar && !MU.vistas.has(a);
+    html += '<div class="muro-fila"><div class="muro-tren">'+reg(a)+
+      (oculta ? '<button class="b-reg falta" data-a="'+a+'" style="width:calc(var(--u)*'+b+')" aria-label="Regleta oculta: ¿cuánto falta del '+a+' al '+n+'?">?</button>' : reg(b))+
+      '</div><span class="muro-suma">'+(MU.sumas ? a+" + "+(oculta ? "?" : b)+" = "+n : "")+'</span></div>';
+  });
+  muro.innerHTML = html;
+  muro.querySelectorAll(".falta").forEach(b=> b.onclick = ()=>{ MU.vistas.add(+b.dataset.a); pintarMuros(); muro.querySelector(".falta")?.focus({preventScroll:true}); });
+  const quedan = adivinar ? filasMuro().filter(a=>!MU.vistas.has(a)).length : 0;
+  $("muAyuda").textContent = adivinar
+    ? (quedan ? "¿Qué regleta falta en cada fila para igualar a la "+REGLETA[n].n+"? Toca el «?» para comprobarlo." : "¡Muro completo! "+(n-1)+" formas de hacer el "+n+" con dos regletas.")
+    : "El muro del "+n+": "+(n-1)+" formas de hacer el "+n+" con dos regletas. "+(n===10 ? "Son las parejas del 10." : "");
+  $("muAcciones").innerHTML = adivinar
+    ? '<button class="bt azul" id="muNuevo">Otra vez</button>'+(quedan ? '<button class="bt suave" id="muTodo">Mostrar todas</button>' : '')
+    : '';
+  $("muNuevo")?.addEventListener("click", ()=>{ MU.vistas.clear(); MU.orden = null; pintarMuros(); });
+  $("muTodo")?.addEventListener("click", ()=>{ filasMuro().forEach(a=>MU.vistas.add(a)); pintarMuros(); });
+}
+function tecladoMuros(e){
+  if(/^(select|input|button)$/i.test(e.target.tagName)) return;
+  if((e.key===" " || e.key==="Enter") && MU.modo==="adivinar"){
+    e.preventDefault(); const a = filasMuro().find(x=>!MU.vistas.has(x)); if(a){ MU.vistas.add(a); pintarMuros(); }
+  }
+}

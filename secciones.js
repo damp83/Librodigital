@@ -70,6 +70,8 @@ function pintarRuta(etapa){
         (etapa!=="3 años" ? '<a class="trim-enlace" href="#/calculo">'+svg("contenido")+'<span>Cálculo mental<small>'+(etapa.includes("años") ? "Uno más, sumas y parejas del 10" : "Calentamiento diario de 5 a 10 minutos")+'</small></span></a>' : '')+
         (["5 años","1.º","2.º"].includes(etapa) ? '<a class="trim-enlace" href="#/partes">'+svg("ruta")+'<span>Partes y todo<small>El diagrama partes-todo con regletas</small></span></a>' : '')+
         (["1.º","2.º"].includes(etapa) ? '<a class="trim-enlace" href="#/panel">'+svg("contenido")+'<span>Panel del 100<small>Cruces numéricas y patrones</small></span></a>' : '')+
+        (["5 años","1.º"].includes(etapa) ? '<a class="trim-enlace" href="#/marco">'+svg("contenido")+'<span>Marco del 10<small>Cantidades de un vistazo</small></span></a>' : '')+
+        (["5 años","1.º"].includes(etapa) ? '<a class="trim-enlace" href="#/muros">'+svg("contenido")+'<span>Muros numéricos<small>'+(etapa==="1.º" ? "El muro del 10 y las parejas" : "Muros del 3 al 10")+'</small></span></a>' : '')+
       '</div></section>';
   cont.querySelectorAll(".ruta-cursos button").forEach(b=> b.onclick = ()=>{ pintarRuta(b.dataset.etapa); cont.querySelector('.ruta-cursos [aria-pressed="true"]')?.focus(); });
 }
@@ -167,3 +169,49 @@ $("diCerrar").onclick = ()=> $("dImprimir").close();
 $("dImprimir").addEventListener("click", e=>{ if(e.target===$("dImprimir")) $("dImprimir").close(); });
 ["diDesde","diHasta"].forEach(id=> $(id).addEventListener("focus", ()=>{ document.querySelector('input[name="diQue"][value="rango"]').checked = true; }));
 pintarIconos($("dImprimir"));
+
+/* ---------------------------------------------------------------------
+   RETO DE LA SEMANA (reto.json): la semana más reciente que ya ha empezado
+   --------------------------------------------------------------------- */
+let RETO = null, retoFiltrando = false;
+const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+
+async function cargarReto(){
+  try{
+    const datos = await (await fetch("reto.json", {cache:"no-cache"})).json();
+    const hoy = new Date(), dia = hoy.getFullYear()+"-"+String(hoy.getMonth()+1).padStart(2,"0")+"-"+String(hoy.getDate()).padStart(2,"0");
+    RETO = (datos.semanas||[]).filter(s=> s.desde <= dia && (s.retos||[]).length).sort((a,b)=> a.desde < b.desde ? 1 : -1)[0] || null;
+  }catch(e){ RETO = null; }
+  pintarReto();
+}
+function mostrarReto(filtrando){ retoFiltrando = filtrando; pintarReto(); }
+function pintarReto(){
+  const cont = $("reto");
+  if(!RETO || retoFiltrando){ cont.hidden = true; return; }
+  const niveles = RETO.retos.map(r=>r.nivel), guardado = leer("aula-reto-nivel", null);
+  const nivel = niveles.includes(guardado) ? guardado : niveles[0], r = RETO.retos.find(x=>x.nivel===nivel);
+  const [a, m, d] = RETO.desde.split("-").map(Number);
+  cont.innerHTML =
+    '<div class="reto-cab"><span class="reto-eti">'+svg("bola")+'Reto de la semana</span>'+
+      '<span class="reto-fecha">Semana del '+d+' de '+MESES[m-1]+'</span>'+
+      '<h2 id="retoTit" class="sr">Reto de la semana</h2><span style="flex:1"></span>'+
+      (niveles.length>1 ? '<div class="segmentos" role="group" aria-label="Nivel del reto">'+niveles.map(n=>
+        '<button data-nivel="'+esc(n)+'" aria-pressed="'+(n===nivel)+'">'+esc(n)+'</button>').join("")+'</div>' : '')+
+    '</div>'+
+    '<div class="reto-cuerpo"><p class="reto-titulo">'+esc(r.titulo)+'</p><p class="reto-texto">'+esc(r.texto)+'</p>'+
+      '<p class="reto-extra" id="retoPista" hidden><b>Pista:</b> '+esc(r.pista||"")+'</p>'+
+      '<p class="reto-extra" id="retoSolucion" hidden><b>Solución:</b> '+esc(r.solucion||"")+'</p>'+
+      '<div class="reto-botones">'+
+        (r.pista ? '<button class="bt suave" id="retoVerPista" aria-expanded="false" aria-controls="retoPista">Ver una pista</button>' : '')+
+        (r.solucion ? '<button class="bt suave" id="retoVerSol" aria-expanded="false" aria-controls="retoSolucion">Ver la solución</button>' : '')+
+        (r.enlace && /^#\//.test(r.enlace.ruta) ? '<a class="bt azul" href="'+esc(r.enlace.ruta)+'">'+esc(r.enlace.texto)+'</a>' : '')+
+        '<button class="bt suave" id="retoCompartir">'+svg("compartir")+'Compartir</button>'+
+      '</div></div>';
+  cont.querySelectorAll("[data-nivel]").forEach(b=> b.onclick = ()=>{ guardar("aula-reto-nivel", b.dataset.nivel); pintarReto(); cont.querySelector('[aria-pressed="true"]')?.focus(); });
+  const alternar = (boton, caja)=>{ const abierto = boton.getAttribute("aria-expanded")!=="true";
+    boton.setAttribute("aria-expanded", abierto); $(caja).hidden = !abierto; };
+  $("retoVerPista")?.addEventListener("click", e=> alternar(e.currentTarget, "retoPista"));
+  $("retoVerSol")?.addEventListener("click", e=> alternar(e.currentTarget, "retoSolucion"));
+  $("retoCompartir").onclick = ()=> abrirCompartir("Reto de la semana: "+r.titulo, "#/");
+  cont.hidden = false;
+}

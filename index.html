@@ -1797,7 +1797,7 @@ window.addEventListener("hashchange", ruta);
    SIN CONEXIÓN: sw.js guarda lo que se abre; aquí se puede guardar todo de una vez.
    Los nombres de las cachés deben coincidir con los de sw.js.
    ===================================================================== */
-const CACHE_APP = "aula-app-v1", CACHE_PDF = "aula-pdf-v1";
+const CACHE_APP = "aula-app-v2", CACHE_PDF = "aula-pdf-v1";
 let guardados = new Set();
 const urlMaterial = m => new URL(BASE+encodeURIComponent(m.archivo), document.baseURI).href;
 const marcaGuardado = m => guardados.has(urlMaterial(m)) ? ' <span class="guardado-ic" title="Se puede abrir sin conexión">✓ sin conexión</span>' : '';
@@ -1835,6 +1835,10 @@ function pintarRed(){ $("sinRed").hidden = navigator.onLine; }
 addEventListener("online", pintarRed); addEventListener("offline", pintarRed);
 if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost")){
   navigator.serviceWorker.register("sw.js").then(()=>{ $("offline").hidden = false; actualizarGuardados(true); }).catch(()=>{});
+  // Al publicar una versión nueva del service worker, se recarga una vez para no mezclar versiones
+  const habiaControlador = !!navigator.serviceWorker.controller;
+  let recargada = false;
+  navigator.serviceWorker.addEventListener("controllerchange", ()=>{ if(habiaControlador && !recargada){ recargada = true; location.reload(); } });
 }
 
 /* Arranque */

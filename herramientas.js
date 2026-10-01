@@ -194,7 +194,8 @@ function pintarBombo(){
 /* ---------------------------------------------------------------------
    REGLETAS VIRTUALES
    --------------------------------------------------------------------- */
-const RG = Object.assign({u:40, numeros:true, regla:false, piezas:[]}, leer("aula-regletas", {}));
+// tamaño inicial según la pantalla: más grandes en la pizarra digital, más pequeñas en el móvil
+const RG = Object.assign({u:Math.round(Math.max(32, Math.min(64, Math.min(innerWidth, innerHeight*1.6)/30))), numeros:true, regla:false, piezas:[]}, leer("aula-regletas", {}));
 let regListo = false, regElegida = null, regSig = 1 + RG.piezas.reduce((m,p)=>Math.max(m,p.id), 0);
 const tablero = () => $("regTablero");
 
@@ -222,7 +223,7 @@ function iniciarRegletas(){
     const pal = $("regPaleta");
     for(let n=1; n<=10; n++){
       const r = REGLETA[n], b = document.createElement("button");
-      b.className = "reg-pieza"; b.style.cssText = "width:"+(n*11+10)+"px;background:"+r.c+";color:"+r.t+(n===1 ? ";box-shadow:inset 0 0 0 1px #c8ced6" : "");
+      b.className = "reg-pieza"; b.style.cssText = "--n:"+n+";width:"+(n*11+10)+"px;background:"+r.c+";color:"+r.t+(n===1 ? ";box-shadow:inset 0 0 0 1px #c8ced6" : "");
       b.textContent = n; b.setAttribute("aria-label", "Regleta "+r.n+", vale "+n);
       b.addEventListener("pointerdown", e=> nuevaDesdePaleta(e, n));
       b.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); ponerRegleta(n); } });

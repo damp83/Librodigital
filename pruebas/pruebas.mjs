@@ -86,6 +86,7 @@ async function conPagina(opciones, fn){
   }finally{ await ctx.close(); }
 }
 async function accesibilidad(p){   // solo bloquean las incidencias graves o críticas
+  await p.evaluate(()=> Promise.all(document.getAnimations().filter(a=> isFinite(a.effect?.getTiming().iterations)).map(a=> a.finished.catch(()=>{}))));   // espera a que terminen las entradas animadas
   await p.evaluate(AXE);
   const v = await p.evaluate(async()=> (await axe.run(document, {runOnly:["wcag2a","wcag2aa","wcag21aa"]})).violations
     .filter(x=> x.impact==="serious" || x.impact==="critical").map(x=> x.id+" ("+x.nodes[0].target.join(" ")+")"));

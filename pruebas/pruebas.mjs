@@ -173,6 +173,24 @@ await prueba("En el móvil nada se sale de la pantalla", ()=> conPagina(MOVIL, a
   await p.goto(WEB+"#/leer/"+encodeURIComponent(catalogo[0].archivo)); await p.waitForSelector(".hoja canvas");
 }));
 
+/* Los botones de cada tarjeta (Abrir, Descargar, Marcar como trabajado, Compartir) caben enteros en móvil, tableta y ordenador */
+await prueba("Los botones de las tarjetas caben en móvil, tableta y ordenador", async ()=>{
+  const fallos = [];
+  for(const [ancho, alto] of [[390, 844], [1000, 750], [1194, 834], [1440, 900]]){
+    await conPagina({viewport:{width:ancho, height:alto}}, async p=>{
+      await p.goto(WEB); await p.waitForSelector(".libro");
+      const fuera = await p.evaluate(()=> [...document.querySelectorAll(".libro")].flatMap(l=>{
+        const r = l.getBoundingClientRect();
+        return [...l.querySelectorAll(".botones > *")].filter(x=>{ const q = x.getBoundingClientRect(); return q.right > r.right - 4 || q.left < r.left + 4 || x.scrollWidth > x.clientWidth + 1; })
+          .map(x=> l.querySelector("h3").textContent+" («"+(x.textContent.trim() || x.getAttribute("aria-label"))+"»)");
+      }));
+      fuera.forEach(f=> fallos.push(ancho+" px: "+f));
+      exigir(await p.locator(".libro .hecho").count() === await p.locator(".libro").count(), ancho+" px: hay tarjetas sin «Marcar como trabajado»");
+    });
+  }
+  exigir(!fallos.length, "botones cortados: "+fallos.slice(0, 6).join("; "));
+});
+
 await prueba("En el móvil, tocar cada ficha de herramienta la abre", ()=> conPagina(MOVIL, async p=>{
   await p.goto(WEB); await p.waitForSelector(".libro");
   const fichas = await p.$$eval("#herr .herr-ficha", a=> a.map(x=> x.getAttribute("href")));

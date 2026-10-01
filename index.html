@@ -166,7 +166,10 @@ main.lista{padding-top:8px;padding-bottom:56px}
 .cuenta{color:var(--muted);font-size:14px;margin:0}
 .grupo{margin-top:36px}
 .filtros + #grupos .grupo:first-child{margin-top:28px}
-.grupo[data-clave="cuadernos"] .rejilla{grid-template-columns:repeat(auto-fill,minmax(232px,1fr))}
+/* cuadernos anuales: 2×2 en tableta, 4 en fila solo si caben con todos sus botones */
+@media (min-width:761px){ .grupo[data-clave="cuadernos"] .rejilla{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (min-width:1200px){ .grupo[data-clave="cuadernos"] .rejilla{grid-template-columns:repeat(4,minmax(0,1fr))} }
+.botones .hecho{white-space:normal;line-height:1.2;text-align:center;padding:4px 12px}
 .grupo h2{font-size:21px;font-weight:600;margin:0 0 16px;display:flex;align-items:center;gap:12px}
 .grupo h2 .regleta{height:12px;border-radius:3px;display:inline-block;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12)}
 .grupo h2 small{font-family:var(--font);font-size:14px;font-weight:500;color:var(--muted);margin-left:auto}
@@ -202,6 +205,8 @@ main.lista{padding-top:8px;padding-bottom:56px}
 .guardado-ic{color:var(--ok);font-weight:600}
 .botones{display:flex;gap:8px;margin-top:auto;padding-top:16px}
 .botones .bt.azul{flex:1}
+.botones .bt{min-width:0}
+.botones + .botones{margin-top:0;padding-top:8px}
 /* Partes de un recurso (presentación + ficha) */
 .partes{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
 .parte{min-width:0;display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:var(--radio-s);background:var(--surface-2);padding:4px}
@@ -1558,7 +1563,8 @@ function botonHecho(archivos, art){
   const pintar = ()=>{ const h = todo();
     b.setAttribute("aria-pressed", h);
     b.setAttribute("aria-label", h ? "Trabajado (pulsa para desmarcar)" : "Marcar como trabajado"); b.title = b.getAttribute("aria-label");
-    insignia.hidden = !h; };
+    insignia.hidden = !h;
+    const texto = b.querySelector("span"); if(texto) texto.textContent = h ? "Trabajado" : "Marcar como trabajado"; };
   b.onclick = ()=>{ ponerHecho(archivos, !todo()); pintar(); if(soloPendientes) pintarLista(); };
   pintar();
 }
@@ -1582,8 +1588,9 @@ function tarjeta(m){
       '<div class="botones">'+
         '<a class="bt azul" href="#/leer/'+encodeURIComponent(m.archivo)+'">'+svg("abrir")+'Abrir</a>'+
         '<a class="icbtn" href="'+BASE+encodeURIComponent(m.archivo)+'" download aria-label="Descargar PDF ('+pesoTexto(m.peso)+')" title="Descargar PDF">'+svg("descargar")+'</a>'+
+      '</div>'+
+      '<div class="botones"><button class="bt suave hecho" aria-pressed="false" style="flex:1">'+svg("check")+'<span>Marcar como trabajado</span></button>'+
         '<button class="icbtn compartir" aria-label="Compartir '+esc(m.titulo)+'" title="Compartir">'+svg("compartir")+'</button>'+
-        '<button class="icbtn hecho" aria-pressed="false">'+svg("check")+'</button>'+
       '</div></div>';
   prepararPortadas(art, [m]);
   art.querySelector(".compartir").onclick = ()=> abrirCompartir(m.titulo, "#/leer/"+encodeURIComponent(m.archivo));
@@ -1620,9 +1627,6 @@ function tarjetaRecurso(u){
   art.querySelector(".compartir").onclick = ()=> abrirCompartir(u.recurso, "#/leer/"+encodeURIComponent(portadaDe.archivo));
   art.querySelector(".portada").onclick = ()=>{ location.hash = "#/leer/"+encodeURIComponent(portadaDe.archivo); };
   botonHecho(archivos, art);
-  const b = art.querySelector(".hecho"), texto = b.querySelector("span");
-  const poner = ()=>{ texto.textContent = b.getAttribute("aria-pressed")==="true" ? "Trabajado" : "Marcar como trabajado"; };
-  new MutationObserver(poner).observe(b, {attributes:true, attributeFilter:["aria-pressed"]}); poner();
   return art;
 }
 

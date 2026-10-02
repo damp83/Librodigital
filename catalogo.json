@@ -189,5 +189,93 @@
     "desc": "Descomposición de números de dos cifras: el vestido favorito y los cambios de ropa.",
     "pags": 18,
     "peso": 1411
+  },
+  {
+    "archivo": "Detectives_de_la_Calculadora.pdf",
+    "titulo": "¡Detectives del factor constante! La calculadora",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "temas": ["Espacio y series"],
+    "desc": "Series numéricas, factor constante y pares e impares con calculadora y regletas (2º Primaria)",
+    "pags": 16,
+    "peso": 2727,
+    "fecha": "2026-10-02"
+  },
+  {
+    "archivo": "Ficha_multinivel_Buscando_el_10.pdf",
+    "titulo": "La suma buscando el 10",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "temas": ["Composición y descomposición", "Suma y resta", "Decenas y valor posicional"],
+    "desc": "Paso por el 10: descomponer un sumando para completar la decena, con regletas. Multinivel y Bloom revisada",
+    "pags": 9,
+    "peso": 80,
+    "fecha": "2026-10-02"
+  },
+  {
+    "archivo": "Ficha_multinivel_Calculadora_Series.pdf",
+    "titulo": "La calculadora, series y pares e impares",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "temas": ["Espacio y series"],
+    "desc": "Factor constante, series numéricas y patrones de pares e impares con calculadora y regletas. Multinivel y Bloom revisada",
+    "pags": 8,
+    "peso": 81,
+    "fecha": "2026-10-02"
+  },
+  {
+    "archivo": "Ficha_multinivel_Medida.pdf",
+    "titulo": "La medida de longitud",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "temas": [],
+    "desc": "La medida de longitud: centímetro, metro, regla graduada y regletas. Multinivel y Bloom revisada",
+    "pags": 9,
+    "peso": 76,
+    "fecha": "2026-10-02"
+  },
+  {
+    "archivo": "Ficha_multinivel_Piramides_numericas.pdf",
+    "titulo": "Pirámides numéricas y la relación suma-resta",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "temas": ["Suma y resta", "Diagrama partes-todo"],
+    "desc": "Pirámides numéricas: partes-todo, suma y resta inversa, con regletas. Multinivel y Bloom revisada",
+    "pags": 8,
+    "peso": 74,
+    "fecha": "2026-10-02"
+  },
+  {
+    "archivo": "Mision_Medida.pdf",
+    "titulo": "¡Misión medida! El centímetro con las regletas",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "temas": [],
+    "desc": "La medida de longitud: centímetro, metro y regletas Cuisenaire (2º Primaria)",
+    "pags": 16,
+    "peso": 142,
+    "fecha": "2026-10-02"
+  },
+  {
+    "archivo": "Piramides_numericas.pdf",
+    "titulo": "Detectives de pirámides numéricas",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "temas": ["Suma y resta"],
+    "desc": "Pirámides numéricas y la relación suma-resta con regletas (2º Primaria)",
+    "pags": 16,
+    "peso": 727,
+    "fecha": "2026-10-02"
+  },
+  {
+    "archivo": "Sumas_buscando_el_10.pdf",
+    "titulo": "Agencia de detectives matemáticos: la suma buscando el 10",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "temas": ["Suma y resta"],
+    "desc": "Estrategia del paso por el 10 con regletas Cuisenaire (2º Primaria)",
+    "pags": 16,
+    "peso": 380,
+    "fecha": "2026-10-02"
   }
 ]

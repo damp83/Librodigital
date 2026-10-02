@@ -41,6 +41,11 @@ En el lector aparecen unas pestañas para pasar de la presentación a la ficha.
 
 Desde un ordenador también vale arrastrar una carpeta con el nombre del recurso que contenga los PDF.
 
+Si se te olvida y subes a la vez una presentación y una ficha con nombres distintos
+(«Mision_Medida.pdf» y «Ficha_multinivel_Medida.pdf»), se agrupan solas cuando comparten alguna
+palabra del nombre o del título; el recurso toma el título de la ficha. En *Actions* sale un aviso
+con cada pareja agrupada; si alguna no iba junta, borra su línea `"recurso"` en `catalogo.json`.
+
 Para agrupar materiales que ya están subidos, pon el mismo `"recurso"` en sus bloques de
 `catalogo.json` (ver abajo).
 
@@ -108,7 +113,7 @@ Su entrada del catálogo y su portada se quitan solas.
     las herramientas no harían nada), la web lo detecta, borra esa copia (los PDF guardados se quedan)
     y se recarga sola una vez; si aun así no puede, lo avisa en pantalla.
   - **Filtro «Contenido»**: además de curso y tipo, se filtra por tema (descomposición, parejas del 10,
-    problemas…). Los temas se asignan solos al subir un PDF y se corrigen en `catalogo.json` (campo `"temas"`).
+    problemas, medida…). Los temas se asignan solos al subir un PDF y se corrigen en `catalogo.json` (campo `"temas"`).
   - **Ruta del curso** (`#/ruta`, enlace en la cabecera): las 15 unidades de la *Secuencia didáctica OAOA*,
     trimestre a trimestre, con objetivo, indicador de logro, la página de la unidad en la secuencia, las
     fichas del cuaderno anual de ese trimestre y los recursos relacionados. Marca el trimestre actual.

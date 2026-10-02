@@ -52,6 +52,7 @@ TEMAS = {   # expresiones regulares sobre el texto sin tildes y en minúsculas
     "Suma y resta": [r"\bsuma", r"\bresta", r"\boperaciones\b", r"\bjuntar\b", r"\bseparar\b", r"\bcalculo\b"],
     "Diagrama partes-todo": [r"\bpartes[- ]todo\b", r"\bparte que falta\b"],
     "Problemas": [r"\bproblemas?\b"],
+    "Medida": [r"\bmedida", r"\blongitud", r"\bcentimetros?\b", r"\bmetros?\b", r"\bmedir\b"],
     "Decenas y valor posicional": [r"\bdecenas?\b", r"\bdieces\b", r"\bdiez y unos\b", r"\bvalor posicional\b", r"\bpanel del 100\b", r"\bamigos del 100\b", r"\bcentenas?\b", r"\bdel 1 al 99\b"],
 }
 LADO_PORTADA = 360        # píxeles del lado mayor de la portada
@@ -60,6 +61,12 @@ AVISO_PESO_KB = 2048      # a partir de aquí se avisa de que conviene comprimir
 CONVENCION = re.compile(r"^(.+?)\s+-\s+(presentaci[oó]n|ficha|cuaderno|juego|programaci[oó]n)(?:\s*\d+)?$", re.I)
 TIPO_DE_PALABRA = {"presentacion": "Presentación", "ficha": "Ficha", "cuaderno": "Cuaderno",
                    "juego": "Juego", "programacion": "Programación"}
+
+# Palabras que no sirven para saber si una presentación y una ficha son del mismo tema
+PALABRAS_VACIAS = {"ficha", "fichas", "multinivel", "presentacion", "corregido", "corregida", "version", "final",
+                   "de", "del", "la", "las", "el", "los", "y", "e", "con", "en", "un", "una", "para", "por", "al",
+                   "regletas", "cuisenaire", "primaria", "infantil", "anios", "anos", "detectives", "detective",
+                   "mision", "agencia", "matematico", "matematicos", "matematica", "matematicas", "bloom", "revisada"}
 
 errores, avisos, cambios = [], [], []
 
@@ -175,6 +182,34 @@ def generar_portada(ruta_pdf):
     doc.close()
 
 
+def palabras_clave(m):
+    texto = norm(Path(m["archivo"]).stem.replace("_", " ") + " " + str(m.get("titulo", "")))
+    return {p for p in re.findall(r"[a-z0-9]+", texto) if p not in PALABRAS_VACIAS and (len(p) > 2 or p.isdigit())}
+
+
+def emparejar(nuevos):
+    """Une en un recurso cada presentación y ficha subidas a la vez al mismo curso que comparten palabras
+    del nombre o del título (p. ej. «Mision_Medida.pdf» y «Ficha_multinivel_Medida.pdf»)."""
+    pres = [m for m in nuevos if m.get("tipo") == "Presentación" and "recurso" not in m]
+    fichas = [m for m in nuevos if m.get("tipo") == "Ficha" and "recurso" not in m]
+    pares = []
+    for p in pres:
+        for f in fichas:
+            comunes = palabras_clave(p) & palabras_clave(f)
+            if comunes and p.get("etapas") == f.get("etapas"):
+                pares.append((len(comunes), p, f))
+    usados = set()
+    for _, p, f in sorted(pares, key=lambda x: -x[0]):
+        if p["archivo"] in usados or f["archivo"] in usados:
+            continue
+        usados |= {p["archivo"], f["archivo"]}
+        nombre = titulo_limpio(str(f.get("titulo") or p.get("titulo")))
+        p["recurso"] = f["recurso"] = nombre
+        cambios.append(f"Agrupados en «{nombre}»: {p['archivo']} (presentación) y {f['archivo']} (ficha)")
+        avisos.append(f"«{nombre}»: la presentación y la ficha se han agrupado solas porque se subieron a la vez y "
+                      "tienen nombres parecidos. Si no van juntas, borra su línea «recurso» en catalogo.json.")
+
+
 def cargar_catalogo():
     try:
         datos = json.loads(CATALOGO.read_text(encoding="utf-8"))
@@ -240,7 +275,7 @@ def main():
     if "--optimizar-todo" in sys.argv:
         for pdf in sorted(MATERIALES.glob("*.pdf")):
             optimizar(pdf)
-    regenerar, llegados = set(), set()
+    regenerar, llegados, nuevos = set(), set(), []
 
     # 1. Buzón subir/<curso>/
     for pdf in sorted(SUBIR.rglob("*")) if SUBIR.is_dir() else []:
@@ -276,9 +311,12 @@ def main():
                               "recupera el anterior desde el historial de GitHub y sube este con otro nombre.")
         else:
             m = entrada_nueva(destino, etapas, recurso, tipo)
-            catalogo.append(m); por_archivo[m["archivo"]] = m
+            catalogo.append(m); por_archivo[m["archivo"]] = m; nuevos.append(m)
             cambios.append(f"Nuevo: {m['archivo']} → «{m['titulo']}», {m['tipo']}, "
                            f"{', '.join(etapas) or 'sin curso'}" + (f", recurso «{recurso}»" if recurso else ""))
+
+    # Presentación y ficha subidas a la vez con nombres distintos: se agrupan si se parecen
+    emparejar(nuevos)
 
     # 2. PDF subidos directamente a materiales/
     for pdf in sorted(MATERIALES.glob("*")):

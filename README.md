@@ -146,6 +146,12 @@ Su entrada del catálogo y su portada se quitan solas.
       y la suma de colores; juego *Relámpago*: la cantidad se ve 1–5 s y se tapa («¿cuántas había?»).
     - *Muros numéricos* (`#/muros`): del muro del 2 al del 10 (las parejas del 10), completos o con
       «¡Abracadabra!» (la segunda regleta de cada fila oculta), con sumas y en orden o desordenados.
+    - *Geoplano* (`#/geoplano`, en `geoplano.js`): gomas de seis colores entre clavos (5×5, 7×7 o 10×10).
+      Se toca un clavo para empezar, los siguientes para estirar la goma y el primero (naranja) para cerrarla;
+      un vértice se arrastra a otro clavo. De cada figura dice su nombre (cuadrado, rectángulo, triángulo
+      rectángulo, rombo, trapecio, pentágono…), lados, vértices, área en cuadraditos y perímetro.
+      Modos *Copia la figura* (un modelo al lado; vale copiarlo en otro sitio) y *Simetría* (dibujar el
+      reflejo al otro lado del eje), los dos con «Comprobar». Con teclado: flechas e Intro.
   - **Modo aula por curso** (`#/aula/3-anios`, `4-anios`, `5-anios`, `1-primaria`, `2-primaria`): una pantalla
     sencilla para las tabletas o la pizarra de una clase, con las fichas del trimestre actual, «Seguir» con
     la última ficha abierta, los materiales y las herramientas de ese curso con iconos grandes y el reto en

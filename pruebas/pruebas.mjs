@@ -45,7 +45,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -141,6 +141,23 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.goto(WEB+"#/muros"); await p.waitForSelector(".muro-fila");
   exigir(await p.locator(".muro-fila").count() === await p.evaluate(()=> MU.n), "muros: el muro no tiene una fila por cada forma");
   await accesibilidad(p);
+  await p.goto(WEB+"#/geoplano"); await p.waitForSelector("#vGeoplano:not([hidden]) .gp-alumno");
+  await p.evaluate(()=>{ GP.gomas = []; GP.actual = null; GP.elegida = null; });
+  const clavo = async (x, y)=>{   // toca el clavo (x, y) del geoplano
+    const b = await p.locator("#gpTablero svg.gp-alumno").boundingBox(), n = await p.evaluate(()=> ladoGP());
+    const lado = 100*(n-1) + 100;
+    await p.mouse.click(b.x + b.width*(50+100*x)/lado, b.y + b.height*(50+100*y)/lado);
+  };
+  for(const [x, y] of [[1,1],[3,1],[3,3],[1,3],[1,1]]) await clavo(x, y);
+  const ayudaGeo = await p.textContent("#gpAyuda");
+  exigir(/Cuadrado/.test(ayudaGeo) && /Área: 4 cuadraditos/.test(ayudaGeo) && /Perímetro: 8/.test(ayudaGeo), "geoplano: el cuadrado de lado 2 no se reconoce («"+ayudaGeo+"»)");
+  await accesibilidad(p);
+  await p.click('#vGeoplano .segmentos [data-modo="copiar"]');
+  await p.evaluate(()=>{ GP.modelo = 0; pintarGeoplano(); });   // el cuadrado de lado 2
+  for(const [x, y] of [[0,0],[2,0],[2,2],[0,2],[0,0]]) await clavo(x, y);
+  await p.click("#gpComprobar");
+  exigir((await p.textContent("#gpAyuda")).startsWith("¡Muy bien"), "geoplano: «Copia la figura» no reconoce la copia en otro sitio");
+  await p.evaluate(()=>{ GP.gomas = []; guardarGP(); });
   await p.goto(WEB+"#/aula/5-anios"); await p.waitForSelector("#vClase:not([hidden]) .cl-ficha");
   exigir(await p.locator('#vClase .cl-ficha[href="#/marco"]').count() === 1, "modo aula: faltan las herramientas de 5 años");
   await accesibilidad(p);
@@ -159,7 +176,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "aula.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "aula.js", "geoplano.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));

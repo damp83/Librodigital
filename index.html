@@ -466,7 +466,6 @@ footer.pie .marca{margin-bottom:12px}
 .herr-txt b{font-family:var(--font-titulos);font-weight:600;font-size:16.5px}
 .herr-txt span{color:var(--muted);font-size:14px;line-height:1.45}
 .herr-flecha{color:var(--muted)}
-.herr-ruta{background:color-mix(in srgb,var(--accent) 5%,var(--surface));border-color:color-mix(in srgb,var(--accent) 28%,var(--line))}
 .herr-tren{display:flex;gap:2px}
 .herr-tren i{min-width:0}
 .herr-bolas,.herr-trims{display:flex;align-items:center;justify-content:center;gap:5px}
@@ -722,6 +721,39 @@ footer.pie .marca{margin-bottom:12px}
 .color-ficha{width:32px;height:32px;border-radius:50%;border:2px solid var(--surface);background:var(--col);box-shadow:0 0 0 1px var(--line-strong)}
 .color-ficha[aria-pressed="true"]{box-shadow:0 0 0 3px var(--accent)}
 
+/* Geoplano */
+.herr-geo{padding:6px;color:var(--ink-2)}
+.herr-ficha .herr-geo{padding-left:calc(50% - 40px);padding-right:calc(50% - 40px)}
+.herr-geo svg{width:100%;height:100%;display:block}
+.cl-ficha .herr-geo{padding:10px 20px}
+.gp-colores{display:flex;gap:6px;align-items:center}
+.gp-cuerpo{overflow:auto;min-height:0;padding:clamp(12px,3vh,40px) 16px 20px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.gp-tablero{--lado:min(calc(100vh - 290px),calc(100vw - 32px),900px);display:flex;gap:24px;justify-content:center;outline:none;border-radius:20px;
+  touch-action:none;user-select:none;-webkit-user-select:none}
+.gp-tablero:focus-visible{box-shadow:0 0 0 3px var(--accent)}
+.gp-tablero.doble{--lado:min(calc(100vh - 320px),calc((100vw - 72px)/2),620px)}
+.gp-tablero figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.gp-tablero figcaption{font:600 15px var(--font-titulos);color:var(--muted)}
+.gp-svg{width:max(var(--lado),240px);height:max(var(--lado),240px);display:block}
+.gp-base{fill:#c99a63;stroke:#a87a46;stroke-width:6}
+.gp-modelo .gp-base{fill:color-mix(in srgb,#c99a63 70%,var(--surface))}
+.gp-clavo{fill:#f6f1e7;stroke:#5b4630;stroke-width:3}
+.gp-clavo.inicio{fill:var(--r10);stroke:#1c1204}
+.gp-cursor{fill:none;stroke:var(--accent);stroke-width:6;stroke-dasharray:10 8}
+.gp-goma{fill:color-mix(in srgb,var(--c) 38%,#fff);fill-opacity:.82;stroke:var(--c);stroke-width:11;stroke-linejoin:round;stroke-linecap:round;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+.gp-goma.abierta{fill:none}
+.gp-goma.haciendo{stroke-dasharray:4 18;stroke-width:12}
+.gp-goma.elegida{stroke-width:15;fill-opacity:.95}
+.gp-fantasma{fill:rgba(255,255,255,.25);stroke:#fff;stroke-width:8;stroke-dasharray:14 10;stroke-linejoin:round}
+.gp-eje{stroke:#1c2330;stroke-width:6;stroke-dasharray:18 12;opacity:.75}
+.gp-ayuda{max-width:70ch;font-size:clamp(15px,2vh,20px)}
+.gp-ayuda.ok{color:var(--ok);font-weight:700}
+@media (max-width:760px){
+  .gp-tablero.doble{flex-direction:column;gap:10px;--lado:min(calc(100vw - 40px),calc((100vh - 360px)/2))}
+  .gp-tablero{--lado:calc(100vw - 32px)}
+}
+
 /* Muros */
 .muro{--u:min(112px,calc((100vw - 240px)/var(--n)),calc((100vh - 250px)/var(--n)));display:flex;flex-direction:column;gap:6px}
 .muro-fila{display:flex;align-items:center;gap:14px}
@@ -965,9 +997,9 @@ footer.pie .marca{margin-bottom:12px}
           <span class="herr-ilus" aria-hidden="true"><i style="width:100%;background:var(--r5)"></i><i style="width:78%;background:#c2185b"></i><i style="width:56%;background:var(--r3)"></i></span>
           <span class="herr-txt"><b>Muros numéricos</b><span>Todas las formas de construir un número con dos regletas, del muro del 2 al del 10.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
         </a>
-        <a class="herr-ficha herr-ruta" href="#/ruta">
-          <span class="herr-ilus herr-trims" aria-hidden="true"><i style="background:var(--r2)">1</i><i style="background:var(--r5)">2</i><i style="background:var(--r6)">3</i></span>
-          <span class="herr-txt"><b>Ruta del curso</b><span>Qué toca este trimestre en cada curso, con su modo aula para las tabletas.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        <a class="herr-ficha" href="#/geoplano">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><polygon points="20,80 50,20 80,80" fill="rgba(44,119,196,.18)" stroke="#2c77c4" stroke-width="6" stroke-linejoin="round"/><polygon points="20,20 50,20 50,50 20,50" fill="rgba(227,38,31,.15)" stroke="#e3261f" stroke-width="6" stroke-linejoin="round"/><g fill="currentColor"><circle cx="20" cy="20" r="5"/><circle cx="50" cy="20" r="5"/><circle cx="80" cy="20" r="5"/><circle cx="20" cy="50" r="5"/><circle cx="50" cy="50" r="5"/><circle cx="80" cy="50" r="5"/><circle cx="20" cy="80" r="5"/><circle cx="50" cy="80" r="5"/><circle cx="80" cy="80" r="5"/></g></svg></span>
+          <span class="herr-txt"><b>Geoplano</b><span>Gomas de colores entre clavos: figuras, lados, vértices, área, copia y simetría.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
         </a>
       </div>
     </section>
@@ -1252,6 +1284,32 @@ footer.pie .marca{margin-bottom:12px}
     <div class="muro" id="muMuro"></div>
     <p class="pan-ayuda" id="muAyuda" aria-live="polite"></p>
     <div class="pt-acciones" id="muAcciones"></div>
+  </div>
+</div>
+
+<div class="vista" id="vGeoplano" hidden role="dialog" aria-modal="true" aria-labelledby="vGeoTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vGeoTit">Geoplano</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Modo">
+      <button data-modo="libre" aria-pressed="true">Libre</button>
+      <button data-modo="copiar" aria-pressed="false">Copia la figura</button>
+      <button data-modo="simetria" aria-pressed="false">Simetría</button>
+    </div>
+    <label class="b-select" id="gpTamano"><span>Clavos</span><select id="gpN"><option value="5">5 × 5</option><option value="7">7 × 7</option><option value="10">10 × 10</option></select></label>
+    <div class="gp-colores" id="gpColores" role="group" aria-label="Color de la goma"></div>
+    <button class="chip" id="gpMedidas" aria-pressed="true">Medidas</button>
+    <div class="reg-acc">
+      <button class="icbtn" id="gpDeshacer" data-icon="deshacer" aria-label="Deshacer (tecla de borrar)" title="Deshacer"></button>
+      <button class="icbtn" id="gpBorrar" data-icon="papelera" aria-label="Quitar la goma elegida (Supr)" title="Quitar la goma elegida"></button>
+      <button class="icbtn" id="gpVaciar" data-icon="limpiar" aria-label="Quitar todas las gomas" title="Empezar de nuevo"></button>
+      <button class="icbtn" id="gpPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button>
+    </div>
+  </div>
+  <div class="gp-cuerpo">
+    <div class="gp-tablero" id="gpTablero" tabindex="0" role="application" aria-roledescription="geoplano"
+         aria-label="Geoplano. Muévete por los clavos con las flechas y pulsa Intro para poner la goma en el clavo." aria-describedby="gpAyuda"></div>
+    <p class="pan-ayuda gp-ayuda" id="gpAyuda" aria-live="polite"></p>
+    <div class="pt-acciones" id="gpAcciones"></div>
   </div>
 </div>
 
@@ -1653,7 +1711,7 @@ function pintarSeguir(filtrando){
 
 /* Cifras de la portada */
 function pintarCifras(){
-  const cursos = new Set(MATERIALES.flatMap(m=>m.etapas)).size, herramientas = document.querySelectorAll("#herr .herr-ficha:not(.herr-ruta)").length;
+  const cursos = new Set(MATERIALES.flatMap(m=>m.etapas)).size, herramientas = document.querySelectorAll("#herr .herr-ficha").length;
   $("cifras").innerHTML = [[unidades().length,"recursos"],[cursos,"cursos"],[herramientas,"herramientas"]]
     .map(([v,t])=>'<li><b>'+v+'</b><span>'+t+'</span></li>').join("");
 }
@@ -2178,13 +2236,13 @@ function panelNotas(c){
 let rutaPrevia = location.hash;
 function ruta(){
   // herramientas, secciones y modo aula viven en herramientas.js, secciones.js y aula.js: si alguno no ha cargado, se avisa
-  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
+  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
   // modo aula: la tableta recuerda su clase y vuelve a ella en lugar de ir a la biblioteca
   const cl = location.hash.match(/^#\/aula\/([\w-]+)\/?$/);
   if(cl){ cerrarLector(); abrirClase(cl[1]); rutaPrevia = location.hash; return; }
   const claseGuardada = leer("aula-clase", null);
   if(claseGuardada && (location.hash==="" || location.hash==="#/" || location.hash==="#")){ location.replace("#/aula/"+claseGuardada); return; }
-  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
+  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   if(typeof cerrarHerramienta==="function") cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
@@ -2251,7 +2309,7 @@ if("serviceWorker" in navigator && (location.protocol==="https:" || location.hos
    Entonces las fichas de las herramientas no hacen nada. Si pasa, se borran las copias guardadas del código
    (los PDF guardados se conservan) y se recarga una vez; si aun así falta algo, se avisa en pantalla. */
 const PIEZAS = ["abrirHerramienta", "cerrarHerramienta", "iniciarRegletas", "iniciarBombo", "iniciarRuta", "iniciarFamilias",
-                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros"];
+                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano"];
 function codigoIncompleto(){ return PIEZAS.filter(n=> typeof window[n] !== "function"); }
 function avisarCodigo(){
   const a = $("avisoCodigo"); if(!a.hidden) return;
@@ -2297,5 +2355,6 @@ listo.then(repararCodigo).then(seguir=> seguir ? fetch("catalogo.json", {cache:"
 <script src="herramientas.js"></script>
 <script src="secciones.js"></script>
 <script src="aula.js"></script>
+<script src="geoplano.js"></script>
 </body>
 </html>

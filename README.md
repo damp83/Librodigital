@@ -152,6 +152,11 @@ Su entrada del catálogo y su portada se quitan solas.
       rectángulo, rombo, trapecio, pentágono…), lados, vértices, área en cuadraditos y perímetro.
       Modos *Copia la figura* (un modelo al lado; vale copiarlo en otro sitio) y *Simetría* (dibujar el
       reflejo al otro lado del eje), los dos con «Comprobar». Con teclado: flechas e Intro.
+    - *Calculadora* (`#/calculadora`, en `calculadora.js`): teclas grandes para la pizarra y cinta con las
+      operaciones. *Factor constante*: al repetir «=» se repite la última operación (0 + 2 = = = → 2, 4, 6…);
+      la serie sale en fichas con pares e impares de colores y marcada en un panel del 100.
+      *¿Qué saldrá?* tapa el resultado hasta tocar la pantalla; *Tecla rota* propone conseguir un número
+      sin poder usar una cifra. Funciona con el teclado del ordenador.
   - **Modo aula por curso** (`#/aula/3-anios`, `4-anios`, `5-anios`, `1-primaria`, `2-primaria`): una pantalla
     sencilla para las tabletas o la pizarra de una clase, con las fichas del trimestre actual, «Seguir» con
     la última ficha abierta, los materiales y las herramientas de ese curso con iconos grandes y el reto en

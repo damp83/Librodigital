@@ -45,7 +45,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -158,6 +158,15 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.click("#gpComprobar");
   exigir((await p.textContent("#gpAyuda")).startsWith("¡Muy bien"), "geoplano: «Copia la figura» no reconoce la copia en otro sitio");
   await p.evaluate(()=>{ GP.gomas = []; guardarGP(); });
+  await p.goto(WEB+"#/calculadora"); await p.waitForSelector("#vCalculadora:not([hidden]) .ca-tecla");
+  const tecla = t=> p.click('#caTeclado [data-t="'+t+'"]');
+  for(const t of ["1","2","*","3","="]) await tecla(t);
+  exigir((await p.textContent("#caNumero"))==="36", "calculadora: 12 × 3 no da 36");
+  for(const t of ["C","0","+","2","=","=","="]) await tecla(t);
+  exigir((await p.textContent("#caNumero"))==="6" && await p.locator("#caSerie .ca-ficha").count()===4, "calculadora: el factor constante (0 + 2 = = =) no cuenta de 2 en 2");
+  for(const t of ["C","7","/","0","="]) await tecla(t);
+  exigir(/dividir entre 0/.test(await p.textContent("#caOperacion")), "calculadora: dividir entre 0 no avisa");
+  await accesibilidad(p);
   await p.goto(WEB+"#/aula/5-anios"); await p.waitForSelector("#vClase:not([hidden]) .cl-ficha");
   exigir(await p.locator('#vClase .cl-ficha[href="#/marco"]').count() === 1, "modo aula: faltan las herramientas de 5 años");
   await accesibilidad(p);
@@ -176,7 +185,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "aula.js", "geoplano.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "aula.js", "geoplano.js", "calculadora.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));

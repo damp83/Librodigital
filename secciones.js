@@ -233,8 +233,8 @@ const HERR_CURSO = {
   "3 años": ["regletas"],
   "4 años": ["regletas", "calculo", "bombo"],
   "5 años": ["regletas", "marco", "muros", "partes", "geoplano", "calculo", "bombo"],
-  "1.º":    ["regletas", "calculo", "marco", "muros", "partes", "panel", "geoplano", "calculadora", "bombo"],
-  "2.º":    ["regletas", "calculo", "panel", "partes", "geoplano", "calculadora", "bombo"]};
+  "1.º":    ["regletas", "calculo", "marco", "muros", "partes", "panel", "piramides", "geoplano", "calculadora", "bombo"],
+  "2.º":    ["regletas", "calculo", "panel", "partes", "piramides", "geoplano", "calculadora", "bombo"]};
 let claseSlug = null;
 
 async function obtenerRuta(){

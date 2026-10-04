@@ -111,6 +111,20 @@ function buscarPista(){   // un bloque que ya se puede calcular con lo que hay
   return null;
 }
 
+/* Tres bloques escritos que no cuadran (el de arriba no es la suma de los dos de abajo), para explicar el fallo */
+function choque(){
+  const n = PI.pisos, val = (r, i) => PI.dada[r][i] ? PI.v[r][i] : PI.resp[r][i]!=="" ? +PI.resp[r][i] : null;
+  let primero = null;
+  for(let r=0; r<n-1; r++) for(let i=0; i<=r; i++){
+    const [a, b] = hijos(r, i), t = val(r, i), x = val(...a), y = val(...b);
+    if(t===null || x===null || y===null || t===x+y) continue;
+    const c = {bloques:[[r,i], a, b], txt:"Mira los bloques marcados: "+x+" + "+y+" = "+(x+y)+", pero arriba pone "+t+". Alguno de los tres no es el bueno."};
+    if(![[r,i], a, b].every(([f,j])=> PI.dada[f][j])) return c;   // mejor uno en el que haya algo escrito por el alumno
+    primero = primero || c;
+  }
+  return primero;
+}
+
 /* ---------- Pintar ---------- */
 function mini(v){   // regletas dentro del bloque: naranjas por cada diez y la regleta de las unidades
   if(!(v >= 0) || v > 100) return "";
@@ -130,6 +144,9 @@ function pintarPiramide(){
   const sel = PI.sel, marca = new Set();
   if(sel && PI.partes && sel[0] < n-1) hijos(...sel).forEach(([r,i])=> marca.add(r+","+i));
   const pista = PI.pista, usa = new Set((pista ? pista.usa : []).map(x=> x.join(",")));
+  const hayMal = PI.v.some((f,r)=> f.some((x,i)=> !PI.dada[r][i] && PI.resp[r][i]!=="" && +PI.resp[r][i]!==x));
+  const ch = !pista && !PI.solucion && hayMal && (PI.comprobada || PI.alMomento) ? choque() : null;
+  const choca = new Set((ch ? ch.bloques : []).map(x=> x.join(",")));
   const cont = $("piPiramide"); cont.style.setProperty("--n", n);
   let html = "", completa = true, errores = 0;
   for(let r=0; r<n; r++){
@@ -147,6 +164,7 @@ function pintarPiramide(){
       if(marca.has(r+","+i)) clase += " parte";
       if(pista && pista.bloque[0]===r && pista.bloque[1]===i) clase += " pista";
       if(usa.has(r+","+i)) clase += " usa";
+      if(choca.has(r+","+i)) clase += " choque";
       const texto = dada ? v : resp!=="" ? resp : PI.solucion ? v : "";
       const conRegletas = PI.regletas && (dada || correcto || (PI.solucion && resp==="")) ? mini(v) : "";
       const etiqueta = dada ? "Bloque "+v : "Bloque vacío"+(resp!=="" ? ", has escrito "+resp+(verEstado ? (correcto ? ", correcto" : ", revísalo") : "") : "");
@@ -164,7 +182,8 @@ function pintarPiramide(){
     msg = "¡Pirámide completa! Cada bloque es la suma de los dos de abajo.";
     if(!PI.contada){ PI.contada = true; PI.hechas++; }
   }else if(pista) msg = pista.tipo+"  "+pista.txt;
-  else if(PI.comprobada) msg = errores ? (errores===1 ? "Hay un bloque que no está bien: está marcado en rojo." : "Hay "+errores+" bloques que no están bien: están marcados en rojo.") : "Todo lo que has escrito está bien. ¡Sigue!";
+  else if(ch) msg = ch.txt;
+  else if(PI.comprobada) msg = errores ? (errores===1 ? "Hay un bloque que no encaja con los números que te dan: está marcado en rojo." : "Hay "+errores+" bloques que no encajan con los números que te dan: están marcados en rojo.") : "Todo lo que has escrito está bien. ¡Sigue!";
   else if(PI.solucion) msg = "Esta es la solución. Comprueba que cada bloque es la suma de los dos de abajo.";
   else msg = PI.nivel==="facil" ? "Suma los dos bloques de abajo para saber el de arriba." :
              PI.nivel==="medio" ? "Unos bloques se suman y otros se restan: busca uno que ya puedas calcular." :

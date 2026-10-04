@@ -185,6 +185,14 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
     for(const c of String(v)) await p.click('#piTeclado [data-t="'+c+'"]');
   }
   exigir((await p.textContent("#piAyuda")).startsWith("¡Pirámide completa"), "pirámides: siguiendo las pistas no se completa la pirámide");
+  // Una pirámide rellena que no cuadra (8 + 20 escrito debajo de un 26): se explica qué tres bloques no cuadran
+  await p.evaluate(()=>{
+    PI.pisos = 4; PI.v = construir([6,4,2,18]); PI.dada = PI.v.map(f=> f.map(()=> false));
+    PI.dada[0][0] = PI.dada[1][0] = PI.dada[2][2] = PI.dada[3][1] = true;   // 42, 16, 20 y el 4 de la base
+    PI.resp = [[""], ["", "26"], ["8", "8", ""], ["4", "", "4", "16"]]; PI.sel = null; PI.pista = null; PI.solucion = false; pintarPiramide();
+  });
+  const choqueTxt = await p.textContent("#piAyuda");
+  exigir(/8 \+ 20 = 28, pero arriba pone 26/.test(choqueTxt) && await p.locator(".pi-bloque.choque").count()===3, "pirámides: no explica qué bloques no cuadran («"+choqueTxt+"»)");
   await accesibilidad(p);
   await p.goto(WEB+"#/aula/5-anios"); await p.waitForSelector("#vClase:not([hidden]) .cl-ficha");
   exigir(await p.locator('#vClase .cl-ficha[href="#/marco"]').count() === 1, "modo aula: faltan las herramientas de 5 años");

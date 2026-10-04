@@ -486,6 +486,7 @@ footer.pie .marca{margin-bottom:12px}
 @media (min-width:1180px),(max-width:760px){
   .herr-ficha{flex-direction:column;align-items:stretch;gap:12px;padding:10px 10px 16px}
   .herr-ficha .herr-ilus{width:100%;height:84px;padding-left:calc(50% - 58px);padding-right:calc(50% - 58px)}
+  .herr-ficha .herr-geo{padding-left:calc(50% - 40px);padding-right:calc(50% - 40px)}   /* dibujos SVG: cuadrados y centrados */
   .herr-ficha .herr-txt{padding:0 6px}
   .herr-ficha .herr-flecha{display:none}
 }
@@ -738,6 +739,7 @@ footer.pie .marca{margin-bottom:12px}
 .pi-bloque.parte{box-shadow:0 0 0 5px color-mix(in srgb,var(--r5) 70%,transparent),inset 0 -6px 0 rgba(0,0,0,.12)}
 .pi-bloque.usa{box-shadow:0 0 0 5px color-mix(in srgb,var(--r10) 75%,transparent),inset 0 -6px 0 rgba(0,0,0,.12)}
 .pi-bloque.pista{animation:pi-late 1s ease-in-out 2}
+.pi-bloque.choque{outline:5px solid #7a2bc2;outline-offset:3px}
 @keyframes pi-late{50%{transform:scale(1.07)}}
 .pi-bloque.bien{background:var(--ok-soft);color:var(--ok);border:3px solid var(--ok)}
 .pi-bloque.mal{background:#fde2e1;color:#b3140f;border:3px solid #e3261f}
@@ -815,7 +817,6 @@ footer.pie .marca{margin-bottom:12px}
 
 /* Geoplano */
 .herr-geo{padding:6px;color:var(--ink-2)}
-.herr-ficha .herr-geo{padding-left:calc(50% - 40px);padding-right:calc(50% - 40px)}
 .herr-geo svg{width:100%;height:100%;display:block}
 .cl-ficha .herr-geo{padding:10px 20px}
 .gp-colores{display:flex;gap:6px;align-items:center}

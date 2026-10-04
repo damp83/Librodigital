@@ -185,6 +185,14 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
     for(const c of String(v)) await p.click('#piTeclado [data-t="'+c+'"]');
   }
   exigir((await p.textContent("#piAyuda")).startsWith("¡Pirámide completa"), "pirámides: siguiendo las pistas no se completa la pirámide");
+  // Una pirámide rellena que no cuadra (8 + 20 escrito debajo de un 26): se explica qué tres bloques no cuadran
+  await p.evaluate(()=>{
+    PI.pisos = 4; PI.v = construir([6,4,2,18]); PI.dada = PI.v.map(f=> f.map(()=> false));
+    PI.dada[0][0] = PI.dada[1][0] = PI.dada[2][2] = PI.dada[3][1] = true;   // 42, 16, 20 y el 4 de la base
+    PI.resp = [[""], ["", "26"], ["8", "8", ""], ["4", "", "4", "16"]]; PI.sel = null; PI.pista = null; PI.solucion = false; pintarPiramide();
+  });
+  const choqueTxt = await p.textContent("#piAyuda");
+  exigir(/8 \+ 20 = 28, pero arriba pone 26/.test(choqueTxt) && await p.locator(".pi-bloque.choque").count()===3, "pirámides: no explica qué bloques no cuadran («"+choqueTxt+"»)");
   await accesibilidad(p);
   await p.goto(WEB+"#/aula/5-anios"); await p.waitForSelector("#vClase:not([hidden]) .cl-ficha");
   exigir(await p.locator('#vClase .cl-ficha[href="#/marco"]').count() === 1, "modo aula: faltan las herramientas de 5 años");
@@ -234,6 +242,27 @@ await prueba("Los botones de las tarjetas caben en móvil, tableta y ordenador",
     });
   }
   exigir(!fallos.length, "botones cortados: "+fallos.slice(0, 6).join("; "));
+});
+
+/* Las fichas de herramientas: el dibujo tiene su tamaño y el texto no queda aplastado, en todos los anchos (móvil, iPad, ordenador) */
+await prueba("Las fichas de herramientas se ven bien en móvil, tableta y ordenador", async ()=>{
+  const fallos = [];
+  for(const [ancho, alto] of [[390, 844], [700, 1000], [834, 1194], [1024, 768], [1194, 834], [1440, 900]]){
+    await conPagina({viewport:{width:ancho, height:alto}}, async p=>{
+      await p.goto(WEB); await p.waitForSelector("#herr .herr-ficha");
+      const mal = await p.evaluate(()=> [...document.querySelectorAll("#herr .herr-ficha")].flatMap(f=>{
+        const ilus = f.querySelector(".herr-ilus").getBoundingClientRect(), txt = f.querySelector(".herr-txt").getBoundingClientRect();
+        const dibujo = f.querySelector(".herr-ilus svg")?.getBoundingClientRect();
+        const nombre = f.querySelector(".herr-txt b").textContent;
+        if(txt.width < 120) return [nombre+": el texto queda aplastado ("+Math.round(txt.width)+" px)"];
+        if(dibujo && (dibujo.width < 30 || dibujo.height < 30)) return [nombre+": el dibujo no se ve"];
+        if(ilus.width > f.getBoundingClientRect().width * .9 && txt.left > ilus.left && txt.top < ilus.bottom - 4) return [nombre+": el dibujo ocupa toda la ficha"];
+        return [];
+      }));
+      mal.forEach(m=> fallos.push(ancho+" px: "+m));
+    });
+  }
+  exigir(!fallos.length, fallos.slice(0, 6).join("; "));
 });
 
 await prueba("En el móvil, tocar cada ficha de herramienta la abre", ()=> conPagina(MOVIL, async p=>{

@@ -285,5 +285,75 @@
     "pags": 16,
     "peso": 380,
     "fecha": "2026-10-02"
+  },
+  {
+    "archivo": "El_metro.pdf",
+    "titulo": "El metro",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "recurso": "El metro, el medio metro y la estimación",
+    "temas": ["Medida"],
+    "desc": "",
+    "pags": 14,
+    "peso": 22188,
+    "fecha": "2026-10-04"
+  },
+  {
+    "archivo": "Ficha_multinivel_El_Metro.pdf",
+    "titulo": "El metro, el medio metro y la estimación",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "recurso": "El metro, el medio metro y la estimación",
+    "temas": ["Medida"],
+    "desc": "El metro y el centímetro: equivalencias, estimación y medida con cinta métrica. Multinivel y Bloom revisada",
+    "pags": 9,
+    "peso": 75,
+    "fecha": "2026-10-04"
+  },
+  {
+    "archivo": "Ficha_multinivel_Geoplano.pdf",
+    "titulo": "El geoplano, segmentos, polígonos y simetría",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "temas": ["Espacio y series"],
+    "desc": "Geoplano: segmentos, líneas poligonales, polígonos, simetría y perímetro. Multinivel y Bloom revisada",
+    "pags": 10,
+    "peso": 102,
+    "fecha": "2026-10-04"
+  },
+  {
+    "archivo": "Ficha_multinivel_Suma_en_Arbol_v2.pdf",
+    "titulo": "La suma en árbol",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "recurso": "La suma en árbol",
+    "temas": ["Composición y descomposición", "Suma y resta", "Decenas y valor posicional"],
+    "desc": "La suma en árbol: descomposición en dieces y unos, dobles y reagrupación. Multinivel y Bloom revisada",
+    "pags": 10,
+    "peso": 77,
+    "fecha": "2026-10-04"
+  },
+  {
+    "archivo": "Geoplano_corregido.pdf",
+    "titulo": "El tablero mágico de la geometría: el geoplano",
+    "etapas": ["2.º"],
+    "tipo": "Juego",
+    "temas": ["Espacio y series"],
+    "desc": "Segmentos, líneas poligonales, polígonos y simetría en el geoplano (2º Primaria)",
+    "pags": 16,
+    "peso": 157,
+    "fecha": "2026-10-04"
+  },
+  {
+    "archivo": "Suma_en_Arbol_Nivel2.pdf",
+    "titulo": "La suma en árbol (nivel 2): jardineros de números",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "recurso": "La suma en árbol",
+    "temas": ["Suma y resta", "Decenas y valor posicional"],
+    "desc": "Suma en árbol con paso por la decena y regletas Cuisenaire (2º Primaria)",
+    "pags": 16,
+    "peso": 71,
+    "fecha": "2026-10-04"
   }
 ]

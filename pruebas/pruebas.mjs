@@ -244,6 +244,27 @@ await prueba("Los botones de las tarjetas caben en móvil, tableta y ordenador",
   exigir(!fallos.length, "botones cortados: "+fallos.slice(0, 6).join("; "));
 });
 
+/* Las fichas de herramientas: el dibujo tiene su tamaño y el texto no queda aplastado, en todos los anchos (móvil, iPad, ordenador) */
+await prueba("Las fichas de herramientas se ven bien en móvil, tableta y ordenador", async ()=>{
+  const fallos = [];
+  for(const [ancho, alto] of [[390, 844], [700, 1000], [834, 1194], [1024, 768], [1194, 834], [1440, 900]]){
+    await conPagina({viewport:{width:ancho, height:alto}}, async p=>{
+      await p.goto(WEB); await p.waitForSelector("#herr .herr-ficha");
+      const mal = await p.evaluate(()=> [...document.querySelectorAll("#herr .herr-ficha")].flatMap(f=>{
+        const ilus = f.querySelector(".herr-ilus").getBoundingClientRect(), txt = f.querySelector(".herr-txt").getBoundingClientRect();
+        const dibujo = f.querySelector(".herr-ilus svg")?.getBoundingClientRect();
+        const nombre = f.querySelector(".herr-txt b").textContent;
+        if(txt.width < 120) return [nombre+": el texto queda aplastado ("+Math.round(txt.width)+" px)"];
+        if(dibujo && (dibujo.width < 30 || dibujo.height < 30)) return [nombre+": el dibujo no se ve"];
+        if(ilus.width > f.getBoundingClientRect().width * .9 && txt.left > ilus.left && txt.top < ilus.bottom - 4) return [nombre+": el dibujo ocupa toda la ficha"];
+        return [];
+      }));
+      mal.forEach(m=> fallos.push(ancho+" px: "+m));
+    });
+  }
+  exigir(!fallos.length, fallos.slice(0, 6).join("; "));
+});
+
 await prueba("En el móvil, tocar cada ficha de herramienta la abre", ()=> conPagina(MOVIL, async p=>{
   await p.goto(WEB); await p.waitForSelector(".libro");
   const fichas = await p.$$eval("#herr .herr-ficha", a=> a.map(x=> x.getAttribute("href")));

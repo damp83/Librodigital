@@ -45,7 +45,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -167,6 +167,25 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   for(const t of ["C","7","/","0","="]) await tecla(t);
   exigir(/dividir entre 0/.test(await p.textContent("#caOperacion")), "calculadora: dividir entre 0 no avisa");
   await accesibilidad(p);
+  await p.goto(WEB+"#/piramides"); await p.waitForSelector("#vPiramides:not([hidden]) .pi-bloque");
+  const piramidesOk = await p.evaluate(()=>{   // todas las pirámides que se proponen tienen solución paso a paso
+    const antes = {nivel:PI.nivel, pisos:PI.pisos, hasta:PI.hasta}; let mal = 0;
+    for(const nivel of ["facil","medio","dificil"]) for(const pisos of [3,4,5]) for(const hasta of [10,20,100]) for(let k=0; k<8; k++){
+      Object.assign(PI, {nivel, pisos, hasta}); nuevaPiramide();
+      if(!resolverPasos(pisos, PI.dada) || PI.v[0][0] > hasta || PI.v.flat().some(x=> x < 0)) mal++;
+    }
+    Object.assign(PI, antes); nuevaPiramide(); return mal;
+  });
+  exigir(piramidesOk===0, "pirámides: "+piramidesOk+" pirámides sin solución o con números fuera de rango");
+  await p.click('#vPiramides .segmentos [data-nivel="medio"]');
+  for(let k=0; k<30 && !(await p.textContent("#piAyuda")).startsWith("¡Pirámide completa"); k++){   // resolver con las pistas
+    await p.click("#piPista");
+    const v = await p.evaluate(()=> PI.pista ? PI.v[PI.pista.bloque[0]][PI.pista.bloque[1]] : null);
+    exigir(v!==null, "pirámides: la pista no encuentra ningún bloque que se pueda calcular");
+    for(const c of String(v)) await p.click('#piTeclado [data-t="'+c+'"]');
+  }
+  exigir((await p.textContent("#piAyuda")).startsWith("¡Pirámide completa"), "pirámides: siguiendo las pistas no se completa la pirámide");
+  await accesibilidad(p);
   await p.goto(WEB+"#/aula/5-anios"); await p.waitForSelector("#vClase:not([hidden]) .cl-ficha");
   exigir(await p.locator('#vClase .cl-ficha[href="#/marco"]').count() === 1, "modo aula: faltan las herramientas de 5 años");
   await accesibilidad(p);
@@ -185,7 +204,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "aula.js", "geoplano.js", "calculadora.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));

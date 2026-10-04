@@ -476,14 +476,14 @@ footer.pie .marca{margin-bottom:12px}
 .herr-trims i:nth-child(2){color:#2a2000}
 .herr-bolas i:nth-child(3){color:#1c1204}
 .cl-ficha .herr-bolas i,.cl-ficha .herr-trims i{width:30px;height:30px;font-size:13px}
-@media (min-width:1000px){
-  .herr-rejilla{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (min-width:1180px){
+  .herr-rejilla{grid-template-columns:repeat(5,minmax(0,1fr))}
 }
-@media (min-width:761px) and (max-width:999px){
+@media (min-width:761px) and (max-width:1179px){
   .herr-rejilla{grid-template-columns:repeat(2,minmax(0,1fr))}
   .herr-rejilla > .herr-ficha:last-child:nth-child(odd){grid-column:1 / -1}
 }
-@media (min-width:1000px),(max-width:760px){
+@media (min-width:1180px),(max-width:760px){
   .herr-ficha{flex-direction:column;align-items:stretch;gap:12px;padding:10px 10px 16px}
   .herr-ficha .herr-ilus{width:100%;height:84px;padding-left:calc(50% - 58px);padding-right:calc(50% - 58px)}
   .herr-ficha .herr-txt{padding:0 6px}
@@ -722,6 +722,44 @@ footer.pie .marca{margin-bottom:12px}
 .ma-falta{margin:6px 0 0;color:var(--muted);font-size:clamp(17px,2.2vh,24px)}
 .color-ficha{width:32px;height:32px;border-radius:50%;border:2px solid var(--surface);background:var(--col);box-shadow:0 0 0 1px var(--line-strong)}
 .color-ficha[aria-pressed="true"]{box-shadow:0 0 0 3px var(--accent)}
+
+/* Pirámides numéricas */
+.pi-ayudas{display:flex;gap:8px;flex-wrap:wrap}
+.pi-cuerpo{overflow:auto;min-height:0;padding:clamp(14px,3vh,40px) 12px 20px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.pi-cuerpo > *{flex-shrink:0}
+.pi-piramide{--b:min(calc((100vw - 40px)/var(--n)),calc((100vh - 400px)/var(--n)/.66),170px);display:flex;flex-direction:column;align-items:center;gap:calc(var(--b)*.06)}
+.pi-fila{display:flex;gap:calc(var(--b)*.06)}
+.pi-bloque{--r:calc(var(--b)*.07);position:relative;width:var(--b);height:calc(var(--b)*.6);border-radius:calc(var(--b)*.1);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;padding:0;font:700 calc(var(--b)*.32)/1 var(--font-titulos);font-variant-numeric:tabular-nums;transition:background .15s,box-shadow .15s}
+.pi-bloque.dada{background:#ece4d4;color:#2a2116;box-shadow:inset 0 -6px 0 rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.18)}
+.pi-bloque.hueco{background:var(--surface);color:var(--accent);border:3px dashed color-mix(in srgb,var(--accent) 55%,var(--line-strong));cursor:pointer}
+.pi-bloque.hueco:hover{background:var(--brand-soft)}
+.pi-bloque.elegido{border-style:solid;border-color:var(--accent);box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 25%,transparent);background:var(--brand-soft)}
+.pi-bloque.parte{box-shadow:0 0 0 5px color-mix(in srgb,var(--r5) 70%,transparent),inset 0 -6px 0 rgba(0,0,0,.12)}
+.pi-bloque.usa{box-shadow:0 0 0 5px color-mix(in srgb,var(--r10) 75%,transparent),inset 0 -6px 0 rgba(0,0,0,.12)}
+.pi-bloque.pista{animation:pi-late 1s ease-in-out 2}
+@keyframes pi-late{50%{transform:scale(1.07)}}
+.pi-bloque.bien{background:var(--ok-soft);color:var(--ok);border:3px solid var(--ok)}
+.pi-bloque.mal{background:#fde2e1;color:#b3140f;border:3px solid #e3261f}
+.pi-bloque.solucion{color:var(--muted);border-style:dotted}
+.pi-regletas{display:flex;gap:1px;flex-wrap:wrap;justify-content:center;max-width:90%}
+.pi-regletas i{display:block;height:calc(var(--r)*1.5);border-radius:2px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18)}
+.pi-ayuda{min-height:1.5em;font-size:clamp(15px,2.1vh,21px);max-width:60ch}
+.pi-ayuda.ok{color:var(--ok);font-weight:700}
+.pi-teclado{display:grid;grid-template-columns:repeat(12,clamp(40px,min(5.5vw,6vh),64px));gap:6px}
+.pi-teclado[hidden]{display:none}
+.pi-tecla{aspect-ratio:1;border:1px solid var(--line-strong);border-radius:12px;background:var(--surface);color:var(--ink);font:700 clamp(18px,2.6vh,28px) var(--font-titulos);
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.08)}
+.pi-tecla:hover{background:var(--surface-2)}
+.pi-tecla.otra{background:var(--surface-2);color:var(--ink-2)}
+.pi-hechas{align-self:center;font:700 16px var(--font-titulos);color:var(--aviso)}
+@media (max-width:760px){
+  .pi-piramide{--b:min(calc((100vw - 30px)/var(--n)),calc((100vh - 470px)/var(--n)/.66),110px)}
+  .pi-teclado{grid-template-columns:repeat(6,minmax(0,52px))}
+  #vPiramides .reg-barra{gap:8px 10px}
+  #vPiramides .chip{height:32px;padding:0 11px;font-size:13.5px}
+  #piPantalla{display:none}
+}
 
 /* Calculadora */
 .ca-cuerpo{overflow:auto;min-height:0;padding:clamp(12px,3vh,36px) 16px 20px;display:flex;gap:24px;justify-content:center;align-items:flex-start;flex-wrap:wrap}
@@ -1058,6 +1096,10 @@ footer.pie .marca{margin-bottom:12px}
         <a class="herr-ficha" href="#/calculadora">
           <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="22" y="6" width="56" height="88" rx="9" fill="#33425c"/><rect x="29" y="13" width="42" height="18" rx="3" fill="#dfe9d8"/><text x="67" y="27" text-anchor="end" font-size="13" font-weight="700" fill="#1c2330" font-family="sans-serif">24</text><g fill="#f6f1e7"><rect x="29" y="38" width="11" height="10" rx="2"/><rect x="44" y="38" width="11" height="10" rx="2"/><rect x="29" y="52" width="11" height="10" rx="2"/><rect x="44" y="52" width="11" height="10" rx="2"/><rect x="29" y="66" width="11" height="10" rx="2"/><rect x="44" y="66" width="11" height="10" rx="2"/><rect x="29" y="80" width="26" height="8" rx="2"/></g><rect x="60" y="38" width="11" height="24" rx="2" fill="#f57c22"/><rect x="60" y="66" width="11" height="22" rx="2" fill="#2c77c4"/></svg></span>
           <span class="herr-txt"><b>Calculadora</b><span>Teclas grandes, factor constante para contar de n en n, series con pares e impares y reto de la tecla rota.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a class="herr-ficha" href="#/piramides">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g font-family="sans-serif" font-weight="700" font-size="13" text-anchor="middle"><rect x="36" y="12" width="28" height="20" rx="4" fill="#f2c200"/><text x="50" y="27" fill="#2a2000">9</text><rect x="21" y="36" width="28" height="20" rx="4" fill="#e3261f"/><text x="35" y="51" fill="#fff">4</text><rect x="51" y="36" width="28" height="20" rx="4" fill="#fff" stroke="#2c77c4" stroke-width="2.5" stroke-dasharray="4 3"/><text x="65" y="51" fill="#2c77c4">?</text><rect x="6" y="60" width="28" height="20" rx="4" fill="#2c8537"/><text x="20" y="75" fill="#fff">1</text><rect x="36" y="60" width="28" height="20" rx="4" fill="#7cc84a"/><text x="50" y="75" fill="#10240a">3</text><rect x="66" y="60" width="28" height="20" rx="4" fill="#2c77c4"/><text x="80" y="75" fill="#fff">2</text></g></svg></span>
+          <span class="herr-txt"><b>Pirámides numéricas</b><span>Cada bloque es la suma de los dos de abajo. Tres niveles, pistas y regletas de ayuda.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
         </a>
       </div>
     </section>
@@ -1401,6 +1443,37 @@ footer.pie .marca{margin-bottom:12px}
       <section class="ca-caja"><h2>Cinta</h2><ol class="ca-cinta" id="caCinta"></ol>
         <p class="ca-truco">Para contar de 2 en 2: <b>0 + 2</b> y luego <b>= = =</b>…</p></section>
       <section class="ca-caja" id="caPanelCaja" hidden aria-label="La serie en el panel del 100"><div class="ca-panel" id="caPanel100"></div></section>
+    </div>
+  </div>
+</div>
+
+<div class="vista" id="vPiramides" hidden role="dialog" aria-modal="true" aria-labelledby="vPirTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vPirTit">Pirámides numéricas</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Nivel">
+      <button data-nivel="facil" aria-pressed="true">Fácil</button>
+      <button data-nivel="medio" aria-pressed="false">Medio</button>
+      <button data-nivel="dificil" aria-pressed="false">Difícil</button>
+    </div>
+    <label class="b-select"><span>Pisos</span><select id="piPisos"><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+    <label class="b-select"><span>Números</span><select id="piHasta"><option value="10">hasta 10</option><option value="20">hasta 20</option><option value="100">hasta 100</option></select></label>
+    <span class="pi-ayudas" role="group" aria-label="Ayudas">
+      <button class="chip" id="piPartes" aria-pressed="true">Partes y todo</button>
+      <button class="chip" id="piRegletas" aria-pressed="false">Regletas</button>
+      <button class="chip" id="piMomento" aria-pressed="true">Corregir al momento</button>
+    </span>
+    <div class="reg-acc"><button class="icbtn" id="piPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+  </div>
+  <div class="pi-cuerpo">
+    <div class="pi-piramide" id="piPiramide"></div>
+    <p class="pan-ayuda pi-ayuda" id="piAyuda" aria-live="polite"></p>
+    <div class="pi-teclado" id="piTeclado" role="group" aria-label="Escribir un número en el bloque elegido"></div>
+    <div class="pt-acciones">
+      <button class="bt suave" id="piPista">Pista</button>
+      <button class="bt suave" id="piComprobar">Comprobar</button>
+      <button class="bt suave" id="piSolucion">Ver la solución</button>
+      <button class="bt azul" id="piNueva">Nueva pirámide</button>
+      <span class="pi-hechas" id="piHechas"></span>
     </div>
   </div>
 </div>
@@ -2328,13 +2401,13 @@ function panelNotas(c){
 let rutaPrevia = location.hash;
 function ruta(){
   // herramientas, secciones y modo aula viven en herramientas.js, secciones.js y aula.js: si alguno no ha cargado, se avisa
-  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
+  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
   // modo aula: la tableta recuerda su clase y vuelve a ella en lugar de ir a la biblioteca
   const cl = location.hash.match(/^#\/aula\/([\w-]+)\/?$/);
   if(cl){ cerrarLector(); abrirClase(cl[1]); rutaPrevia = location.hash; return; }
   const claseGuardada = leer("aula-clase", null);
   if(claseGuardada && (location.hash==="" || location.hash==="#/" || location.hash==="#")){ location.replace("#/aula/"+claseGuardada); return; }
-  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
+  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   if(typeof cerrarHerramienta==="function") cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
@@ -2401,7 +2474,7 @@ if("serviceWorker" in navigator && (location.protocol==="https:" || location.hos
    Entonces las fichas de las herramientas no hacen nada. Si pasa, se borran las copias guardadas del código
    (los PDF guardados se conservan) y se recarga una vez; si aun así falta algo, se avisa en pantalla. */
 const PIEZAS = ["abrirHerramienta", "cerrarHerramienta", "iniciarRegletas", "iniciarBombo", "iniciarRuta", "iniciarFamilias",
-                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora"];
+                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides"];
 function codigoIncompleto(){ return PIEZAS.filter(n=> typeof window[n] !== "function"); }
 function avisarCodigo(){
   const a = $("avisoCodigo"); if(!a.hidden) return;
@@ -2449,5 +2522,6 @@ listo.then(repararCodigo).then(seguir=> seguir ? fetch("catalogo.json", {cache:"
 <script src="aula.js"></script>
 <script src="geoplano.js"></script>
 <script src="calculadora.js"></script>
+<script src="piramides.js"></script>
 </body>
 </html>

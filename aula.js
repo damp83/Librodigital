@@ -26,35 +26,67 @@ function htmlTren(filas){
    CÁLCULO MENTAL
    --------------------------------------------------------------------- */
 /* Cada tipo genera una pregunta: texto con «?» donde va la respuesta, la respuesta y, si caben, las regletas */
+/* Cada tipo tiene la lista completa de sus operaciones: el banco (banco.js) las saca sin repetir hasta agotarlas */
+const sumaTren = (a, b) => [[{n:a},{n:b}],[{n:a+b, resp:true}]];
 const TIPOS_CM = [
-  {id:"mas1", nombre:"Uno más, uno menos", desc:"7 + 1, 5 − 1… hasta el 10", curso:"4 y 5 años", gen(){
-    const n = azar(1,9), mas = n===1 || Math.random()<.5;
-    return mas ? {q:n+" + 1", r:n+1, tren:[[{n},{n:1}],[{n:n+1, resp:true}]]}
-               : {q:n+" − 1", r:n-1, tren:[[{n}],[{n:n-1, resp:true},{n:1}]]}; }},
-  {id:"sumas10", nombre:"Sumas hasta 10", desc:"3 + 4, 6 + 2…", curso:"5 años y 1.º", gen(){
-    const a = azar(1,8), b = azar(1,10-a);
-    return {q:a+" + "+b, r:a+b, tren:[[{n:a},{n:b}],[{n:a+b, resp:true}]]}; }},
-  {id:"parejas10", nombre:"Parejas del 10", desc:"7 + ? = 10", curso:"5 años y 1.º", gen(){
-    const a = azar(1,9);
-    return {q:a+" + ? = 10", r:10-a, tren:[[{n:a},{n:10-a, resp:true}],[{n:10}]]}; }},
-  {id:"restas10", nombre:"Restas hasta 10", desc:"9 − 4, 7 − 2…", curso:"1.º", gen(){
-    const t = azar(2,10), a = azar(1,t-1);
-    return {q:t+" − "+a, r:t-a, tren:[[{n:t}],[{n:a},{n:t-a, resp:true}]]}; }},
-  {id:"dobles", nombre:"Dobles y mitades", desc:"6 + 6, la mitad de 14…", curso:"1.º y 2.º", gen(){
-    const n = azar(1,10);
-    return Math.random()<.6 ? {q:n+" + "+n, r:2*n} : {q:"Mitad de "+(2*n), r:n}; }},
-  {id:"decena", nombre:"Paso por la decena", desc:"8 + 5, 7 + 6…", curso:"1.º y 2.º", gen(){
-    const a = azar(6,9), b = azar(11-a, 9);
-    return {q:a+" + "+b, r:a+b, tren:[[{n:a},{n:10-a},{n:a+b-10}],[{n:10},{n:a+b-10, resp:true}]]}; }},
-  {id:"cero", nombre:"El truco del cero", desc:"30 + 40, 90 − 20…", curso:"2.º", gen(){
-    if(Math.random()<.5){ const a = azar(1,8), b = azar(1,9-a); return {q:a*10+" + "+b*10, r:(a+b)*10}; }
-    const a = azar(2,9), b = azar(1,a-1); return {q:a*10+" − "+b*10, r:(a-b)*10}; }},
-  {id:"amigos100", nombre:"Amigos del 100", desc:"40 + ? = 100", curso:"2.º", gen(){
-    const d = azar(1,9); return {q:d*10+" + ? = 100", r:100-d*10}; }},
-  {id:"dieces", nombre:"Dieces y unos", desc:"34 + 10, 57 − 20…", curso:"2.º", gen(){
-    const n = azar(21,79), d = azar(1,2)*10, mas = Math.random()<.5;
-    return mas ? {q:n+" + "+d, r:n+d} : {q:n+" − "+d, r:n-d}; }},
+  {id:"mas1", nombre:"Uno más, uno menos", desc:"7 + 1, 5 − 1… hasta el 10", curso:"4 y 5 años", lista(){
+    const l = [];
+    for(let n=0; n<=9; n++) l.push({k:n+"+1", q:n+" + 1", r:n+1, tren:n ? [[{n},{n:1}],[{n:n+1, resp:true}]] : null});
+    for(let n=2; n<=10; n++) l.push({k:n+"-1", q:n+" − 1", r:n-1, tren:[[{n}],[{n:n-1, resp:true},{n:1}]]});
+    return l; }},
+  {id:"sumas10", nombre:"Sumas hasta 10", desc:"3 + 4, 6 + 2…", curso:"5 años y 1.º", lista(){
+    const l = [];
+    for(let a=1; a<=9; a++) for(let b=1; a+b<=10; b++) l.push({k:a+"+"+b, q:a+" + "+b, r:a+b, tren:sumaTren(a,b)});
+    return l; }},
+  {id:"parejas10", nombre:"Parejas del 10", desc:"7 + ? = 10, ? + 3 = 10", curso:"5 años y 1.º", lista(){
+    const l = [];
+    for(let a=1; a<=9; a++){
+      l.push({k:a+"+?", q:a+" + ? = 10", r:10-a, tren:[[{n:a},{n:10-a, resp:true}],[{n:10}]]});
+      l.push({k:"?+"+a, q:"? + "+a+" = 10", r:10-a, tren:[[{n:10-a, resp:true},{n:a}],[{n:10}]]});
+    }
+    return l; }},
+  {id:"restas10", nombre:"Restas hasta 10", desc:"9 − 4, 7 − 2…", curso:"1.º", lista(){
+    const l = [];
+    for(let t=2; t<=10; t++) for(let a=1; a<t; a++) l.push({k:t+"-"+a, q:t+" − "+a, r:t-a, tren:[[{n:t}],[{n:a},{n:t-a, resp:true}]]});
+    return l; }},
+  {id:"dobles", nombre:"Dobles y mitades", desc:"6 + 6, la mitad de 14…", curso:"1.º y 2.º", lista(){
+    const l = [];
+    for(let n=1; n<=15; n++){
+      l.push({k:"d"+n, q:n+" + "+n, r:2*n, tren:n<=10 ? sumaTren(n,n) : null});
+      l.push({k:"m"+n, q:"Mitad de "+(2*n), r:n});
+    }
+    for(let n=2; n<=10; n++) l.push({k:"dd"+n, q:"Doble de "+n, r:2*n});
+    return l; }},
+  {id:"decena", nombre:"Paso por la decena", desc:"8 + 5, 7 + 6…", curso:"1.º y 2.º", lista(){
+    const l = [];
+    for(let a=2; a<=9; a++) for(let b=2; b<=9; b++) if(a+b>10){
+      const g = Math.max(a,b);   // se completa el 10 desde el mayor
+      l.push({k:a+"+"+b, q:a+" + "+b, r:a+b, tren:[[{n:g},{n:10-g},{n:a+b-10}],[{n:10},{n:a+b-10, resp:true}]]});
+    }
+    return l; }},
+  {id:"cero", nombre:"El truco del cero", desc:"30 + 40, 90 − 20…", curso:"2.º", lista(){
+    const l = [];
+    for(let a=1; a<=8; a++) for(let b=1; a+b<=9; b++) l.push({k:a+"0+"+b+"0", q:a*10+" + "+b*10, r:(a+b)*10});
+    for(let a=2; a<=9; a++) for(let b=1; b<a; b++) l.push({k:a+"0-"+b+"0", q:a*10+" − "+b*10, r:(a-b)*10});
+    return l; }},
+  {id:"amigos100", nombre:"Amigos del 100", desc:"40 + ? = 100, 100 − 70", curso:"2.º", lista(){
+    const l = [];
+    for(let d=1; d<=9; d++){
+      l.push({k:d+"0+?", q:d*10+" + ? = 100", r:100-d*10});
+      l.push({k:"?+"+d+"0", q:"? + "+d*10+" = 100", r:100-d*10});
+      l.push({k:"100-"+d+"0", q:"100 − "+d*10, r:100-d*10});
+    }
+    for(let d=1; d<=19; d+=2) l.push({k:d*5+"+?", q:d*5+" + ? = 100", r:100-d*5});   // 5, 15, 25… 95
+    return l; }},
+  {id:"dieces", nombre:"Dieces y unos", desc:"34 + 10, 57 − 20…", curso:"2.º", lista(){
+    const l = [];
+    for(let n=21; n<=79; n++) for(const d of [10, 20]){
+      l.push({k:n+"+"+d, q:n+" + "+d, r:n+d});
+      l.push({k:n+"-"+d, q:n+" − "+d, r:n-d});
+    }
+    return l; }},
 ];
+const listaCM = t => t._lista || (t._lista = t.lista());
 const CM = Object.assign({tipos:["parejas10"], cuantas:10, tiempo:0, regletas:true}, leer("aula-calculo", {}));
 let ronda = null, cmTemporizador = null;
 const guardarCM = () => guardar("aula-calculo", {tipos:CM.tipos, cuantas:CM.cuantas, tiempo:CM.tiempo, regletas:CM.regletas});
@@ -67,12 +99,14 @@ function pintarEleccion(){
   c.innerHTML =
     '<div class="cm-elegir"><h2>¿Qué practicamos hoy?</h2><p>Elige uno o varios tipos. Cada pregunta sale en grande y la respuesta, cuando la pidas: para hacer en voz alta con toda la clase.</p>'+
     '<div class="cm-tipos" role="group" aria-label="Tipos de cálculo">'+TIPOS_CM.map(t=>
-      '<button class="cm-tipo" data-id="'+t.id+'" aria-pressed="'+CM.tipos.includes(t.id)+'"><b>'+t.nombre+'</b><span>'+t.desc+'</span><small>'+t.curso+'</small></button>').join("")+'</div>'+
+      '<button class="cm-tipo" data-id="'+t.id+'" aria-pressed="'+CM.tipos.includes(t.id)+'"><b>'+t.nombre+'</b><span>'+t.desc+'</span><small>'+t.curso+'</small>'+
+      '<em class="cm-banco">'+listaCM(t).length+' operaciones · quedan '+quedanEnMazo("cm-"+t.id, listaCM(t))+' sin salir</em></button>').join("")+'</div>'+
     '<div class="cm-ajustes">'+
       '<label class="b-select"><span>Preguntas</span><select id="cmCuantas">'+[5,10,15,20].map(n=>'<option'+(n===CM.cuantas?' selected':'')+'>'+n+'</option>').join("")+'</select></label>'+
       '<label class="b-select"><span>Tiempo</span><select id="cmTiempoSel">'+[[0,"sin límite"],[5,"5 s"],[10,"10 s"],[20,"20 s"],[30,"30 s"]].map(([v,t])=>'<option value="'+v+'"'+(v===CM.tiempo?' selected':'')+'>'+t+'</option>').join("")+'</select></label>'+
       '<button class="chip" id="cmRegletas" aria-pressed="'+CM.regletas+'">Con regletas</button>'+
       '<button class="bt azul" id="cmEmpezar"><svg class="ic" data-icon="bola"></svg>Empezar</button>'+
+      '<button class="bt suave" id="cmBarajar" title="Vuelve a poner todas las operaciones en el banco">Barajar el banco</button>'+
     '</div></div>';
   pintarIconos(c);
   c.querySelectorAll(".cm-tipo").forEach(b=> b.onclick = ()=>{
@@ -85,13 +119,15 @@ function pintarEleccion(){
   $("cmTiempoSel").onchange = e=>{ CM.tiempo = +e.target.value; guardarCM(); };
   $("cmRegletas").onclick = e=>{ CM.regletas = !CM.regletas; e.currentTarget.setAttribute("aria-pressed", CM.regletas); guardarCM(); };
   $("cmEmpezar").onclick = empezarRonda;
+  $("cmBarajar").onclick = ()=>{ TIPOS_CM.forEach(t=> reiniciarMazo("cm-"+t.id)); pintarEleccion(); };
 }
 
 function empezarRonda(){
+  // del banco: cada tipo saca sus operaciones sin repetir hasta agotarlas (también de un día para otro)
   const tipos = TIPOS_CM.filter(t=>CM.tipos.includes(t.id)), vistas = new Set(), preguntas = [];
-  for(let intentos=0; preguntas.length<CM.cuantas && intentos<500; intentos++){
-    const p = tipos[preguntas.length % tipos.length].gen();
-    if(vistas.has(p.q) && intentos<400) continue;   // sin repetir mientras se pueda
+  for(let intentos=0; preguntas.length<CM.cuantas && intentos<200; intentos++){
+    const t = tipos[intentos % tipos.length], p = delMazo("cm-"+t.id, listaCM(t));
+    if(vistas.has(p.q)) continue;   // un tipo pequeño que se acaba y vuelve a barajar dentro de la misma ronda
     vistas.add(p.q); preguntas.push(p);
   }
   for(let i=preguntas.length-1; i>0; i--){ const j = azar(0,i); [preguntas[i], preguntas[j]] = [preguntas[j], preguntas[i]]; }
@@ -265,10 +301,17 @@ function iniciarPartes(){
   }
   pintarPartes();
 }
+const RETOS_PT = {};
+function retosPartes(n){   // todos los «todo = parte + parte» de cada nivel
+  if(RETOS_PT[n]) return RETOS_PT[n];
+  const l = [];
+  if(n===100){ for(let t=30; t<=100; t+=10) for(let a=10; a<t; a+=10) l.push({k:t+"="+a, todo:t, a}); }
+  else for(let t=(n===20 ? 11 : 2); t<=n; t++) for(let a=1; a<t; a++) l.push({k:t+"="+a, todo:t, a});
+  return RETOS_PT[n] = l;
+}
 function nuevoReto(){
-  const n = PT.nivel;
-  if(n===100){ PT.todo = azar(3,10)*10; PT.a = azar(1, PT.todo/10 - 1)*10; }
-  else { PT.todo = azar(n===20 ? 11 : 2, n); PT.a = azar(1, PT.todo-1); }
+  const n = PT.nivel, r = delMazo("pt-"+n, retosPartes(n));   // del banco: no se repiten hasta agotarlos
+  PT.todo = r.todo; PT.a = r.a;
   PT.b = PT.todo - PT.a;
   const o = PT.ocultar==="azar" ? ["todo","a","b"][azar(0,2)] : PT.ocultar==="todo" ? "todo" : PT.ocultar==="parte" ? (Math.random()<.5 ? "a" : "b") : null;
   PT.oculto = o; PT.familia = false;
@@ -359,7 +402,8 @@ function masFicha(){ const i = MA.huecos.slice(0, capacidad()).indexOf(null); if
 function menosFicha(){ for(let i=capacidad()-1; i>=0; i--) if(MA.huecos[i]){ MA.huecos[i] = null; break; } pintarMarco(); }
 function relampago(){   // se ve la cantidad unos segundos y se tapa: «¿cuántas había?»
   clearTimeout(maTemporizador);
-  ponerFichas(azar(1, capacidad()));
+  const cap = capacidad();
+  ponerFichas(delMazo("ma-"+cap, Array.from({length:cap}, (_, i)=> String(i+1))) * 1);   // del banco: sin repetir cantidades
   MA.tapado = false; MA.oculta = true; pintarMarco();
   maTemporizador = setTimeout(()=>{ MA.tapado = true; pintarMarco(); }, MA.segundos*1000);
 }

@@ -26,7 +26,11 @@ jobs:
       name: github-pages
       url: ${{ steps.despliegue.outputs.page_url }}
     steps:
+      # Siempre la versión más reciente de main (no la del momento en que se subió el archivo): si se suben
+      # varias tandas seguidas, cada publicación espera a la anterior y parte de lo que esta ya guardó.
       - uses: actions/checkout@v5
+        with:
+          ref: main
 
       - uses: actions/setup-python@v6
         with:
@@ -63,13 +67,19 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A catalogo.json materiales portadas subir
+          git add -A catalogo.json materiales portadas subir ':(glob)*.pdf'   # *.pdf: los subidos por error a la carpeta principal
           if git diff --cached --quiet; then
             echo "Nada que guardar."
           else
             git commit -m "Actualiza el catálogo automáticamente"
-            git pull --rebase origin main
-            git push origin HEAD:main
+            # Si mientras tanto se ha subido algo más, se encadena encima. Si no encaja, no se fuerza: esa
+            # subida lanza su propia publicación, que empezará desde lo último y lo procesará todo.
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              echo "Catálogo guardado."
+            else
+              git rebase --abort 2>/dev/null || true
+              echo "::warning title=Publicación::Se ha subido algo mientras se publicaba. No pasa nada: la siguiente publicación, que ya está en cola, lo procesará todo."
+            fi
           fi
 
       - uses: actions/configure-pages@v5

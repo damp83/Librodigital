@@ -124,7 +124,28 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.goto(WEB+"#/regletas"); await p.waitForSelector("#vRegletas:not([hidden])");
   await p.click(".reg-pieza >> nth=4"); exigir(await p.locator(".regleta-v").count() >= 1, "no se añade una regleta al pulsarla");
   await accesibilidad(p);
+  // Banco de retos: cada tipo de cálculo mental tiene operaciones distintas y correctas, y no se repiten hasta agotarlas
   await p.goto(WEB+"#/calculo"); await p.waitForSelector(".cm-tipo");
+  const banco = await p.evaluate(()=>{
+    const fallos = [];
+    for(const t of TIPOS_CM){
+      const l = listaCM(t), claves = new Set(l.map(x=> x.k)), textos = new Set(l.map(x=> x.q));
+      if(claves.size !== l.length || textos.size !== l.length) fallos.push(t.id+": operaciones repetidas en la lista");
+      l.forEach(x=>{   // la respuesta cuadra con la operación
+        const q = x.q.replace("−","-"), m = q.match(/^(\d+) ([+-]) (\d+)$/), h = q.match(/^Mitad de (\d+)$/), d = q.match(/^Doble de (\d+)$/);
+        const hueco = q.match(/^(\?|\d+) \+ (\?|\d+) = (\d+)$/);
+        const ok = m ? (m[2]==="+" ? +m[1] + +m[3] : +m[1] - +m[3])===x.r : h ? +h[1]/2===x.r : d ? 2 * +d[1]===x.r
+                 : hueco ? (hueco[1]==="?" ? +hueco[3] - +hueco[2] : +hueco[3] - +hueco[1])===x.r : false;
+        if(!ok) fallos.push(t.id+": «"+x.q+"» no da "+x.r);
+      });
+      reiniciarMazo("cm-"+t.id);
+      const sacadas = l.map(()=> delMazo("cm-"+t.id, l).k);
+      if(new Set(sacadas).size !== l.length) fallos.push(t.id+": se repite antes de agotar el banco");
+      reiniciarMazo("cm-"+t.id);
+    }
+    return fallos;
+  });
+  exigir(!banco.length, "banco de retos: "+banco.slice(0,4).join("; "));
   await p.click("#cmEmpezar"); await p.waitForSelector(".cm-pregunta");
   await p.click("#cmVer"); exigir(!(await p.textContent(".cm-pregunta")).includes("?"), "cálculo mental: no se muestra la respuesta");
   await accesibilidad(p);
@@ -172,7 +193,7 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
     const antes = {nivel:PI.nivel, pisos:PI.pisos, hasta:PI.hasta}; let mal = 0;
     for(const nivel of ["facil","medio","dificil"]) for(const pisos of [3,4,5]) for(const hasta of [10,20,100]) for(let k=0; k<8; k++){
       Object.assign(PI, {nivel, pisos, hasta}); nuevaPiramide();
-      if(!resolverPasos(pisos, PI.dada) || PI.v[0][0] > hasta || PI.v.flat().some(x=> x < 0)) mal++;
+      if(!resolverPasos(pisos, PI.dada) || PI.v[0][0] > PI.hasta || PI.v.flat().some(x=> x < 0)) mal++;
     }
     Object.assign(PI, antes); nuevaPiramide(); return mal;
   });
@@ -212,7 +233,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));

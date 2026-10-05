@@ -110,9 +110,15 @@ function apuntar(a, op, b, r){
   CA.cinta.push(formato(a)+" "+SIMBOLO[op]+" "+formato(b)+" = "+formato(r));
   if(CA.cinta.length > 60) CA.cinta.shift();
 }
+let retosRota = null;
+const RETOS_ROTA = () => retosRota || (retosRota = (()=>{
+  const l = [];
+  for(let c=1; c<=9; c++) for(let n=10; n<=99; n++) if(String(n).includes(String(c))) l.push({k:c+":"+n, rota:String(c), n});
+  return l; })());
 function nuevoRetoRota(){
-  CA.rota = String(azar(1, 9));
-  let n; do { n = azar(10, 99); } while(!String(n).includes(CA.rota));   // el número que hay que conseguir lleva la cifra rota
+  // del banco: cada pareja «tecla rota + número» sale una vez hasta agotarlas (el número lleva la cifra rota)
+  const r = delMazo("ca-rota", RETOS_ROTA());
+  CA.rota = r.rota; const n = r.n;
   CA.objetivo = n; CA.logrado = false;
 }
 

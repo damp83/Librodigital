@@ -51,6 +51,14 @@ Para agrupar materiales que ya están subidos, pon el mismo `"recurso"` en sus b
 
 ### Si algo sale mal
 
+- **PDF muy pesados** (más de 5 MB, como las diapositivas exportadas como imágenes): las imágenes se pasan
+  solas a JPEG de buena calidad, con la misma resolución (de 20 MB a unos 3 MB). En *Actions* sale «Aligerado».
+  Para los que ya están publicados: `python scripts/actualizar_catalogo.py --aligerar-todo`.
+- **Varias subidas seguidas:** no hace falta esperar entre una y otra. Cada publicación espera a que
+  termine la anterior y parte de lo que esta ya guardó.
+- **PDF subido a la carpeta principal** (fuera de `subir/`): se publica igual. El curso se lee en el
+  título o la descripción del PDF («… (2º Primaria)») o se toma de su pareja; si no aparece, sale un aviso.
+
 - **PDF dañado o con contraseña:** se queda en `subir/` sin publicarse y aparece un aviso en *Actions*.
   El resto de materiales se publica con normalidad. Bórralo y súbelo exportado de nuevo.
 - **Dos PDF con el mismo nombre:** si ya existía uno con ese nombre, el nuevo lo sustituye y sale
@@ -163,6 +171,16 @@ Su entrada del catálogo y su portada se quitan solas.
       Ayudas: *Pista* (marca un bloque que ya se puede calcular y la operación: «5 + 3 = ?» o «12 − 5 = ?»),
       *Partes y todo* (al elegir un bloque se marcan sus dos partes), *Regletas* dentro de los bloques,
       *Corregir al momento* o con «Comprobar», y «Ver la solución». Teclado en pantalla y del ordenador.
+  - **Banco de retos** (`banco.js`): las herramientas no repiten operaciones ni retos hasta haberlos usado
+    todos. Cada tipo tiene un «mazo» con todos los posibles, barajado, que se guarda en el dispositivo (tampoco
+    se repiten de un día para otro):
+    - *Cálculo mental*: de 18 a 236 operaciones por tipo; cada tarjeta dice cuántas quedan sin salir, y hay un
+      botón para barajar el banco de nuevo.
+    - *Partes y todo*: 45 retos hasta 10, 145 hasta 20 y 44 con dieces.
+    - *Marco del 10* (relámpago): las cantidades.
+    - *Geoplano*: 24 figuras para copiar y 15 de simetría.
+    - *Calculadora*: 162 retos de tecla rota.
+    - *Pirámides*: no se repite ninguna de las últimas 150 de cada nivel.
   - **Modo aula por curso** (`#/aula/3-anios`, `4-anios`, `5-anios`, `1-primaria`, `2-primaria`): una pantalla
     sencilla para las tabletas o la pizarra de una clase, con las fichas del trimestre actual, «Seguir» con
     la última ficha abierta, los materiales y las herramientas de ese curso con iconos grandes y el reto en

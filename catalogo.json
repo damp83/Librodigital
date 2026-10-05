@@ -381,5 +381,27 @@
     "pags": 9,
     "peso": 82,
     "fecha": "2026-10-05"
+  },
+  {
+    "archivo": "Ficha_multinivel_La_Hora.pdf",
+    "titulo": "La hora y los intervalos de tiempo",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "temas": [],
+    "desc": "La hora: reloj analógico y digital, en punto, y cuarto, y media, menos cuarto e intervalos. Multinivel y Bloom revisada",
+    "pags": 10,
+    "peso": 96,
+    "fecha": "2026-10-05"
+  },
+  {
+    "archivo": "Las_horas_2.pdf",
+    "titulo": "Las horas 2",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "temas": [],
+    "desc": "",
+    "pags": 15,
+    "peso": 22459,
+    "fecha": "2026-10-05"
   }
 ]

@@ -121,6 +121,58 @@ def optimizar(ruta):
         tmp.unlink(missing_ok=True)
 
 
+PESADO_KB = 5120          # a partir de aquí, las imágenes grandes del PDF se pasan a JPEG
+CALIDAD_JPEG = 85
+
+
+def aligerar(ruta):
+    """Para PDF muy pesados (diapositivas exportadas como imágenes sin comprimir): pasa a JPEG de buena calidad
+    las imágenes grandes, con la misma resolución y conservando su transparencia. Solo se queda con el resultado
+    si abre bien, tiene las mismas páginas y ocupa bastante menos."""
+    if ruta.stat().st_size < PESADO_KB * 1024:
+        return
+    try:
+        import pikepdf, io
+        from PIL import Image
+    except ImportError:
+        return
+    tmp = ruta.with_suffix(".tmp.pdf")
+    try:
+        with pikepdf.open(ruta) as pdf:
+            n, hechas = len(pdf.pages), set()
+            for pagina in pdf.pages:
+                for _, img in pagina.images.items():
+                    if img.objgen in hechas:
+                        continue
+                    hechas.add(img.objgen)
+                    if img.get("/Filter") != pikepdf.Name.FlateDecode or int(img.get("/Width", 0)) < 400 or len(img.read_raw_bytes()) < 200 * 1024:
+                        continue
+                    if img.get("/BitsPerComponent", 8) != 8:
+                        continue
+                    pil = pikepdf.PdfImage(img).as_pil_image()
+                    if pil.mode not in ("RGB", "L"):
+                        pil = pil.convert("RGB")
+                    salida = io.BytesIO(); pil.save(salida, "JPEG", quality=CALIDAD_JPEG, optimize=True)
+                    if salida.tell() >= len(img.read_raw_bytes()):
+                        continue
+                    img.write(salida.getvalue(), filter=pikepdf.Name.DCTDecode)
+                    img.ColorSpace = pikepdf.Name.DeviceGray if pil.mode == "L" else pikepdf.Name.DeviceRGB
+                    img.BitsPerComponent = 8
+                    if "/DecodeParms" in img:
+                        del img["/DecodeParms"]
+            pdf.save(tmp, compress_streams=True, object_stream_mode=pikepdf.ObjectStreamMode.generate)
+        doc = abrir_pdf(tmp); ok = len(doc) == n; doc.close()
+        if ok and tmp.stat().st_size < ruta.stat().st_size * 0.7:
+            antes = ruta.stat().st_size
+            tmp.replace(ruta)
+            cambios.append(f"Aligerado: {ruta.name} ({antes / 1048576:.1f} → {ruta.stat().st_size / 1048576:.1f} MB, "
+                           f"imágenes en JPEG de calidad {CALIDAD_JPEG}, misma resolución)")
+    except Exception as e:
+        avisos.append(f"{ruta.name}: no se ha podido aligerar ({e}); se publica tal cual.")
+    finally:
+        tmp.unlink(missing_ok=True)
+
+
 def convencion(stem):
     """Devuelve (recurso, tipo) si el nombre sigue la forma «Recurso - tipo»; si no, (None, None)."""
     c = CONVENCION.match(stem.replace("_", " ").strip())
@@ -295,6 +347,9 @@ def main():
     if "--optimizar-todo" in sys.argv:
         for pdf in sorted(MATERIALES.glob("*.pdf")):
             optimizar(pdf)
+    if "--aligerar-todo" in sys.argv:   # los PDF ya publicados que pesan demasiado
+        for pdf in sorted(MATERIALES.glob("*.pdf")):
+            aligerar(pdf)
     regenerar, llegados, nuevos, de_raiz = set(), set(), [], []
 
     # 1. Buzón subir/<curso>/ (y los PDF subidos por error a la carpeta principal del repositorio)
@@ -325,6 +380,7 @@ def main():
         llegados.add(destino.name)
         shutil.move(str(pdf), destino)
         optimizar(destino)
+        aligerar(destino)
         if destino.name in por_archivo:
             regenerar.add(destino.name)
             cambios.append(f"Sustituido: {destino.name} (se conservan título, curso y descripción)")
@@ -354,7 +410,7 @@ def main():
             if not se_puede_abrir(pdf):
                 avisos.append(f"materiales/{pdf.name}: el PDF está dañado o protegido con contraseña; no se publica.")
                 continue
-            optimizar(pdf)
+            optimizar(pdf); aligerar(pdf)
             m = entrada_nueva(pdf, [], *convencion(pdf.stem))
             catalogo.append(m); por_archivo[m["archivo"]] = m
             cambios.append(f"Nuevo: {m['archivo']} → «{m['titulo']}» (sin curso: súbelo a subir/<curso>/ "

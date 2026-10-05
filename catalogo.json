@@ -403,5 +403,29 @@
     "pags": 15,
     "peso": 22459,
     "fecha": "2026-10-05"
+  },
+  {
+    "archivo": "Ficha_multinivel_Numeros_3_Cifras.pdf",
+    "titulo": "Los números de tres cifras y la placa del 100",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "recurso": "Los números de tres cifras y la placa del 100",
+    "temas": ["Composición y descomposición", "Decenas y valor posicional"],
+    "desc": "Números de tres cifras: placa del 100, valor posicional, composición, orden y comparación. Multinivel y Bloom revisada",
+    "pags": 10,
+    "peso": 79,
+    "fecha": "2026-10-05"
+  },
+  {
+    "archivo": "Numeros_3_cifras.pdf",
+    "titulo": "Numeros 3 cifras",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "recurso": "Los números de tres cifras y la placa del 100",
+    "temas": [],
+    "desc": "",
+    "pags": 14,
+    "peso": 18415,
+    "fecha": "2026-10-05"
   }
 ]

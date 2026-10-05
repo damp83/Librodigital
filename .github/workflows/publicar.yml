@@ -67,7 +67,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A catalogo.json materiales portadas subir ':(glob)*.pdf'   # *.pdf: los subidos por error a la carpeta principal
+          git add -A catalogo.json materiales portadas subir
+          # los PDF subidos por error a la carpeta principal (si no hay ninguno, git avisa y no pasa nada)
+          git add -A -- ':(glob)*.pdf' 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "Nada que guardar."
           else

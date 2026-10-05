@@ -171,6 +171,16 @@ Su entrada del catálogo y su portada se quitan solas.
       Ayudas: *Pista* (marca un bloque que ya se puede calcular y la operación: «5 + 3 = ?» o «12 − 5 = ?»),
       *Partes y todo* (al elegir un bloque se marcan sus dos partes), *Regletas* dentro de los bloques,
       *Corregir al momento* o con «Comprobar», y «Ver la solución». Teclado en pantalla y del ordenador.
+  - **Banco de retos** (`banco.js`): las herramientas no repiten operaciones ni retos hasta haberlos usado
+    todos. Cada tipo tiene un «mazo» con todos los posibles, barajado, que se guarda en el dispositivo (tampoco
+    se repiten de un día para otro):
+    - *Cálculo mental*: de 18 a 236 operaciones por tipo; cada tarjeta dice cuántas quedan sin salir, y hay un
+      botón para barajar el banco de nuevo.
+    - *Partes y todo*: 45 retos hasta 10, 145 hasta 20 y 44 con dieces.
+    - *Marco del 10* (relámpago): las cantidades.
+    - *Geoplano*: 24 figuras para copiar y 15 de simetría.
+    - *Calculadora*: 162 retos de tecla rota.
+    - *Pirámides*: no se repite ninguna de las últimas 150 de cada nivel.
   - **Modo aula por curso** (`#/aula/3-anios`, `4-anios`, `5-anios`, `1-primaria`, `2-primaria`): una pantalla
     sencilla para las tabletas o la pizarra de una clase, con las fichas del trimestre actual, «Seguir» con
     la última ficha abierta, los materiales y las herramientas de ese curso con iconos grandes y el reto en

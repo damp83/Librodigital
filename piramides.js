@@ -21,6 +21,7 @@ function iniciarPiramides(){
     pintarIconos($("vPiramides"));
     document.querySelectorAll("#vPiramides .segmentos button").forEach(b=> b.onclick = ()=>{ PI.nivel = b.dataset.nivel; guardarPI(); nuevaPiramide(); });
     $("piPisos").onchange = e=>{ PI.pisos = +e.target.value; guardarPI(); nuevaPiramide(); };
+    // con 5 pisos y números hasta 10 solo cabe una pirámide (la cúspide ya pasa de 10): no se ofrece
     $("piHasta").onchange = e=>{ PI.hasta = +e.target.value; guardarPI(); nuevaPiramide(); };
     $("piRegletas").onclick = ()=>{ PI.regletas = !PI.regletas; guardarPI(); pintarPiramide(); };
     $("piPartes").onclick = ()=>{ PI.partes = !PI.partes; guardarPI(); pintarPiramide(); };
@@ -59,12 +60,21 @@ function resolverPasos(n, sabe){
   }
   return k.every(f=> f.every(Boolean)) ? {sumas, restas} : null;
 }
-function nuevaPiramide(){
-  const n = PI.pisos;
+function generarPiramide(){
+  const n = PI.pisos, maximo = Math.max(1, Math.ceil(PI.hasta / (2 ** (n-1)) * 2.5));   // bases variadas; se filtran por la cúspide
   let v = null;
-  for(let t=0; t<400 && !v; t++){
-    const minimo = t < 300 ? 1 : 0;   // si con unos no cabe (5 pisos hasta 10), se admiten ceros
-    const base = Array.from({length:n}, ()=> azar(minimo, Math.max(minimo, Math.round(PI.hasta / (2 ** (n-1)) * 1.6))));
+  if((maximo + 1) ** n <= 20000){   // pocas bases posibles: se buscan todas (con un cero como mucho) y se elige una
+    const validas = [], base = Array(n).fill(0);
+    const recorrer = k=>{
+      if(k===n){ const p = construir(base); if(base.filter(x=> x===0).length <= 1 && p[0][0] <= PI.hasta && p[0][0] >= Math.min(PI.hasta, n * 2)) validas.push(base.slice()); return; }
+      for(let x=0; x<=maximo; x++){ base[k] = x; recorrer(k+1); }
+    };
+    recorrer(0);
+    if(validas.length) v = construir(validas[azar(0, validas.length-1)]);
+  }
+  for(let t=0; t<600 && !v; t++){
+    const minimo = t < 450 ? 1 : 0;   // si con unos no cabe (5 pisos hasta 10), se admiten ceros
+    const base = Array.from({length:n}, ()=> azar(minimo, Math.max(minimo, maximo)));
     const p = construir(base);
     if(p[0][0] <= PI.hasta && p[0][0] >= Math.min(PI.hasta, n * 2)) v = p;
   }
@@ -83,6 +93,12 @@ function nuevaPiramide(){
     if(PI.nivel==="dificil" && enBase <= 1 && d[0][0] && pasos.restas >= n) dada = d;
   }
   if(!dada){ dada = v.map(f=> f.map(()=> false)); dada[n-1].fill(true); }
+  return {k: v[n-1].join(",")+"|"+dada.flat().map(Number).join(""), v, dada};
+}
+function nuevaPiramide(){
+  if(PI.pisos===5 && PI.hasta===10){ PI.hasta = 20; guardarPI(); }
+  // del banco: no se repite ninguna de las últimas 150 pirámides de ese nivel, pisos y números
+  const {v, dada} = sinRepetir("pi-"+PI.nivel+"-"+PI.pisos+"-"+PI.hasta, generarPiramide, 150);
   Object.assign(PI, {v, dada, resp:v.map(f=> f.map(()=> "")), sel:null, pista:null, solucion:false, comprobada:false});
   PI.sel = siguienteHueco(-1);
   pintarPiramide();
@@ -138,6 +154,7 @@ function pintarPiramide(){
   const n = PI.pisos;
   document.querySelectorAll("#vPiramides .segmentos button").forEach(b=> b.setAttribute("aria-pressed", b.dataset.nivel===PI.nivel));
   $("piPisos").value = PI.pisos; $("piHasta").value = PI.hasta;
+  $("piHasta").querySelector('option[value="10"]').disabled = PI.pisos===5;
   $("piRegletas").setAttribute("aria-pressed", PI.regletas);
   $("piPartes").setAttribute("aria-pressed", PI.partes);
   $("piMomento").setAttribute("aria-pressed", PI.alMomento);

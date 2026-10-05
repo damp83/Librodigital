@@ -645,6 +645,7 @@ footer.pie .marca{margin-bottom:12px}
 .cm-tipo b{font-family:var(--font-titulos);font-weight:600;font-size:16px}
 .cm-tipo span{color:var(--muted);font-size:13.5px}
 .cm-tipo small{margin-top:4px;font-size:12px;font-weight:600;color:var(--accent)}
+.cm-banco{font-style:normal;font-size:12px;color:var(--muted)}
 .cm-tipo[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
 .cm-ajustes{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin:22px 0 0}
 .cm-ajustes .bt.azul{min-height:52px;padding:0 28px;font-size:17px}
@@ -2475,7 +2476,7 @@ if("serviceWorker" in navigator && (location.protocol==="https:" || location.hos
    Entonces las fichas de las herramientas no hacen nada. Si pasa, se borran las copias guardadas del código
    (los PDF guardados se conservan) y se recarga una vez; si aun así falta algo, se avisa en pantalla. */
 const PIEZAS = ["abrirHerramienta", "cerrarHerramienta", "iniciarRegletas", "iniciarBombo", "iniciarRuta", "iniciarFamilias",
-                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides"];
+                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "delMazo"];
 function codigoIncompleto(){ return PIEZAS.filter(n=> typeof window[n] !== "function"); }
 function avisarCodigo(){
   const a = $("avisoCodigo"); if(!a.hidden) return;
@@ -2520,6 +2521,7 @@ listo.then(repararCodigo).then(seguir=> seguir ? fetch("catalogo.json", {cache:"
 </script>
 <script src="herramientas.js"></script>
 <script src="secciones.js"></script>
+<script src="banco.js"></script>
 <script src="aula.js"></script>
 <script src="geoplano.js"></script>
 <script src="calculadora.js"></script>

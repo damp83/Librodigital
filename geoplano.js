@@ -21,7 +21,21 @@ const GP_FIGURAS = [   // modelos para copiar (geoplano 5×5, coordenadas de 0 a
   {n:"Casa", p:[[2,0],[4,2],[4,4],[0,4],[0,2]]},
   {n:"Hexágono", p:[[1,0],[3,0],[4,2],[3,4],[1,4],[0,2]]},
   {n:"Letra L", p:[[0,0],[1,0],[1,3],[3,3],[3,4],[0,4]]},
-  {n:"Flecha", p:[[0,1],[2,1],[2,0],[4,2],[2,4],[2,3],[0,3]]}];
+  {n:"Flecha", p:[[0,1],[2,1],[2,0],[4,2],[2,4],[2,3],[0,3]]},
+  {n:"Rectángulo de pie", p:[[1,0],[3,0],[3,4],[1,4]]},
+  {n:"Cuadrado grande", p:[[0,0],[4,0],[4,4],[0,4]]},
+  {n:"Cuadrado pequeño", p:[[1,1],[2,1],[2,2],[1,2]]},
+  {n:"Triángulo rectángulo grande", p:[[0,0],[4,4],[0,4]]},
+  {n:"Triángulo del revés", p:[[0,0],[4,0],[2,4]]},
+  {n:"Paralelogramo", p:[[1,1],[4,1],[3,3],[0,3]]},
+  {n:"Rombo", p:[[2,0],[3,2],[2,4],[1,2]]},
+  {n:"Pentágono", p:[[2,0],[4,1],[3,4],[1,4],[0,1]]},
+  {n:"Letra T", p:[[0,0],[4,0],[4,1],[3,1],[3,4],[1,4],[1,1],[0,1]]},
+  {n:"Escalera", p:[[0,4],[0,3],[1,3],[1,2],[2,2],[2,1],[3,1],[3,0],[4,0],[4,4]]},
+  {n:"Cruz", p:[[1,0],[3,0],[3,1],[4,1],[4,3],[3,3],[3,4],[1,4],[1,3],[0,3],[0,1],[1,1]]},
+  {n:"Trapecio rectángulo", p:[[0,1],[2,1],[4,3],[0,3]]},
+  {n:"Barco", p:[[0,2],[4,2],[3,4],[1,4]]},
+  {n:"Octógono", p:[[1,0],[3,0],[4,1],[4,3],[3,4],[1,4],[0,3],[0,1]]}];
 const GP_MITADES = [   // simetría (geoplano 7×7, eje vertical en x = 3): la mitad izquierda
   {n:"Flecha", p:[[3,1],[1,3],[3,5]]},
   {n:"Árbol", p:[[3,0],[0,4],[2,4],[2,6],[3,6]]},
@@ -29,7 +43,18 @@ const GP_MITADES = [   // simetría (geoplano 7×7, eje vertical en x = 3): la m
   {n:"Casa", p:[[3,0],[0,3],[0,6],[3,6]]},
   {n:"Barco", p:[[0,4],[3,4],[3,6],[1,6]]},
   {n:"Corazón", p:[[3,2],[2,1],[1,1],[0,2],[0,3],[3,6]]},
-  {n:"Escalera", p:[[0,6],[0,4],[1,4],[1,2],[2,2],[2,0],[3,0],[3,6]]}];
+  {n:"Escalera", p:[[0,6],[0,4],[1,4],[1,2],[2,2],[2,0],[3,0],[3,6]]},
+  {n:"Rombo", p:[[3,0],[1,3],[3,6]]},
+  {n:"Pez", p:[[3,2],[1,1],[0,3],[1,5],[3,4]]},
+  {n:"Copa", p:[[0,0],[3,0],[3,6],[1,6],[1,5],[2,5],[2,3],[0,2]]},
+  {n:"Cohete", p:[[3,0],[2,2],[2,5],[0,6],[3,6]]},
+  {n:"Mariposa", p:[[3,2],[1,0],[0,2],[1,3],[0,5],[2,6],[3,4]]},
+  {n:"Corona", p:[[0,1],[1,3],[2,1],[3,3],[3,6],[0,6]]},
+  {n:"Rectángulo separado", p:[[0,0],[1,0],[1,3],[0,3]]},
+  {n:"Triángulo separado", p:[[0,6],[2,6],[0,4]]}];
+/* Del banco (banco.js): las figuras no se repiten hasta haber salido todas */
+const otraFigura = () => delMazo("gp-copiar", GP_FIGURAS.map((f,i)=> ({k:f.n, i}))).i;
+const otraMitad = () => delMazo("gp-simetria", GP_MITADES.map((f,i)=> ({k:f.n, i}))).i;
 
 const GP = Object.assign({n:5, color:0, medidas:true, gomas:[]}, leer("aula-geoplano", {}),
   {modo:"libre", alumno:[], modelo:0, mitad:0, ver:false, actual:null, elegida:null, tocada:false, cursor:[0,0], resultado:""});
@@ -51,8 +76,8 @@ function iniciarGeoplano(){
       guardarGP(); pintarGeoplano(); });
     document.querySelectorAll("#vGeoplano .segmentos button").forEach(b=> b.onclick = ()=>{
       GP.modo = b.dataset.modo; GP.actual = null; GP.elegida = null; GP.alumno = []; GP.ver = false; GP.resultado = ""; GP.cursor = [0,0];
-      if(GP.modo==="copiar") GP.modelo = azar(0, GP_FIGURAS.length-1);
-      if(GP.modo==="simetria") GP.mitad = azar(0, GP_MITADES.length-1);
+      if(GP.modo==="copiar") GP.modelo = otraFigura();
+      if(GP.modo==="simetria") GP.mitad = otraMitad();
       pintarGeoplano(); });
     $("gpN").onchange = e=>{ GP.n = +e.target.value; GP.gomas = []; GP.actual = null; GP.elegida = null; guardarGP(); pintarGeoplano(); };
     $("gpMedidas").onclick = ()=>{ GP.medidas = !GP.medidas; guardarGP(); pintarGeoplano(); };
@@ -287,8 +312,8 @@ function pintarGeoplano(){
   $("gpComprobar")?.addEventListener("click", comprobarGP);
   $("gpVer")?.addEventListener("click", ()=>{ GP.ver = !GP.ver; pintarGeoplano(); });
   $("gpOtra")?.addEventListener("click", ()=>{
-    if(modo==="copiar") GP.modelo = (GP.modelo + azar(1, GP_FIGURAS.length-1)) % GP_FIGURAS.length;
-    else GP.mitad = (GP.mitad + azar(1, GP_MITADES.length-1)) % GP_MITADES.length;
+    if(modo==="copiar") GP.modelo = otraFigura();
+    else GP.mitad = otraMitad();
     GP.alumno = []; GP.actual = null; GP.elegida = null; GP.ver = false; GP.resultado = ""; pintarGeoplano(); });
 }
 function comprobarGP(){

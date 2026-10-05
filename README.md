@@ -51,6 +51,11 @@ Para agrupar materiales que ya están subidos, pon el mismo `"recurso"` en sus b
 
 ### Si algo sale mal
 
+- **Varias subidas seguidas:** no hace falta esperar entre una y otra. Cada publicación espera a que
+  termine la anterior y parte de lo que esta ya guardó.
+- **PDF subido a la carpeta principal** (fuera de `subir/`): se publica igual. El curso se lee en el
+  título o la descripción del PDF («… (2º Primaria)») o se toma de su pareja; si no aparece, sale un aviso.
+
 - **PDF dañado o con contraseña:** se queda en `subir/` sin publicarse y aparece un aviso en *Actions*.
   El resto de materiales se publica con normalidad. Bórralo y súbelo exportado de nuevo.
 - **Dos PDF con el mismo nombre:** si ya existía uno con ese nombre, el nuevo lo sustituye y sale

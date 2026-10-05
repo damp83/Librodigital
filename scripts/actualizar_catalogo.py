@@ -54,7 +54,8 @@ TEMAS = {   # expresiones regulares sobre el texto sin tildes y en minúsculas
     "Problemas": [r"\bproblemas?\b"],
     "Geometría": [r"\bgeoplano", r"\bpoligon", r"\bsegmentos?\b", r"\btriangul", r"\bcuadrados?\b", r"\brectangul",
                   r"\bperimetro", r"\bfiguras? (planas|geometricas)", r"\bgeometri"],
-    "Medida": [r"\bmedida", r"\blongitud", r"\bcentimetros?\b", r"\bmetros?\b", r"\bmedir\b"],
+    "Medida": [r"\bmedida", r"\blongitud", r"\bcentimetros?\b", r"\bmetros?\b", r"\bmedir\b",
+               r"\bhoras?\b", r"\breloj", r"\bintervalos de tiempo\b", r"\bdinero\b", r"\bmonedas?\b", r"\bbilletes?\b"],
     "Decenas y valor posicional": [r"\bdecenas?\b", r"\bdieces\b", r"\bdiez y unos\b", r"\bvalor posicional\b", r"\bpanel del 100\b", r"\bamigos del 100\b", r"\bcentenas?\b", r"\bdel 1 al 99\b"],
 }
 LADO_PORTADA = 360        # píxeles del lado mayor de la portada
@@ -191,7 +192,16 @@ def generar_portada(ruta_pdf):
 
 def palabras_clave(m):
     texto = norm(Path(m["archivo"]).stem.replace("_", " ") + " " + str(m.get("titulo", "")))
-    return {p for p in re.findall(r"[a-z0-9]+", texto) if p not in PALABRAS_VACIAS and (len(p) > 2 or p.isdigit())}
+    palabras = {p for p in re.findall(r"[a-z0-9]+", texto) if p not in PALABRAS_VACIAS and (len(p) > 2 or p.isdigit())}
+    return {p[:-1] if p.endswith("s") and len(p) > 4 else p for p in palabras}   # «horas» y «hora» cuentan igual
+
+
+# El curso escrito en el título o la descripción del PDF: «(2º Primaria)», «Infantil 5 años»…
+CURSO_EN_TEXTO = [("3 años", r"\b3 anos\b"), ("4 años", r"\b4 anos\b"), ("5 años", r"\b5 anos\b"),
+                  ("1.º", r"\b(1\.?o?|primero) (de )?(educacion )?primaria\b"), ("2.º", r"\b(2\.?o?|segundo) (de )?(educacion )?primaria\b")]
+def deducir_etapas(texto):
+    t = norm(texto)
+    return [e for e, patron in CURSO_EN_TEXTO if re.search(patron, t)]
 
 
 def emparejar(nuevos):
@@ -203,7 +213,8 @@ def emparejar(nuevos):
     for p in pres:
         for f in fichas:
             comunes = palabras_clave(p) & palabras_clave(f)
-            if comunes and p.get("etapas") == f.get("etapas"):
+            mismo_curso = p.get("etapas") == f.get("etapas") or not p.get("etapas") or not f.get("etapas")
+            if comunes and mismo_curso:
                 pares.append((len(comunes), p, f))
     usados = set()
     for _, p, f in sorted(pares, key=lambda x: -x[0]):
@@ -212,6 +223,8 @@ def emparejar(nuevos):
         usados |= {p["archivo"], f["archivo"]}
         nombre = titulo_limpio(str(f.get("titulo") or p.get("titulo")))
         p["recurso"] = f["recurso"] = nombre
+        if not p.get("etapas") or not f.get("etapas"):   # si solo una sabe su curso, la otra toma el mismo
+            p["etapas"] = f["etapas"] = list(p.get("etapas") or f.get("etapas"))
         cambios.append(f"Agrupados en «{nombre}»: {p['archivo']} (presentación) y {f['archivo']} (ficha)")
         avisos.append(f"«{nombre}»: la presentación y la ficha se han agrupado solas porque se subieron a la vez y "
                       "tienen nombres parecidos. Si no van juntas, borra su línea «recurso» en catalogo.json.")
@@ -282,22 +295,24 @@ def main():
     if "--optimizar-todo" in sys.argv:
         for pdf in sorted(MATERIALES.glob("*.pdf")):
             optimizar(pdf)
-    regenerar, llegados, nuevos = set(), set(), []
+    regenerar, llegados, nuevos, de_raiz = set(), set(), [], []
 
-    # 1. Buzón subir/<curso>/
-    for pdf in sorted(SUBIR.rglob("*")) if SUBIR.is_dir() else []:
+    # 1. Buzón subir/<curso>/ (y los PDF subidos por error a la carpeta principal del repositorio)
+    en_raiz = sorted(p for p in RAIZ.glob("*") if p.is_file() and p.suffix.lower() == ".pdf")
+    for pdf in (sorted(SUBIR.rglob("*")) if SUBIR.is_dir() else []) + en_raiz:
         if not pdf.is_file() or pdf.suffix.lower() != ".pdf":
             continue
-        partes = pdf.relative_to(SUBIR).parts
-        carpeta = partes[0] if len(partes) > 1 else ""
-        recurso = partes[1].strip() if len(partes) > 2 else None
+        raiz = pdf.parent == RAIZ
+        partes = pdf.relative_to(RAIZ if raiz else SUBIR).parts
+        carpeta = None if raiz else (partes[0] if len(partes) > 1 else "")
+        recurso = partes[1].strip() if not raiz and len(partes) > 2 else None
         recurso_nombre, tipo = convencion(pdf.stem)
         recurso = recurso_nombre or recurso
         if not se_puede_abrir(pdf):
             avisos.append(f"{pdf.relative_to(RAIZ)}: el PDF está dañado o protegido con contraseña; se ha dejado en "
                           "subir/ sin publicar. Bórralo y vuelve a subirlo exportado de nuevo.")
             continue
-        etapas = CARPETAS.get(carpeta)
+        etapas = CARPETAS.get(carpeta) if carpeta is not None else []   # en la raíz, el curso se busca en el PDF
         if etapas is None:
             avisos.append(f"{pdf.relative_to(RAIZ)}: la carpeta «{carpeta or 'subir'}» no es de ningún curso; "
                           "el material queda en «Sin curso asignado».")
@@ -318,12 +333,20 @@ def main():
                               "recupera el anterior desde el historial de GitHub y sube este con otro nombre.")
         else:
             m = entrada_nueva(destino, etapas, recurso, tipo)
+            if raiz:
+                doc = abrir_pdf(destino); meta = doc.get_metadata_dict(); doc.close()   # el título original, con su «(2º Primaria)»
+                m["etapas"] = deducir_etapas(" ".join([meta.get("Title") or "", meta.get("Subject") or "", m.get("desc", ""), pdf.stem]))
+                de_raiz.append(m)
             catalogo.append(m); por_archivo[m["archivo"]] = m; nuevos.append(m)
             cambios.append(f"Nuevo: {m['archivo']} → «{m['titulo']}», {m['tipo']}, "
                            f"{', '.join(etapas) or 'sin curso'}" + (f", recurso «{recurso}»" if recurso else ""))
 
     # Presentación y ficha subidas a la vez con nombres distintos: se agrupan si se parecen
     emparejar(nuevos)
+    for m in de_raiz:   # después de emparejar: una presentación sin curso toma el de su ficha
+        avisos.append(f"{m['archivo']} estaba en la carpeta principal y no en subir/<curso>/; se ha publicado igual"
+                      + (f" en {', '.join(m['etapas'])} (curso leído en el PDF o en su pareja)." if m["etapas"] else
+                         ". No se sabe su curso: ponlo en catalogo.json o súbelo otra vez a su carpeta."))
 
     # 2. PDF subidos directamente a materiales/
     for pdf in sorted(MATERIALES.glob("*")):

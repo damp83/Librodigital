@@ -52,6 +52,8 @@ TEMAS = {   # expresiones regulares sobre el texto sin tildes y en minúsculas
     "Suma y resta": [r"\bsuma", r"\bresta", r"\boperaciones\b", r"\bjuntar\b", r"\bseparar\b", r"\bcalculo\b"],
     "Diagrama partes-todo": [r"\bpartes[- ]todo\b", r"\bparte que falta\b"],
     "Problemas": [r"\bproblemas?\b"],
+    "Geometría": [r"\bgeoplano", r"\bpoligon", r"\bsegmentos?\b", r"\btriangul", r"\bcuadrados?\b", r"\brectangul",
+                  r"\bperimetro", r"\bfiguras? (planas|geometricas)", r"\bgeometri"],
     "Medida": [r"\bmedida", r"\blongitud", r"\bcentimetros?\b", r"\bmetros?\b", r"\bmedir\b"],
     "Decenas y valor posicional": [r"\bdecenas?\b", r"\bdieces\b", r"\bdiez y unos\b", r"\bvalor posicional\b", r"\bpanel del 100\b", r"\bamigos del 100\b", r"\bcentenas?\b", r"\bdel 1 al 99\b"],
 }
@@ -136,14 +138,19 @@ def titulo_limpio(t):
 
 
 def deducir_tipo(archivo, titulo, apaisado):
-    texto = norm(archivo + " " + titulo)
-    for palabras, tipo in [(("cuaderno",), "Cuaderno"),
-                           (("programacion", "secuencia", "situacion de aprendizaje"), "Programación"),
-                           (("bingo", "juego", "domino", "cartas", "tablero", "loteria"), "Juego"),
-                           (("presentacion",), "Presentación"),
-                           (("ficha",), "Ficha")]:
-        if any(p in texto for p in palabras):
-            return tipo
+    """El nombre del archivo manda; después, el título. Las diapositivas apaisadas solo se toman por juego si lo
+    dice el nombre del archivo (un título como «El tablero mágico de la geometría» es de una presentación)."""
+    tipos = [(("cuaderno",), "Cuaderno"),
+             (("programacion", "secuencia", "situacion de aprendizaje"), "Programación"),
+             (("bingo", "juego", "domino", "cartas", "loteria"), "Juego"),
+             (("presentacion",), "Presentación"),
+             (("ficha",), "Ficha")]
+    for texto, es_titulo in ((norm(archivo.replace("_", " ")), False), (norm(titulo), True)):
+        for palabras, tipo in tipos:
+            if any(re.search(r"\b" + p, texto) for p in palabras):
+                if tipo == "Juego" and es_titulo and apaisado:
+                    continue
+                return tipo
     return "Presentación" if apaisado else "Ficha"
 
 

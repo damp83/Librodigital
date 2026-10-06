@@ -337,7 +337,13 @@ await prueba("Las fichas de herramientas se ven bien en móvil, tableta y ordena
         if(dibujo && (dibujo.width < 30 || dibujo.height < 30)) return [nombre+": el dibujo no se ve"];
         if(ilus.width > f.getBoundingClientRect().width * .9 && txt.left > ilus.left && txt.top < ilus.bottom - 4) return [nombre+": el dibujo ocupa toda la ficha"];
         return [];
-      }));
+      }).concat((()=>{   // todas las fichas normales, del mismo ancho (ninguna estirada ni ninguna sola en su fila)
+        const fichas = [...document.querySelectorAll("#herr .herr-ficha:not(.herr-destacada)")], anchos = fichas.map(f=> Math.round(f.getBoundingClientRect().width));
+        const filas = {}; fichas.forEach(f=>{ const y = Math.round(f.getBoundingClientRect().top); filas[y] = (filas[y] || 0) + 1; });
+        const porFila = Math.max(...Object.values(filas)), solas = Object.values(filas).filter(n=> n < porFila).length;
+        return [...(Math.max(...anchos) - Math.min(...anchos) > 2 ? ["hay fichas de distinto ancho ("+Math.min(...anchos)+"–"+Math.max(...anchos)+" px)"] : []),
+                ...(solas && Object.keys(filas).length > 1 && fichas.length % porFila === 0 ? ["hay una fila a medias aunque las fichas caben justas"] : [])];
+      })()));
       mal.forEach(m=> fallos.push(ancho+" px: "+m));
     });
   }

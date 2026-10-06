@@ -180,6 +180,14 @@ Su entrada del catálogo y su portada se quitan solas.
       (tres opciones), *¿Más o menos que…?* y *Paso a paso* (redondear cada número y calcular). La
       operación se puede ver solo 3, 5 u 8 segundos para que se estime y no se calcule. Al final se
       compara la estimación con el resultado exacto.
+    - *Minuto de cálculo* (`#/minuto`, en `minuto.js`, ficha destacada al principio): test de cálculo
+      mental rápido de 1 minuto (o 30 s / 2 min). Niveles por edades: 5 años (uno más y uno menos, sumas
+      hasta 5, dobles hasta 5), 1.º (dobles, doble más uno, doble menos uno, parejas del 10, sumas y restas
+      hasta 10), 2.º (mitades, diez más y diez menos, pasar por el 10, restas hasta 20, amigos del 100…) y
+      Reto (dobles de números grandes, sumar y restar 9, decenas). Los tipos se pueden quitar o poner.
+      Se corrige al escribir tantas cifras como tiene la respuesta; al fallar puede enseñar la estrategia
+      («8 + 7 = 8 + 8 − 1»). Al final: aciertos, fallos, récord personal del nivel, los últimos intentos y
+      las operaciones para repasar. En el modo aula toma el nivel de la clase.
   - **Banco de retos** (`banco.js`): las herramientas no repiten operaciones ni retos hasta haberlos usado
     todos. Cada tipo tiene un «mazo» con todos los posibles, barajado, que se guarda en el dispositivo (tampoco
     se repiten de un día para otro):

@@ -232,9 +232,9 @@ const ETAPA_DE = Object.fromEntries(Object.entries(SLUG_DE).map(([e,s])=>[s,e]))
 const HERR_CURSO = {
   "3 años": ["regletas"],
   "4 años": ["regletas", "calculo", "bombo"],
-  "5 años": ["regletas", "marco", "muros", "partes", "geoplano", "calculo", "bombo"],
-  "1.º":    ["regletas", "calculo", "marco", "muros", "partes", "panel", "piramides", "geoplano", "calculadora", "bombo"],
-  "2.º":    ["regletas", "calculo", "panel", "partes", "piramides", "redondeo", "estimacion", "geoplano", "calculadora", "bombo"]};
+  "5 años": ["minuto", "regletas", "marco", "muros", "partes", "geoplano", "calculo", "bombo"],
+  "1.º":    ["minuto", "regletas", "calculo", "marco", "muros", "partes", "panel", "piramides", "geoplano", "calculadora", "bombo"],
+  "2.º":    ["minuto", "regletas", "calculo", "panel", "partes", "piramides", "redondeo", "estimacion", "geoplano", "calculadora", "bombo"]};
 let claseSlug = null;
 
 async function obtenerRuta(){

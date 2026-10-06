@@ -45,7 +45,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -254,6 +254,25 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   exigir(await p.locator("#esCuerpo .ap-compara").count()===1 && await p.locator("#esCuerpo .ap-explica.bien").count()===1, "estimación: el paso a paso no termina bien");
   await accesibilidad(p);
   await p.evaluate(()=>{ ES.modo = "elegir"; guardarES(); });
+  // Minuto de cálculo: las operaciones de todos los tipos son correctas; una partida con 5 aciertos y un fallo
+  await p.goto(WEB+"#/minuto"); await p.waitForSelector("#vMinuto:not([hidden]) #mnEmpezar");
+  const minMal = await p.evaluate(()=> Object.keys(MIN_TIPOS).flatMap(k=> listaMin(k).filter(x=>{
+    const q = x.q.replace(/−/g, "-"); let m, r;
+    if((m = q.match(/^Doble de (\d+)$/))) r = 2 * m[1]; else if((m = q.match(/^Mitad de (\d+)$/))) r = m[1] / 2;
+    else if((m = q.match(/^(\?|\d+) \+ (\?|\d+) = (\d+)$/))) r = +m[3] - +(m[1]==="?" ? m[2] : m[1]);
+    else if((m = q.match(/^(\d+) ([+-]) (\d+)$/))) r = m[2]==="+" ? +m[1] + +m[3] : +m[1] - +m[3];
+    return r !== x.r; }).map(x=> k+": "+x.q)));
+  exigir(!minMal.length, "minuto de cálculo: operaciones mal resueltas: "+minMal.slice(0,3).join("; "));
+  await accesibilidad(p);
+  await p.click("#mnEmpezar"); await p.waitForSelector(".mn-pregunta", {timeout:6000});
+  for(let k=0; k<6; k++){
+    const r = await p.evaluate(()=> String(MN.actual.r)), c = k===5 ? (r==="1" ? "2" : "1").repeat(r.length) : r;
+    for(const d of c) await p.click('#mnTeclado [data-t="'+d+'"]');
+  }
+  await p.click("#mnParar"); await p.waitForSelector("#mnFin");
+  const finTxt = await p.textContent(".mn-final");
+  exigir(/5 aciertos/.test(finTxt) && /1 fallos/.test(finTxt) && await p.locator(".mn-repaso li").count()===1, "minuto de cálculo: la partida no cuenta bien («"+finTxt.slice(0,120)+"»)");
+  await accesibilidad(p);
   await p.goto(WEB+"#/aula/5-anios"); await p.waitForSelector("#vClase:not([hidden]) .cl-ficha");
   exigir(await p.locator('#vClase .cl-ficha[href="#/marco"]').count() === 1, "modo aula: faltan las herramientas de 5 años");
   await accesibilidad(p);
@@ -272,7 +291,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));

@@ -5,7 +5,7 @@
      se actualiza desde la red.
    Si cambias la lógica de este archivo, sube la versión de las cachés (y en index.html). */
 const CACHE_APP = "aula-app-v3", CACHE_PDF = "aula-pdf-v1";   // v3: la copia inicial se pide siempre a la red, nunca a la caché del navegador
-const BASICO = ["./", "catalogo.json", "ruta.json", "reto.json", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "lib/pdf.min.js", "lib/pdf.worker.min.js",
+const BASICO = ["./", "catalogo.json", "ruta.json", "reto.json", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "lib/pdf.min.js", "lib/pdf.worker.min.js",
                 "lib/qrcode.js", "manifest.webmanifest", "icono-192.png"];
 
 self.addEventListener("install", e=>{

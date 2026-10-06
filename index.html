@@ -725,6 +725,55 @@ footer.pie .marca{margin-bottom:12px}
 .color-ficha{width:32px;height:32px;border-radius:50%;border:2px solid var(--surface);background:var(--col);box-shadow:0 0 0 1px var(--line-strong)}
 .color-ficha[aria-pressed="true"]{box-shadow:0 0 0 3px var(--accent)}
 
+/* Minuto de cálculo */
+.herr-destacada{grid-column:1 / -1;flex-direction:row!important;align-items:center!important;gap:18px!important;padding:14px 18px!important;
+  background:linear-gradient(100deg,color-mix(in srgb,var(--r5) 22%,var(--surface)),var(--surface) 65%);border-color:color-mix(in srgb,var(--r5) 55%,var(--line))}
+.herr-destacada .herr-ilus{width:84px!important;height:84px!important;padding:6px!important;flex:none;background:var(--surface)}
+.herr-destacada .herr-txt b{font-size:19px}
+.herr-destacada .herr-txt span{display:block!important}
+.herr-destacada .herr-flecha{display:block!important}
+.mn-inicio{display:flex;flex-direction:column;align-items:center;gap:14px;width:min(900px,100%)}
+.mn-inicio h2{margin:0;font-size:clamp(22px,3.4vh,32px)}
+.mn-fila{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;justify-content:center}
+.mn-eti{margin:0;font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.mn-eti small{text-transform:none;letter-spacing:0;font-weight:500}
+.mn-tipos{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;width:100%}
+.mn-tipos .cm-tipo{padding:10px 12px}
+.mn-tipos .cm-tipo[aria-pressed="false"]{opacity:.55;box-shadow:none}
+.mn-record{font-weight:600;color:var(--aviso)}
+.mn-empezar{min-height:60px;padding:0 36px;font-size:20px}
+.mn-cuenta{margin:8vh 0 0;font:700 clamp(120px,30vh,280px)/1 var(--font-titulos);color:var(--accent);animation:aparece .3s ease-out}
+.mn-juego{display:flex;flex-direction:column;align-items:center;gap:16px;width:min(1000px,100%)}
+.mn-tiempo{display:flex;align-items:center;gap:16px;width:100%}
+.mn-barra{flex:1;height:14px;border-radius:99px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line)}
+.mn-barra i{display:block;height:100%;background:linear-gradient(90deg,var(--r2),var(--r5) 30%,var(--r6));transition:width .2s linear}
+.mn-num{font:700 clamp(18px,2.6vh,26px) var(--font-titulos);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mn-pregunta{margin:2vh 0 0;font:700 clamp(34px,min(12vh,11.5vw),140px)/1.05 var(--font-titulos);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mn-hueco{display:inline-block;min-width:1.4em;padding:0 .12em;border-radius:.12em;background:var(--brand-soft);color:var(--brand);text-align:center}
+.mn-aviso{margin:0;min-height:1.6em;font-size:clamp(17px,2.4vh,24px);font-weight:600}
+.mn-aviso small{font-weight:500;color:var(--muted)}
+.mn-ok{color:var(--ok)}.mn-mal{color:#c1170f}.mn-pasa{color:var(--muted)}
+.mn-final{display:flex;flex-direction:column;align-items:center;gap:12px;width:min(900px,100%)}
+.mn-final h2{margin:0;font-size:clamp(26px,4.5vh,44px)}
+.mn-final h2:focus{outline:none}
+.mn-final h3{margin:8px 0 0;font-size:18px}
+.mn-datos{margin:0;display:flex;gap:10px 22px;flex-wrap:wrap;justify-content:center;font-size:clamp(17px,2.4vh,22px);font-weight:600}
+.mn-grafica{display:flex;align-items:flex-end;gap:10px;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radio);background:var(--surface)}
+.mn-grafica .mn-eti{align-self:center;margin-right:6px}
+.mn-col{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13px}
+.mn-col i{display:block;width:26px;border-radius:6px 6px 2px 2px;background:color-mix(in srgb,var(--accent) 45%,var(--surface))}
+.mn-col.ultima i{background:var(--accent)}
+.mn-repaso{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;width:100%;text-align:left}
+.mn-repaso li{padding:8px 12px;border:1px solid var(--line);border-left:6px solid #e3261f;border-radius:10px;background:var(--surface);font-size:16px}
+.mn-repaso b{font-family:var(--font-titulos);font-size:19px}
+.mn-repaso small{display:block;color:var(--muted)}
+@media (max-width:760px){
+  .herr-destacada{padding:10px 12px!important}
+  .herr-destacada .herr-ilus{width:64px!important;height:64px!important}
+  .herr-destacada .herr-txt span{font-size:13.5px}
+  .mn-tipos{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 /* Aproximaciones y estimación */
 .ap-cuerpo{overflow:auto;min-height:0;padding:clamp(14px,3vh,40px) 14px 20px;display:flex;flex-direction:column;align-items:center;gap:14px}
 .ap-cuerpo > *{flex-shrink:0}
@@ -1123,6 +1172,10 @@ footer.pie .marca{margin-bottom:12px}
     <section class="herr" id="herr" aria-labelledby="herrTit">
       <h2 id="herrTit">Herramientas para el aula</h2>
       <div class="herr-rejilla">
+        <a class="herr-ficha herr-destacada" href="#/minuto">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="55" r="36" fill="#fff" stroke="#e3261f" stroke-width="7"/><rect x="42" y="8" width="16" height="9" rx="3" fill="#e3261f"/><path d="M50 55 L50 28" stroke="#1c2330" stroke-width="6" stroke-linecap="round"/><path d="M50 55 L68 64" stroke="#1c2330" stroke-width="5" stroke-linecap="round"/><path d="M50 19 A36 36 0 0 1 86 55 L50 55 Z" fill="rgba(242,194,0,.55)"/><circle cx="50" cy="55" r="5" fill="#1c2330"/></svg></span>
+          <span class="herr-txt"><b>Minuto de cálculo</b><span>¿Cuántas operaciones en un minuto? Dobles, doble más uno, uno más, diez más, mitades… Niveles de 5 años a 2.º y récord personal.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
         <a class="herr-ficha" href="#/regletas">
           <span class="herr-ilus" aria-hidden="true"><i style="width:20%;background:var(--r2)"></i><i style="width:50%;background:var(--r5)"></i><i style="width:70%;background:#2b2b2b"></i><i style="width:100%;background:var(--r10)"></i></span>
           <span class="herr-txt"><b>Regletas virtuales</b><span>Arrastra, gira y combina las diez regletas en la pizarra digital.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
@@ -1578,6 +1631,11 @@ footer.pie .marca{margin-bottom:12px}
     <div class="reg-acc"><button class="icbtn" id="esPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="ap-zona" id="esCuerpo"></div><div class="pi-teclado" id="esTeclado" role="group" aria-label="Escribir el número" hidden></div></div>
+</div>
+
+<div class="vista" id="vMinuto" hidden role="dialog" aria-modal="true" aria-labelledby="vMinTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vMinTit">Minuto de cálculo</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="ap-cuerpo mn-cuerpo"><div class="ap-zona" id="mnCuerpo"></div><div class="pi-teclado" id="mnTeclado" role="group" aria-label="Escribir la respuesta" hidden></div></div>
 </div>
 
 <!-- ================= MODO AULA (una clase) ================= -->
@@ -2503,13 +2561,13 @@ function panelNotas(c){
 let rutaPrevia = location.hash;
 function ruta(){
   // herramientas, secciones y modo aula viven en herramientas.js, secciones.js y aula.js: si alguno no ha cargado, se avisa
-  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
+  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
   // modo aula: la tableta recuerda su clase y vuelve a ella en lugar de ir a la biblioteca
   const cl = location.hash.match(/^#\/aula\/([\w-]+)\/?$/);
   if(cl){ cerrarLector(); abrirClase(cl[1]); rutaPrevia = location.hash; return; }
   const claseGuardada = leer("aula-clase", null);
   if(claseGuardada && (location.hash==="" || location.hash==="#/" || location.hash==="#")){ location.replace("#/aula/"+claseGuardada); return; }
-  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
+  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   if(typeof cerrarHerramienta==="function") cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
@@ -2576,7 +2634,7 @@ if("serviceWorker" in navigator && (location.protocol==="https:" || location.hos
    Entonces las fichas de las herramientas no hacen nada. Si pasa, se borran las copias guardadas del código
    (los PDF guardados se conservan) y se recarga una vez; si aun así falta algo, se avisa en pantalla. */
 const PIEZAS = ["abrirHerramienta", "cerrarHerramienta", "iniciarRegletas", "iniciarBombo", "iniciarRuta", "iniciarFamilias",
-                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "delMazo"];
+                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "delMazo"];
 function codigoIncompleto(){ return PIEZAS.filter(n=> typeof window[n] !== "function"); }
 function avisarCodigo(){
   const a = $("avisoCodigo"); if(!a.hidden) return;
@@ -2627,5 +2685,6 @@ listo.then(repararCodigo).then(seguir=> seguir ? fetch("catalogo.json", {cache:"
 <script src="calculadora.js"></script>
 <script src="piramides.js"></script>
 <script src="aproximar.js"></script>
+<script src="minuto.js"></script>
 </body>
 </html>

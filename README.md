@@ -171,6 +171,15 @@ Su entrada del catálogo y su portada se quitan solas.
       Ayudas: *Pista* (marca un bloque que ya se puede calcular y la operación: «5 + 3 = ?» o «12 − 5 = ?»),
       *Partes y todo* (al elegir un bloque se marcan sus dos partes), *Regletas* dentro de los bloques,
       *Corregir al momento* o con «Comprobar», y «Ver la solución». Teclado en pantalla y del ordenador.
+    - *Aproximaciones* (`#/redondeo`, en `aproximar.js`): aproximar a la decena o a la centena. Niveles:
+      decenas hasta 100, decenas hasta 1000, centenas hasta 1000 y mezclado. Se elige entre las dos vecinas
+      o se escribe. Ayudas: recta numérica con la mitad marcada, distancias a cada vecina y pista. Al
+      responder explica por qué («47 está a 7 del 40 y a 3 del 50»). Rondas de 10 con puntuación.
+    - *Estimación* (`#/estimacion`, en `aproximar.js`): estimar sumas y restas redondeando antes. Niveles:
+      sumas hasta 100, sumas y restas hasta 100 y hasta 1000 (a la centena). Retos *¿Cuál se acerca?*
+      (tres opciones), *¿Más o menos que…?* y *Paso a paso* (redondear cada número y calcular). La
+      operación se puede ver solo 3, 5 u 8 segundos para que se estime y no se calcule. Al final se
+      compara la estimación con el resultado exacto.
   - **Banco de retos** (`banco.js`): las herramientas no repiten operaciones ni retos hasta haberlos usado
     todos. Cada tipo tiene un «mazo» con todos los posibles, barajado, que se guarda en el dispositivo (tampoco
     se repiten de un día para otro):

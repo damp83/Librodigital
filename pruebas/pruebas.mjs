@@ -45,7 +45,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -215,6 +215,45 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   const choqueTxt = await p.textContent("#piAyuda");
   exigir(/8 \+ 20 = 28, pero arriba pone 26/.test(choqueTxt) && await p.locator(".pi-bloque.choque").count()===3, "pirámides: no explica qué bloques no cuadran («"+choqueTxt+"»)");
   await accesibilidad(p);
+  // Aproximaciones: la regla (el 5 sube), una ronda entera eligiendo bien y escribiendo
+  await p.goto(WEB+"#/redondeo"); await p.waitForSelector("#vRedondeo:not([hidden]) .ap-pregunta");
+  const reglas = await p.evaluate(()=> [apAproximar(44,10), apAproximar(45,10), apAproximar(449,100), apAproximar(450,100), apAproximar(97,10)].join());
+  exigir(reglas==="40,50,400,500,100", "aproximaciones: la regla de aproximar falla ("+reglas+")");
+  const listasOk = await p.evaluate(()=> Object.keys(NIVELES_RD).every(n=> listaRD(n).length > 50 && listaRD(n).every(x=> x.n % x.base !== 0)));
+  exigir(listasOk, "aproximaciones: algún nivel tiene pocos números o números ya redondos");
+  for(let k=0; k<10; k++){
+    const v = await p.evaluate(()=>{ const r = RD.ronda.retos[RD.ronda.i]; return apAproximar(r.n, r.base); });
+    await p.click('#rdCuerpo .ap-opcion[data-v="'+v+'"]'); await p.click("#rdSiguiente");
+  }
+  exigir((await p.textContent("#apFin")).includes("10 de 10"), "aproximaciones: una ronda acertada no da 10 de 10");
+  await accesibilidad(p);
+  await p.click('#vRedondeo .segmentos [data-modo="escribir"]');
+  await p.click("#rdOtra");
+  const v1 = await p.evaluate(()=>{ const r = RD.ronda.retos[0]; return String(apAproximar(r.n, r.base)); });
+  for(const c of v1) await p.click('#rdTeclado [data-t="'+c+'"]');
+  await p.click('#rdTeclado [data-t="✓"]');
+  exigir(await p.locator("#rdCuerpo .ap-explica.bien").count()===1, "aproximaciones: escribiendo la respuesta buena no se da por buena");
+  await p.evaluate(()=>{ RD.modo = "elegir"; guardarRD(); });
+  // Estimación: las operaciones del banco tienen sentido y el paso a paso funciona
+  await p.goto(WEB+"#/estimacion"); await p.waitForSelector("#vEstimacion:not([hidden]) .ap-operacion");
+  const estOk = await p.evaluate(()=>{
+    const mal = [];
+    for(const nivel of Object.keys(NIVELES_ES)){ ES.nivel = nivel;
+      for(let k=0; k<200; k++){ const r = generarES();
+        if(r.a % r.base === 0 || r.b % r.base === 0) mal.push(r.k+" ya es redondo");
+        if(r.exacto < 0 || r.exacto > (r.base===10 ? 100 : 1000)) mal.push(r.k+" fuera de rango");
+        if(Math.abs(r.exacto - r.estimado) > r.base) mal.push(r.k+" estimación lejana");
+      } }
+    ES.nivel = "s100"; return mal; });
+  exigir(!estOk.length, "estimación: "+estOk.slice(0,3).join("; "));
+  const masmenosOk = await p.evaluate(()=> ES.ronda.retos.every(r=> r.ref !== r.exacto && r.opciones.includes(r.estimado) && new Set(r.opciones).size===3));
+  exigir(masmenosOk, "estimación: opciones repetidas o sin la estimación buena");
+  await p.click('#vEstimacion .segmentos [data-modo="pasos"]');
+  const pasos = await p.evaluate(()=>{ const r = ES.ronda.retos[0]; return [r.ea, r.eb, r.estimado].map(String); });
+  for(const n of pasos){ for(const c of n) await p.click('#esTeclado [data-t="'+c+'"]'); await p.click('#esTeclado [data-t="✓"]'); }
+  exigir(await p.locator("#esCuerpo .ap-compara").count()===1 && await p.locator("#esCuerpo .ap-explica.bien").count()===1, "estimación: el paso a paso no termina bien");
+  await accesibilidad(p);
+  await p.evaluate(()=>{ ES.modo = "elegir"; guardarES(); });
   await p.goto(WEB+"#/aula/5-anios"); await p.waitForSelector("#vClase:not([hidden]) .cl-ficha");
   exigir(await p.locator('#vClase .cl-ficha[href="#/marco"]').count() === 1, "modo aula: faltan las herramientas de 5 años");
   await accesibilidad(p);
@@ -233,7 +272,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));

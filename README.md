@@ -137,7 +137,8 @@ Su entrada del catálogo y su portada se quitan solas.
     código QR descargable para imprimir.
   - **Herramientas para el aula**:
     - *Regletas virtuales* (`#/regletas`): arrastrar, girar (doble toque o **G**), duplicar (**D**),
-      quitar (papelera o **Supr**), regla numerada y tamaño ajustable. Las teclas 1–9 y 0 ponen regletas.
+      quitar (papelera o **Supr**), regla numerada y tamaño ajustable. Las teclas 1–9 y 0 ponen regletas. La **placa de 100**
+      (cuadrado 10 × 10, tecla **C**) permite construir números de tres cifras; un contador muestra el valor total del tablero.
       Se guarda lo que hay en el tablero.
     - *Bombo del bingo* (`#/bombo`): los cuatro niveles del bingo de las regletas, todos del 1 al 99,
       bingo de decenas, del amigo del 100 y al revés. Números sin repetir con sus regletas, tablero de

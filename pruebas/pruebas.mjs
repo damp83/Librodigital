@@ -123,6 +123,14 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await accesibilidad(p);
   await p.goto(WEB+"#/regletas"); await p.waitForSelector("#vRegletas:not([hidden])");
   await p.click(".reg-pieza >> nth=4"); exigir(await p.locator(".regleta-v").count() >= 1, "no se añade una regleta al pulsarla");
+  // placa de 100: cuadrado de 10 × 10 unidades que no se gira, y el contador suma todo el tablero
+  await p.click(".reg-pieza.placa");
+  const placa = await p.evaluate(()=>{ const el = document.querySelector(".regleta-v.placa"), u = RG.u;
+    return el && {w: Math.round((el.offsetWidth+2)/u), h: Math.round((el.offsetHeight+2)/u), dentro: el.offsetTop + el.offsetHeight <= tablero().clientHeight,
+                  total: document.getElementById("regTotal").textContent}; });
+  exigir(placa && placa.w===10 && placa.h===10, "la placa de 100 no mide 10 × 10: "+JSON.stringify(placa));
+  exigir(placa.dentro, "la placa de 100 se sale del tablero");
+  exigir(/105/.test(placa.total), "el contador del tablero no suma la placa: "+placa.total);
   await accesibilidad(p);
   // Banco de retos: cada tipo de cálculo mental tiene operaciones distintas y correctas, y no se repiten hasta agotarlas
   await p.goto(WEB+"#/calculo"); await p.waitForSelector(".cm-tipo");

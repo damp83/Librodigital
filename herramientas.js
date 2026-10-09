@@ -204,16 +204,23 @@ function medidas(){
   const t = tablero();
   return {cols: Math.max(10, Math.floor(t.clientWidth/RG.u)), filas: Math.max(4, Math.floor(t.clientHeight/RG.u)), arriba: RG.regla ? 1 : 0};
 }
-const ancho = p => p.v ? 1 : p.n, alto = p => p.v ? p.n : 1;
+// la placa de 100 es un cuadrado de 10 × 10 (diez regletas naranjas juntas)
+const esPlaca = p => p.n===100, ancho = p => esPlaca(p) ? 10 : p.v ? 1 : p.n, alto = p => esPlaca(p) ? 10 : p.v ? p.n : 1;
 function encajar(p){
   const m = medidas();
   p.x = Math.max(0, Math.min(m.cols - ancho(p), Math.round(p.x)));
   p.y = Math.max(m.arriba, Math.min(m.filas - alto(p), Math.round(p.y)));
 }
-function hueco(n){   // primer sitio libre, de arriba abajo y de izquierda a derecha
-  const m = medidas(), ocupa = (x,y,w)=> RG.piezas.some(p=> x < p.x+ancho(p) && x+w > p.x && y < p.y+alto(p) && y+1 > p.y);
-  for(let y=m.arriba+1; y<m.filas-1; y+=2) for(let x=1; x+n<=m.cols-1; x++) if(!ocupa(x,y,n)) return {x,y};
+function hueco(w, h=1, sin=null){   // primer sitio libre, de arriba abajo y de izquierda a derecha (sin contar la pieza «sin»)
+  const m = medidas(), ocupa = (x,y)=> RG.piezas.some(p=> p.id!==sin && x < p.x+ancho(p) && x+w > p.x && y < p.y+alto(p) && y+h > p.y);
+  for(let y=m.arriba+1; y+h<=m.filas-1; y+=h>1 ? 1 : 2) for(let x=1; x+w<=m.cols-1; x++) if(!ocupa(x,y)) return {x,y};
   return {x:1, y:m.arriba+1};
+}
+const huecoPara = p => hueco(ancho(p), alto(p), p.id);
+// si la placa no cabe en el tablero, se reduce el tamaño de todo lo justo para que quepa
+function caberPlaca(){
+  const t = tablero(), cabe = Math.floor(Math.min(t.clientWidth/11, t.clientHeight/(11 + (RG.regla ? 1 : 0))));
+  if(cabe >= 8 && RG.u > cabe){ RG.u = Math.max(16, cabe); RG.piezas.forEach(encajar); }
 }
 
 function iniciarRegletas(){
@@ -229,6 +236,12 @@ function iniciarRegletas(){
       b.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); ponerRegleta(n); } });
       pal.appendChild(b);
     }
+    const pl = document.createElement("button");
+    pl.className = "reg-pieza placa"; pl.style.cssText = "--n:10;background-color:"+REGLETA[10].c+";color:"+REGLETA[10].t;
+    pl.textContent = "100"; pl.setAttribute("aria-label", "Placa de 100 (diez regletas naranjas), tecla C"); pl.title = "Placa de 100 (C)";
+    pl.addEventListener("pointerdown", e=> nuevaDesdePaleta(e, 100));
+    pl.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); ponerRegleta(100); } });
+    pal.appendChild(pl);
     $("regGirar").onclick = ()=> girar(regElegida);
     $("regDuplicar").onclick = duplicar;
     $("regBorrar").onclick = ()=> quitar(regElegida);
@@ -256,32 +269,36 @@ function pintarRegletas(){
   if(RG.regla){ const m = medidas(); regla.innerHTML = Array.from({length:m.cols+1}, (_,i)=>'<span><b>'+i+'</b></span>').join(""); }
   t.querySelectorAll(".regleta-v").forEach(el=>el.remove());
   RG.piezas.forEach(p=>{
-    const r = REGLETA[p.n], el = document.createElement("div");
-    el.className = "regleta-v" + (p.id===regElegida ? " elegida" : "");
+    const r = REGLETA[esPlaca(p) ? 10 : p.n], el = document.createElement("div");
+    el.className = "regleta-v" + (esPlaca(p) ? " placa" : "") + (p.id===regElegida ? " elegida" : "");
     el.dataset.id = p.id;
-    el.style.cssText = "left:"+(p.x*u)+"px;top:"+(p.y*u)+"px;width:"+(ancho(p)*u-2)+"px;height:"+(alto(p)*u-2)+"px;background:"+r.c+";color:"+r.t+
+    el.style.cssText = "left:"+(p.x*u)+"px;top:"+(p.y*u)+"px;width:"+(ancho(p)*u-2)+"px;height:"+(alto(p)*u-2)+"px;background-color:"+r.c+";color:"+r.t+
                        (p.n===1 ? ";box-shadow:inset 0 0 0 1px #c8ced6,inset 0 -4px 0 rgba(0,0,0,.12)" : "");
     el.innerHTML = "<span>"+p.n+"</span>";
-    el.setAttribute("role","img"); el.setAttribute("aria-label","Regleta "+r.n+" ("+p.n+")");
+    el.setAttribute("role","img"); el.setAttribute("aria-label", esPlaca(p) ? "Placa de 100" : "Regleta "+r.n+" ("+p.n+")");
     el.addEventListener("pointerdown", e=> empezarArrastre(e, p, el, false));
     t.appendChild(el);
   });
   $("regVacio").hidden = RG.piezas.length>0;
+  const total = RG.piezas.reduce((s,p)=>s+p.n, 0), tot = $("regTotal");
+  tot.hidden = !RG.piezas.length; tot.innerHTML = "En el tablero: <b>"+total.toLocaleString("es-ES")+"</b>";
   const hay = RG.piezas.some(p=>p.id===regElegida);
   ["regGirar","regDuplicar","regBorrar"].forEach(id=> $(id).disabled = !hay);
 }
 
 function ponerRegleta(n){
-  const sitio = hueco(n), p = {id: regSig++, n, x: sitio.x, y: sitio.y, v:false};
+  if(n===100) caberPlaca();
+  const p = {id: regSig++, n, x:0, y:0, v:false}, sitio = huecoPara(p); p.x = sitio.x; p.y = sitio.y;
   encajar(p); RG.piezas.push(p); regElegida = p.id; guardarRegletas(); pintarRegletas();
 }
 function girar(id){
-  const p = RG.piezas.find(x=>x.id===id); if(!p) return;
+  const p = RG.piezas.find(x=>x.id===id); if(!p || esPlaca(p)) return;
   p.v = !p.v; encajar(p); guardarRegletas(); pintarRegletas();
 }
 function duplicar(){
   const p = RG.piezas.find(x=>x.id===regElegida); if(!p) return;
-  const c = {id: regSig++, n:p.n, x:p.x + (p.v ? 1 : 0), y:p.y + (p.v ? 0 : 1), v:p.v};
+  const c = {id: regSig++, n:p.n, x:p.x + (esPlaca(p) ? 10 : p.v ? 1 : 0), y:p.y + (esPlaca(p) || p.v ? 0 : 1), v:p.v};
+  if(esPlaca(p) && p.x + 20 > medidas().cols){ c.x = p.x; c.y = p.y + 10; }
   encajar(c); RG.piezas.push(c); regElegida = c.id; guardarRegletas(); pintarRegletas();
 }
 function quitar(id){
@@ -294,8 +311,9 @@ function quitar(id){
 let ultimoToque = {id:null, t:0};
 function nuevaDesdePaleta(e, n){
   e.preventDefault();
-  const t = tablero().getBoundingClientRect(), u = RG.u;
-  const p = {id: regSig++, n, x:(e.clientX - t.left)/u - n/2, y:(e.clientY - t.top)/u - .5, v:false, nueva:true};
+  if(n===100) caberPlaca();
+  const t = tablero().getBoundingClientRect(), u = RG.u, p = {id: regSig++, n, v:false, nueva:true};
+  p.x = (e.clientX - t.left)/u - ancho(p)/2; p.y = (e.clientY - t.top)/u - alto(p)/2;
   RG.piezas.push(p); regElegida = p.id; pintarRegletas();
   const el = tablero().querySelector('.regleta-v[data-id="'+p.id+'"]');
   empezarArrastre(e, p, el, true);
@@ -320,12 +338,12 @@ function empezarArrastre(e, p, el, desdePaleta){
     el.removeEventListener("pointermove", mover); el.removeEventListener("pointerup", soltar); el.removeEventListener("pointercancel", soltar);
     tablero().classList.remove("moviendo"); papelera.classList.remove("encima");
     if(encima(ev) && movido){ quitar(p.id); return; }
-    if(desdePaleta && !movido){ const s = hueco(p.n); p.x = s.x; p.y = s.y; }   // un simple toque en la paleta la pone en un hueco libre
+    if(desdePaleta && !movido){ const s = huecoPara(p); p.x = s.x; p.y = s.y; }   // un simple toque en la paleta la pone en un hueco libre
     else { p.x = x0 + (ev.clientX - px)/u; p.y = y0 + (ev.clientY - py)/u; }
     delete p.nueva; encajar(p);
     if(!movido && !desdePaleta){
       const ahora = Date.now();
-      if(ultimoToque.id===p.id && ahora - ultimoToque.t < 350){ p.v = !p.v; encajar(p); ultimoToque = {id:null,t:0}; }
+      if(ultimoToque.id===p.id && ahora - ultimoToque.t < 350){ if(!esPlaca(p)) p.v = !p.v; encajar(p); ultimoToque = {id:null,t:0}; }
       else ultimoToque = {id:p.id, t:ahora};
     }
     guardarRegletas(); pintarRegletas(); tablero().focus({preventScroll:true});
@@ -334,6 +352,7 @@ function empezarArrastre(e, p, el, desdePaleta){
 }
 function tecladoRegletas(e){
   if(!/^(input|select|textarea)$/i.test(e.target.tagName) && /^[1-9]$|^0$/.test(e.key)){ ponerRegleta(e.key==="0" ? 10 : +e.key); return; }
+  if(!/^(input|select|textarea)$/i.test(e.target.tagName) && (e.key==="c"||e.key==="C")){ ponerRegleta(100); return; }
   const p = RG.piezas.find(x=>x.id===regElegida); if(!p) return;
   const mov = {ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1]}[e.key];
   if(mov){ e.preventDefault(); p.x += mov[0]; p.y += mov[1]; encajar(p); guardarRegletas(); pintarRegletas(); }

@@ -429,5 +429,29 @@
     "pags": 14,
     "peso": 2691,
     "fecha": "2026-10-05"
+  },
+  {
+    "archivo": "Ficha_multinivel_La_Resta.pdf",
+    "titulo": "La resta de dieces y la resta en árbol",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "recurso": "La resta de dieces y la resta en árbol",
+    "temas": ["Composición y descomposición", "Suma y resta", "Decenas y valor posicional"],
+    "desc": "La resta: quitar dieces, generalización al cero y resta por descomposición con varios caminos",
+    "pags": 10,
+    "peso": 76,
+    "fecha": "2026-10-13"
+  },
+  {
+    "archivo": "La_Resta_Nivel2_corregido.pdf",
+    "titulo": "Academia de detectives: dominar las restas",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "recurso": "La resta de dieces y la resta en árbol",
+    "temas": ["Composición y descomposición", "Suma y resta", "Decenas y valor posicional"],
+    "desc": "Restar dieces y restar por descomposición con regletas Cuisenaire (2º Primaria)",
+    "pags": 15,
+    "peso": 55,
+    "fecha": "2026-10-13"
   }
 ]

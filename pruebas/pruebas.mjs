@@ -45,7 +45,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -223,6 +223,33 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   const choqueTxt = await p.textContent("#piAyuda");
   exigir(/8 \+ 20 = 28, pero arriba pone 26/.test(choqueTxt) && await p.locator(".pi-bloque.choque").count()===3, "pirámides: no explica qué bloques no cuadran («"+choqueTxt+"»)");
   await accesibilidad(p);
+  // El número escondido: en todos los casos la solución junta el escondido y deja lo que queda; un caso entero con regletas
+  await p.goto(WEB+"#/escondido"); await p.waitForSelector("#vEscondido:not([hidden]) .ne-pieza");
+  const casosNE = await p.evaluate(()=>{
+    const fallos = [], antes = {modo:NE.modo, caso:NE.caso};
+    for(const nivel of ["vista","unidad","diez","mezcla"]) for(const hasta of [50, 99]){
+      const l = listaNE(nivel, hasta);
+      if(l.length < 30) fallos.push(nivel+"-"+hasta+": pocos casos");
+      for(const c of l){
+        NE.caso = c; resolverRegletas(true);
+        const r = rotura(c), pasos = pasosCuaderno(c);
+        if(sumaZona("esc") !== c.h || sumaZona("mesa") !== c.n - c.h || NE.piezas.some(p=> p.v < 1 || p.v > 10)) fallos.push(c.k+": la solución no cuadra");
+        if((c.t === "vista") !== !r || pasos[pasos.length-1].bien !== c.n) fallos.push(c.k+": pasos del cuaderno mal");
+      }
+    }
+    NE.modo = antes.modo; nuevoCaso(); return fallos;
+  });
+  exigir(!casosNE.length, "número escondido: "+casosNE.slice(0,4).join("; "));
+  await p.click('#vEscondido .segmentos [data-modo="regletas"]');
+  await p.evaluate(()=>{ NE.caso = {k:"37-12", n:37, h:12, t:"unidad", quien:"Nora", dice:25}; NE.piezas = piezasDe(37); NE.fase = "buscar"; pintarEscondido(); });
+  await p.click('#neCuerpo .ne-zona.mesa .ne-pieza >> nth=0');
+  await p.click("#neRomper"); await p.click('#neCuerpo .ne-pieza[aria-label*="negra"]'); await p.click('#neCuerpo .ne-parte[data-a="2"]');
+  await p.click('#neCuerpo .ne-zona.mesa .ne-pieza[aria-label*="roja"]');
+  for(const t of ["2","5","✓"]) await p.click('#neTeclado [data-t="'+t+'"]');
+  exigir(/12 \+ 25 = 37/.test(await p.textContent("#neCuerpo")), "número escondido: no se cierra el caso 12 dentro del 37");
+  await accesibilidad(p);
+  await p.click('#vEscondido .segmentos [data-modo="cuaderno"]'); await accesibilidad(p);
+  await p.click('#vEscondido .segmentos [data-modo="error"]'); await accesibilidad(p);
   // Aproximaciones: la regla (el 5 sube), una ronda entera eligiendo bien y escribiendo
   await p.goto(WEB+"#/redondeo"); await p.waitForSelector("#vRedondeo:not([hidden]) .ap-pregunta");
   const reglas = await p.evaluate(()=> [apAproximar(44,10), apAproximar(45,10), apAproximar(449,100), apAproximar(450,100), apAproximar(97,10)].join());
@@ -299,7 +326,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));

@@ -477,5 +477,29 @@
     "pags": 15,
     "peso": 66,
     "fecha": "2026-10-13"
+  },
+  {
+    "archivo": "Ficha_multinivel_Numero_Escondido.pdf",
+    "titulo": "El juego del número escondido",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "recurso": "El juego del número escondido",
+    "temas": ["Composición y descomposición"],
+    "desc": "Descomposición flexible de números de dos cifras con regletas: encontrar el número escondido y lo que queda suelto",
+    "pags": 10,
+    "peso": 74,
+    "fecha": "2026-10-14"
+  },
+  {
+    "archivo": "Numero_Escondido_corregido.pdf",
+    "titulo": "Agencia de detectives: el juego del número escondido",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "recurso": "El juego del número escondido",
+    "temas": ["Composición y descomposición"],
+    "desc": "Descomposición flexible de números de dos cifras con regletas Cuisenaire (2º Primaria)",
+    "pags": 15,
+    "peso": 62,
+    "fecha": "2026-10-14"
   }
 ]

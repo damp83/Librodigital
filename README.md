@@ -189,6 +189,14 @@ Su entrada del catálogo y su portada se quitan solas.
       Se corrige al escribir tantas cifras como tiene la respuesta; al fallar puede enseñar la estrategia
       («8 + 7 = 8 + 8 − 1»). Al final: aciertos, fallos, récord personal del nivel, los últimos intentos y
       las operaciones para repasar. En el modo aula toma el nivel de la clase.
+    - *El número escondido* (`#/escondido`, en `escondido.js`, ficha destacada junto al Minuto): trabaja la
+      presentación y la ficha «El juego del número escondido» (2.º). Se busca un número dentro de otro (el 12
+      dentro del 37) con los tres pasos del detective: mirar los dieces y los unos, romper una pieza si falta y
+      juntar lo que hace falta; después se cuenta lo que queda y se comprueba (12 + 25 = 37). Modos: *Con
+      regletas* (tocar para llevar piezas al número escondido, *Romper una pieza* en dos), *Cuaderno* (¿qué
+      pieza rompo?, rompo el 7 en 2 y…, junto, queda, comprobación) y *¿Bien o mal?* (detective del error).
+      Niveles: sin romper nada, rompo los unos, rompo un diez y mezcla; números hasta 50 o 99. Pista según el
+      caso, ver la solución y enlace a la presentación. Los casos salen del banco y no se repiten.
   - **Banco de retos** (`banco.js`): las herramientas no repiten operaciones ni retos hasta haberlos usado
     todos. Cada tipo tiene un «mazo» con todos los posibles, barajado, que se guarda en el dispositivo (tampoco
     se repiten de un día para otro):

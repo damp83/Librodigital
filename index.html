@@ -740,6 +740,63 @@ footer.pie .marca{margin-bottom:12px}
 .herr-destacada .herr-txt b{font-size:19px}
 .herr-destacada .herr-txt span{display:block!important}
 .herr-destacada .herr-flecha{display:block!important}
+.herr-destacada.naranja{background:linear-gradient(100deg,color-mix(in srgb,var(--r10) 20%,var(--surface)),var(--surface) 65%);border-color:color-mix(in srgb,var(--r10) 55%,var(--line))}
+@media (min-width:1180px){ .herr-destacada{grid-column:span 2} }   /* las dos destacadas, una al lado de la otra */
+@media (min-width:761px) and (max-width:1179px){ .herr-destacada{grid-column:span 1} }
+
+/* El número escondido */
+.ne-sello{margin:0;align-self:flex-end;transform:rotate(-4deg);border:3px solid #c62828;color:#c62828;border-radius:8px;padding:2px 10px;font:800 13px var(--font-titulos);text-transform:uppercase;letter-spacing:.08em}
+.ne-zonas{--u:clamp(22px,min(3.6vw,5.2vh),46px);display:flex;gap:16px;flex-wrap:wrap;justify-content:center;width:100%}
+.ne-zona{flex:1 1 calc(var(--u)*10 + 40px);max-width:calc(var(--u)*21 + 60px);min-height:calc(var(--u)*3.4);display:flex;flex-direction:column;gap:10px;padding:12px 14px;
+  border:2px solid var(--line);border-radius:18px;background:var(--surface);text-align:left}
+.ne-zona h2{margin:0;font-size:15px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.04em}
+.ne-zona.esc{border:3px dashed color-mix(in srgb,var(--r10) 70%,var(--line));background:color-mix(in srgb,var(--r10) 7%,var(--surface))}
+.ne-zona.esc.bien{border-style:solid;border-color:var(--ok);background:var(--ok-soft)}
+.ne-zona.esc.mal{border-color:#e3261f;background:#fde2e1}
+.ne-piezas{display:flex;flex-wrap:wrap;gap:8px;align-items:center;align-content:flex-start;flex:1}
+.ne-pieza,.ne-regleta{width:calc(var(--v)*var(--u));height:calc(var(--u)*1.15);border:0;border-radius:6px;display:grid;place-items:center;flex:none;
+  font:700 calc(var(--u)*.55) var(--font-titulos);box-shadow:inset 0 -4px 0 rgba(0,0,0,.18),inset 0 2px 0 rgba(255,255,255,.35),0 2px 4px rgba(0,0,0,.25)}
+.ne-pieza{cursor:pointer;transition:transform .12s}
+.ne-pieza:hover:not(:disabled){transform:translateY(-2px)}
+.ne-pieza:disabled{cursor:default}
+.ne-pieza[style*="#f4f4f4"],.ne-regleta[style*="#f4f4f4"]{box-shadow:inset 0 0 0 1px #c8ced6,inset 0 -4px 0 rgba(0,0,0,.12)}
+.ne-pieza.rompible{outline:3px dashed #c62828;outline-offset:3px}
+.ne-pieza.elegida{outline:4px solid var(--accent);outline-offset:3px}
+.ne-vacio{color:var(--muted);font-size:16px}
+.ne-llevo{margin:0;font:600 clamp(20px,3vh,30px) var(--font-titulos);min-height:1.3em}
+.ne-llevo b{color:var(--accent)}
+.ne-zona.esc.bien .ne-llevo b{color:var(--ok)}
+.ne-romper{display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 16px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line)}
+.ne-romper p{margin:0;font:600 clamp(18px,2.6vh,24px) var(--font-titulos)}
+.ne-opciones{--u:clamp(14px,min(2.2vw,3.4vh),28px);display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.ne-parte{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:3px;padding:10px 12px;border:2px solid var(--line-strong);border-radius:14px;background:var(--surface);color:var(--ink)}
+.ne-parte:hover{border-color:var(--accent)}
+.ne-parte span:last-child{width:100%;font-weight:700;font-size:15px}
+.ne-cierre{display:flex;flex-direction:column;gap:6px;padding:14px 22px;border-radius:16px;background:var(--ok-soft);border:1px solid color-mix(in srgb,var(--ok) 40%,transparent);
+  font:600 clamp(18px,2.8vh,28px)/1.3 var(--font-titulos)}
+.ne-cierre p{margin:0}
+.ne-compr{color:var(--accent)}
+.ne-desc{--u:clamp(14px,min(2.2vw,3.2vh),26px);margin:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+.ne-desc > span:last-child{font:700 clamp(20px,3vh,30px) var(--font-titulos);margin-left:10px}
+.ne-pasos{align-items:center}
+.ne-paso{margin:0;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+.ne-paso > p{margin:0}
+.ne-elige{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.ne-elige .ap-opcion{min-width:0;padding:8px 22px}
+.ne-hecho{color:var(--ok)}
+.ap-escrito.ne-escrito{font-size:clamp(26px,5vh,54px)}
+.ne-bocadillo{position:relative;max-width:min(640px,100%);padding:16px 22px;border-radius:22px;background:var(--surface);border:2px solid var(--line-strong);text-align:left;
+  font:600 clamp(20px,3vh,30px)/1.35 var(--font-titulos)}
+.ne-bocadillo > b{display:block;font-size:.7em;color:var(--accent)}
+.ne-bocadillo p{margin:0}
+@media (max-width:760px){
+  .ne-zonas{--u:min(30px,(100vw - 72px)/10.6)}
+  #vEscondido .reg-barra{gap:8px 10px}
+  #vEscondido .segmentos{width:100%}
+  .ap-escrito.ne-escrito{font-size:30px}
+  #vEscondido .segmentos button{flex:1;padding:6px 6px;font-size:13.5px}
+  #nePantalla{display:none}
+}
 .mn-inicio{display:flex;flex-direction:column;align-items:center;gap:14px;width:min(900px,100%)}
 .mn-inicio h2{margin:0;font-size:clamp(22px,3.4vh,32px)}
 .mn-fila{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;justify-content:center}
@@ -1184,6 +1241,10 @@ footer.pie .marca{margin-bottom:12px}
           <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="55" r="36" fill="#fff" stroke="#e3261f" stroke-width="7"/><rect x="42" y="8" width="16" height="9" rx="3" fill="#e3261f"/><path d="M50 55 L50 28" stroke="#1c2330" stroke-width="6" stroke-linecap="round"/><path d="M50 55 L68 64" stroke="#1c2330" stroke-width="5" stroke-linecap="round"/><path d="M50 19 A36 36 0 0 1 86 55 L50 55 Z" fill="rgba(242,194,0,.55)"/><circle cx="50" cy="55" r="5" fill="#1c2330"/></svg></span>
           <span class="herr-txt"><b>Minuto de cálculo</b><span>¿Cuántas operaciones en un minuto? Dobles, doble más uno, uno más, diez más, mitades… Niveles de 5 años a 2.º y récord personal.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
         </a>
+        <a class="herr-ficha herr-destacada naranja" href="#/escondido">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g font-family="sans-serif" font-weight="700" text-anchor="middle"><rect x="8" y="14" width="84" height="13" rx="3" fill="#f57c22"/><rect x="8" y="31" width="84" height="13" rx="3" fill="#f57c22"/><rect x="8" y="48" width="58" height="13" rx="3" fill="#2b2b2b"/><rect x="8" y="70" width="40" height="13" rx="3" fill="#f2c200"/><rect x="52" y="70" width="16" height="13" rx="3" fill="#e3261f"/><circle cx="78" cy="72" r="11" fill="none" stroke="#2c77c4" stroke-width="5"/><path d="M86 80 L95 90" stroke="#2c77c4" stroke-width="6" stroke-linecap="round"/></g></svg></span>
+          <span class="herr-txt"><b>El número escondido</b><span>Dentro del 37 vive el 12: rompe una regleta, junta lo que necesitas y comprueba. Con regletas, cuaderno y detective del error.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
         <a class="herr-ficha" href="#/regletas">
           <span class="herr-ilus" aria-hidden="true"><i style="width:20%;background:var(--r2)"></i><i style="width:50%;background:var(--r5)"></i><i style="width:70%;background:#2b2b2b"></i><i style="width:100%;background:var(--r10)"></i></span>
           <span class="herr-txt"><b>Regletas virtuales</b><span>Arrastra, gira y combina las diez regletas en la pizarra digital.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
@@ -1608,6 +1669,22 @@ footer.pie .marca{margin-bottom:12px}
       <span class="pi-hechas" id="piHechas"></span>
     </div>
   </div>
+</div>
+
+<div class="vista" id="vEscondido" hidden role="dialog" aria-modal="true" aria-labelledby="vNeTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vNeTit">El número escondido</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Cómo se trabaja">
+      <button data-modo="regletas" aria-pressed="true">Con regletas</button>
+      <button data-modo="cuaderno" aria-pressed="false">Cuaderno</button>
+      <button data-modo="error" aria-pressed="false">¿Bien o mal?</button>
+    </div>
+    <label class="b-select"><span>Nivel</span><select id="neNivel"></select></label>
+    <label class="b-select"><span>Números</span><select id="neHasta"><option value="50">hasta 50</option><option value="99">hasta 99</option></select></label>
+    <span class="pi-hechas" id="neHechos" aria-live="polite"></span>
+    <div class="reg-acc"><a class="icbtn" href="#/leer/Numero_Escondido_corregido.pdf" data-icon="proyectar" aria-label="Ver la presentación del número escondido" title="Presentación"></a><button class="icbtn" id="nePantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona" id="neCuerpo"></div><div class="pi-teclado" id="neTeclado" role="group" aria-label="Escribir un número" hidden></div></div>
 </div>
 
 <div class="vista" id="vRedondeo" hidden role="dialog" aria-modal="true" aria-labelledby="vRedTit">
@@ -2570,13 +2647,13 @@ function panelNotas(c){
 let rutaPrevia = location.hash;
 function ruta(){
   // herramientas, secciones y modo aula viven en herramientas.js, secciones.js y aula.js: si alguno no ha cargado, se avisa
-  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
+  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
   // modo aula: la tableta recuerda su clase y vuelve a ella en lugar de ir a la biblioteca
   const cl = location.hash.match(/^#\/aula\/([\w-]+)\/?$/);
   if(cl){ cerrarLector(); abrirClase(cl[1]); rutaPrevia = location.hash; return; }
   const claseGuardada = leer("aula-clase", null);
   if(claseGuardada && (location.hash==="" || location.hash==="#/" || location.hash==="#")){ location.replace("#/aula/"+claseGuardada); return; }
-  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
+  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   if(typeof cerrarHerramienta==="function") cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
@@ -2643,7 +2720,7 @@ if("serviceWorker" in navigator && (location.protocol==="https:" || location.hos
    Entonces las fichas de las herramientas no hacen nada. Si pasa, se borran las copias guardadas del código
    (los PDF guardados se conservan) y se recarga una vez; si aun así falta algo, se avisa en pantalla. */
 const PIEZAS = ["abrirHerramienta", "cerrarHerramienta", "iniciarRegletas", "iniciarBombo", "iniciarRuta", "iniciarFamilias",
-                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "delMazo"];
+                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "iniciarEscondido", "delMazo"];
 function codigoIncompleto(){ return PIEZAS.filter(n=> typeof window[n] !== "function"); }
 function avisarCodigo(){
   const a = $("avisoCodigo"); if(!a.hidden) return;
@@ -2695,5 +2772,6 @@ listo.then(repararCodigo).then(seguir=> seguir ? fetch("catalogo.json", {cache:"
 <script src="piramides.js"></script>
 <script src="aproximar.js"></script>
 <script src="minuto.js"></script>
+<script src="escondido.js"></script>
 </body>
 </html>

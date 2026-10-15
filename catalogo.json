@@ -501,5 +501,29 @@
     "pags": 15,
     "peso": 62,
     "fecha": "2026-10-14"
+  },
+  {
+    "archivo": "Completar_el_100.pdf",
+    "titulo": "Detectives del 100: el misterio de completar la centena",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "recurso": "Sumar buscando el 100",
+    "temas": ["Composición y descomposición", "Suma y resta", "Decenas y valor posicional"],
+    "desc": "Sumar buscando el 100: amigos del 100 y descomposición del segundo sumando (2º Primaria)",
+    "pags": 15,
+    "peso": 63,
+    "fecha": "2026-10-15"
+  },
+  {
+    "archivo": "Ficha_multinivel_Completar_el_100.pdf",
+    "titulo": "Sumar buscando el 100",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "recurso": "Sumar buscando el 100",
+    "temas": ["Composición y descomposición", "Suma y resta", "Decenas y valor posicional"],
+    "desc": "Completar a la centena: amigos del 100, descomposición del segundo sumando y cálculo mental con regletas",
+    "pags": 9,
+    "peso": 73,
+    "fecha": "2026-10-15"
   }
 ]

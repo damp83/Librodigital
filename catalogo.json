@@ -525,5 +525,29 @@
     "pags": 9,
     "peso": 73,
     "fecha": "2026-10-15"
+  },
+  {
+    "archivo": "Ficha_multinivel_Suma_Arbol_3_Cifras.pdf",
+    "titulo": "La suma en árbol con resultado de tres cifras",
+    "etapas": ["2.º"],
+    "tipo": "Ficha",
+    "recurso": "La suma en árbol con resultado de tres cifras",
+    "temas": ["Suma y resta", "Decenas y valor posicional"],
+    "desc": "Suma en árbol de nivel 3: agrupar dieces para formar la placa del 100 y reagrupar también las unidades",
+    "pags": 9,
+    "peso": 74,
+    "fecha": "2026-10-15"
+  },
+  {
+    "archivo": "Sumas_3_cifras.pdf",
+    "titulo": "Misión superárboles: sumas de tres cifras en el bosque geométrico",
+    "etapas": ["2.º"],
+    "tipo": "Presentación",
+    "recurso": "La suma en árbol con resultado de tres cifras",
+    "temas": ["Suma y resta", "Geometría", "Decenas y valor posicional"],
+    "desc": "Suma en árbol de nivel 3: agrupar dieces para formar la placa del 100 (2º Primaria)",
+    "pags": 15,
+    "peso": 63,
+    "fecha": "2026-10-15"
   }
 ]

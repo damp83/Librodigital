@@ -130,6 +130,7 @@ svg.ic{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-wid
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero p.intro{margin:14px 0 0;color:var(--ink-2);font-size:17px;max-width:56ch}
 .cifras{display:flex;flex-wrap:wrap;gap:8px 28px;margin:22px 0 0;padding:0;list-style:none}
+.cifras{min-height:46px}   /* hueco de las cifras mientras llega el catálogo */
 .cifras li{display:flex;flex-direction:column}
 .cifras b{font-family:var(--font-titulos);font-size:24px;font-weight:700;line-height:1.1}
 .cifras span{font-size:13px;color:var(--muted)}
@@ -278,6 +279,7 @@ footer.pie .marca{margin-bottom:12px}
   .hero p.intro{font-size:15px;margin-top:8px}
   .cifras{gap:4px 20px;margin-top:14px}
   .cifras li{flex-direction:row;align-items:baseline;gap:5px}
+  .cifras{min-height:21.5px}
   .cifras b{font-size:18px}
   .buscador{margin-top:16px}
   .buscador input{padding:12px 0;font-size:16px}
@@ -1033,6 +1035,9 @@ footer.pie .marca{margin-bottom:12px}
 .muro-fila.todo{padding-bottom:6px;margin-bottom:4px;border-bottom:2px solid var(--line-strong)}
 
 /* Reto de la semana */
+/* mientras llega reto.json se guarda su hueco, para que las herramientas no salten hacia abajo */
+.reto.reservado{visibility:hidden;min-height:200px}
+@media (max-width:760px){ .reto.reservado{min-height:370px} }
 .reto{margin-top:22px;border:1px solid var(--line);border-radius:var(--radio);background:var(--surface);box-shadow:var(--sh-1);overflow:hidden}
 .reto-cab{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 18px 0}
 .reto-cab h2{margin:0;font-size:19px;font-weight:600;flex:1;min-width:200px}
@@ -1233,7 +1238,7 @@ footer.pie .marca{margin-bottom:12px}
     <p class="sin-red" id="sinRed" role="status" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5h.01M3 3l18 18"/></svg>Sin conexión: puedes abrir los materiales guardados en este dispositivo (marcados con ✓).</p>
     <p class="sin-red" id="avisoCodigo" role="alert" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v5M12 16.5h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg><span>Este navegador no ha podido cargar las herramientas (Cálculo mental, Panel del 100…). Cierra la web del todo y vuelve a abrirla. Si sigue igual, actualiza el navegador: en iPhone o iPad, <b>Ajustes → General → Actualización de software</b>; en Android, actualiza Chrome desde Google Play.</span></p>
     <section class="seguir" id="seguir" aria-label="Seguir donde lo dejaste" hidden></section>
-    <section class="reto" id="reto" aria-labelledby="retoTit" hidden></section>
+    <section class="reto reservado" id="reto" aria-labelledby="retoTit"></section>
     <section class="herr" id="herr" aria-labelledby="herrTit">
       <h2 id="herrTit">Herramientas para el aula</h2>
       <div class="herr-rejilla">
@@ -1969,7 +1974,7 @@ mqOscuro.addEventListener?.("change", pintarBotonTema);
    ===================================================================== */
 const filtroEtapa = new Set(), filtroTipo = new Set(), filtroTema = new Set();
 /* Orden de los temas de contenido (el mismo que en scripts/actualizar_catalogo.py) */
-const TEMAS_ORDEN = ["Espacio y series","Cantidad y conteo","Composición y descomposición","Parejas del 10","Suma y resta",
+const TEMAS_ORDEN = ["Espacio y series","Cantidad y conteo","Composición y descomposición","Parejas del 10","Suma y resta","Multiplicación",
                      "Diagrama partes-todo","Problemas","Decenas y valor posicional","Geometría","Medida"];
 let soloPendientes = false;
 

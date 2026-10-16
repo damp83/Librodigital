@@ -177,7 +177,7 @@
     "temas": ["Diagrama partes-todo", "Problemas"],
     "desc": "Resolver misterios matemáticos con el diagrama partes-todo, con retos y soluciones.",
     "pags": 16,
-    "peso": 2715
+    "peso": 251
   },
   {
     "archivo": "Los_Vestidos_de_los_Numeros_corregido.pdf",
@@ -199,7 +199,7 @@
     "temas": ["Espacio y series"],
     "desc": "Series numéricas, factor constante y pares e impares con calculadora y regletas (2º Primaria)",
     "pags": 16,
-    "peso": 2727,
+    "peso": 255,
     "fecha": "2026-10-02"
   },
   {
@@ -295,7 +295,7 @@
     "temas": ["Medida"],
     "desc": "El metro y el medio metro: medir y estimar longitudes con regletas y cinta métrica (2º Primaria)",
     "pags": 14,
-    "peso": 3475,
+    "peso": 2109,
     "fecha": "2026-10-04"
   },
   {
@@ -367,7 +367,7 @@
     "temas": ["Medida", "Decenas y valor posicional"],
     "desc": "Billetes y monedas: contar, cambiar y pagar con centenas, decenas y unidades (2º Primaria)",
     "pags": 15,
-    "peso": 2257,
+    "peso": 1435,
     "fecha": "2026-10-05"
   },
   {
@@ -403,7 +403,7 @@
     "temas": ["Medida"],
     "desc": "La hora con el reloj analógico y digital: en punto, y cuarto, y media y menos cuarto (2º Primaria)",
     "pags": 15,
-    "peso": 3570,
+    "peso": 2252,
     "fecha": "2026-10-05"
   },
   {
@@ -427,7 +427,7 @@
     "temas": ["Composición y descomposición", "Decenas y valor posicional"],
     "desc": "Los números de tres cifras con la placa del 100: centenas, decenas y unidades (2º Primaria)",
     "pags": 14,
-    "peso": 2691,
+    "peso": 1679,
     "fecha": "2026-10-05"
   },
   {
@@ -460,7 +460,7 @@
     "etapas": ["2.º"],
     "tipo": "Ficha",
     "recurso": "Iniciación a la multiplicación, conmutativa, doble y mitad",
-    "temas": [],
+    "temas": ["Multiplicación"],
     "desc": "Multiplicación: partes iguales, la palabra veces, propiedad conmutativa y relación doble-mitad con regletas",
     "pags": 10,
     "peso": 84,
@@ -472,7 +472,7 @@
     "etapas": ["2.º"],
     "tipo": "Presentación",
     "recurso": "Iniciación a la multiplicación, conmutativa, doble y mitad",
-    "temas": [],
+    "temas": ["Multiplicación"],
     "desc": "Partes iguales, la palabra veces, propiedad conmutativa y relación doble-mitad (2º Primaria)",
     "pags": 15,
     "peso": 66,
@@ -544,7 +544,7 @@
     "etapas": ["2.º"],
     "tipo": "Presentación",
     "recurso": "La suma en árbol con resultado de tres cifras",
-    "temas": ["Suma y resta", "Geometría", "Decenas y valor posicional"],
+    "temas": ["Suma y resta", "Decenas y valor posicional"],
     "desc": "Suma en árbol de nivel 3: agrupar dieces para formar la placa del 100 (2º Primaria)",
     "pags": 15,
     "peso": 63,

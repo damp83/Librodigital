@@ -334,6 +334,23 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
 
 /* ---------- Móvil ---------- */
 const MOVIL = {viewport:{width:390, height:844}, isMobile:true, hasTouch:true};
+await prueba("La portada no salta mientras carga, ni con una conexión lenta", async ()=>{
+  const fallos = [];
+  for(const opciones of [MOVIL, {viewport:{width:1440, height:900}}]){
+    await conPagina(opciones, async p=>{
+      const cdp = await p.context().newCDPSession(p);   // 4G lento y móvil modesto: el catálogo y el reto llegan tarde
+      await cdp.send("Network.enable");
+      await cdp.send("Network.emulateNetworkConditions", {offline:false, latency:150, downloadThroughput:1.6e6/8, uploadThroughput:750e3/8});
+      await cdp.send("Emulation.setCPUThrottlingRate", {rate:4});
+      await p.addInitScript(()=>{ window.__saltos = 0; new PerformanceObserver(l=>{ for(const e of l.getEntries()) if(!e.hadRecentInput) window.__saltos += e.value; }).observe({type:"layout-shift", buffered:true}); });
+      await p.goto(WEB); await p.waitForSelector(".libro"); await p.waitForSelector("#reto:not(.reservado)"); await p.waitForTimeout(800);
+      const cls = await p.evaluate(()=> window.__saltos);
+      if(cls > 0.1) fallos.push(opciones.viewport.width+" px: CLS "+cls.toFixed(3));
+    });
+  }
+  exigir(!fallos.length, "la portada salta al cargar: "+fallos.join("; "));
+});
+
 await prueba("En el móvil nada se sale de la pantalla", ()=> conPagina(MOVIL, async p=>{
   await p.goto(WEB); await p.waitForSelector(".libro");
   exigir(await p.evaluate(()=> document.documentElement.scrollWidth <= innerWidth), "la biblioteca tiene desplazamiento horizontal");

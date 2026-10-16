@@ -54,6 +54,7 @@ TEMAS = {   # expresiones regulares sobre el texto sin tildes y en minúsculas
     "Problemas": [r"\bproblemas?\b"],
     "Geometría": [r"\bgeoplano", r"\bpoligon", r"\bsegmentos?\b", r"\btriangul", r"\bcuadrados?\b", r"\brectangul",
                   r"\bperimetro", r"\bfiguras? (planas|geometricas)", r"\bgeometria\b"],   # «bosque geométrico» no es geometría
+    "Multiplicación": [r"\bmultiplic", r"\bveces\b", r"\btablas? de multiplicar\b"],
     "Medida": [r"\bmedida", r"\blongitud", r"\bcentimetros?\b", r"\bmetros?\b", r"\bmedir\b",
                r"\bhoras?\b", r"\breloj", r"\bintervalos de tiempo\b", r"\bdinero\b", r"\bmonedas?\b", r"\bbilletes?\b"],
     "Decenas y valor posicional": [r"\bdecenas?\b", r"\bdieces\b", r"\bdiez y unos\b", r"\bvalor posicional\b", r"\bpanel del 100\b", r"\bamigos del 100\b", r"\bcentenas?\b", r"\bdel 1 al 99\b"],

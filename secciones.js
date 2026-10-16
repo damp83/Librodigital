@@ -176,21 +176,28 @@ pintarIconos($("dImprimir"));
 /* ---------------------------------------------------------------------
    RETO DE LA SEMANA (reto.json): la semana más reciente que ya ha empezado
    --------------------------------------------------------------------- */
-let RETO = null, retoFiltrando = false;
+let RETO = null, retoFiltrando = false, retoCargando = true;
 const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 
 async function cargarReto(){
+  const hoy = new Date(), dia = hoy.getFullYear()+"-"+String(hoy.getMonth()+1).padStart(2,"0")+"-"+String(hoy.getDate()).padStart(2,"0");
+  // el reto de la última visita se pinta al momento; luego se pone al día con reto.json
+  const recordado = leer("aula-reto-cache", null);
+  if(recordado && recordado.desde <= dia && (recordado.retos||[]).length){ RETO = recordado; pintarReto(); }
   try{
     const datos = await (await fetch("reto.json", {cache:"no-cache"})).json();
-    const hoy = new Date(), dia = hoy.getFullYear()+"-"+String(hoy.getMonth()+1).padStart(2,"0")+"-"+String(hoy.getDate()).padStart(2,"0");
     RETO = (datos.semanas||[]).filter(s=> s.desde <= dia && (s.retos||[]).length).sort((a,b)=> a.desde < b.desde ? 1 : -1)[0] || null;
-  }catch(e){ RETO = null; }
+    guardar("aula-reto-cache", RETO);
+  }catch(e){ RETO = RETO || null; }
+  retoCargando = false;
   pintarReto();
   if(vistaAbierta==="clase") iniciarClase();   // el reto de la clase, si llegó después
 }
 function mostrarReto(filtrando){ retoFiltrando = filtrando; pintarReto(); }
 function pintarReto(){
   const cont = $("reto");
+  if(!RETO && retoCargando && !retoFiltrando) return;   // aún no ha llegado: se mantiene su hueco
+  cont.classList.remove("reservado");
   if(!RETO || retoFiltrando){ cont.hidden = true; return; }
   const niveles = RETO.retos.map(r=>r.nivel), guardado = leer("aula-reto-nivel", null);
   const nivel = niveles.includes(guardado) ? guardado : niveles[0], r = RETO.retos.find(x=>x.nivel===nivel);

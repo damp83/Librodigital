@@ -544,7 +544,7 @@
     "etapas": ["2.º"],
     "tipo": "Presentación",
     "recurso": "La suma en árbol con resultado de tres cifras",
-    "temas": ["Suma y resta", "Geometría", "Decenas y valor posicional"],
+    "temas": ["Suma y resta", "Decenas y valor posicional"],
     "desc": "Suma en árbol de nivel 3: agrupar dieces para formar la placa del 100 (2º Primaria)",
     "pags": 15,
     "peso": 63,

@@ -121,14 +121,68 @@ def optimizar(ruta):
         tmp.unlink(missing_ok=True)
 
 
-PESADO_KB = 5120          # a partir de aquí, las imágenes grandes del PDF se pasan a JPEG
+PESADO_KB = AVISO_PESO_KB  # a partir de aquí se intenta aligerar el PDF (el mismo límite del aviso)
 CALIDAD_JPEG = 85
+JPEG_DENSO = 0.12         # bytes por píxel: un JPEG que pasa de esto se guardó con más calidad de la que se nota
+CALIDAD_FOTO = 65         # calidad para volver a guardar esos JPEG (diapositivas con fotos): no se nota ni ampliando
+
+
+def fondo_comun(pdf):
+    """Muchas diapositivas repiten en cada página el mismo fondo dibujado (miles de puntos o líneas). Si todas
+    las páginas empiezan con el mismo dibujo, se guarda una sola vez y cada página lo reutiliza. Devuelve si lo ha hecho."""
+    import pikepdf
+    paginas = list(pdf.pages)
+    if len(paginas) < 3:
+        return False
+    datos = []
+    for pg in paginas:
+        c = pg.obj.get("/Contents")
+        if c is None:
+            return False
+        datos.append(b"\n".join(x.read_bytes() for x in c) if isinstance(c, pikepdf.Array) else c.read_bytes())
+    comun = os.path.commonprefix(datos)
+    corte = max(comun.rfind(b"\nf*\n"), comun.rfind(b"\nf\n"), comun.rfind(b"\nS\n"))   # al acabar un trazo completo
+    if corte < 50 * 1024:
+        return False
+    corte = comun.index(b"\n", corte + 1) + 1
+    caja = paginas[0].obj.get("/MediaBox")
+    fondo = pdf.make_stream(datos[0][:corte])
+    fondo.Type, fondo.Subtype = pikepdf.Name.XObject, pikepdf.Name.Form
+    fondo.BBox, fondo.Resources = caja, paginas[0].obj.Resources
+    for pg, d in zip(paginas, datos):
+        pg.obj.Contents = pdf.make_stream(b"q /AulaFondo Do Q\n" + d[corte:])
+        rec = pg.obj.Resources
+        if "/XObject" not in rec:
+            rec.XObject = pikepdf.Dictionary()
+        rec.XObject.AulaFondo = fondo
+    return True
+
+
+def se_ve_igual(original, nuevo):
+    """Compara las páginas dibujadas de los dos PDF (a media resolución). El ruido del JPEG es una diferencia pequeña
+    repartida por toda la página; algo que falte o cambie de sitio deja píxeles muy distintos."""
+    from PIL import ImageChops, ImageStat
+    a, b = abrir_pdf(original), abrir_pdf(nuevo)
+    try:
+        if len(a) != len(b):
+            return False
+        for i in range(len(a)):
+            x, y = (d[i].render(scale=0.6).to_pil().convert("L") for d in (a, b))
+            if x.size != y.size:
+                return False
+            dif = ImageChops.difference(x, y); h = dif.histogram()
+            if ImageStat.Stat(dif).mean[0] > 4 or sum(h[48:]) > sum(h) * 0.005:
+                return False
+        return True
+    finally:
+        a.close(); b.close()
 
 
 def aligerar(ruta):
-    """Para PDF muy pesados (diapositivas exportadas como imágenes sin comprimir): pasa a JPEG de buena calidad
-    las imágenes grandes, con la misma resolución y conservando su transparencia. Solo se queda con el resultado
-    si abre bien, tiene las mismas páginas y ocupa bastante menos."""
+    """Para PDF pesados: pasa a JPEG de buena calidad las imágenes grandes sin comprimir, vuelve a guardar con
+    calidad CALIDAD_FOTO los JPEG guardados con calidad de sobra (misma resolución, conservando la transparencia) y guarda una
+    sola vez el fondo que se repite en todas las páginas. Solo se queda con el resultado si se ve igual, tiene las
+    mismas páginas y ocupa bastante menos."""
     if ruta.stat().st_size < PESADO_KB * 1024:
         return
     try:
@@ -138,35 +192,45 @@ def aligerar(ruta):
         return
     tmp = ruta.with_suffix(".tmp.pdf")
     try:
+        hecho = []
         with pikepdf.open(ruta) as pdf:
-            n, hechas = len(pdf.pages), set()
+            if fondo_comun(pdf):
+                hecho.append("fondo repetido guardado una sola vez")
+            hechas, jpeg = set(), 0
             for pagina in pdf.pages:
-                for _, img in pagina.images.items():
+                for img in pagina.images.values():
                     if img.objgen in hechas:
                         continue
                     hechas.add(img.objgen)
-                    if img.get("/Filter") != pikepdf.Name.FlateDecode or int(img.get("/Width", 0)) < 400 or len(img.read_raw_bytes()) < 200 * 1024:
+                    filtro, crudo = img.get("/Filter"), len(img.read_raw_bytes())
+                    ancho, alto = int(img.get("/Width", 0)), int(img.get("/Height", 0))
+                    if ancho < 400 or crudo < 100 * 1024 or img.get("/BitsPerComponent", 8) != 8:
                         continue
-                    if img.get("/BitsPerComponent", 8) != 8:
+                    if filtro == pikepdf.Name.DCTDecode:
+                        if crudo / (ancho * alto) < JPEG_DENSO:
+                            continue
+                    elif filtro != pikepdf.Name.FlateDecode or crudo < 200 * 1024:
                         continue
                     pil = pikepdf.PdfImage(img).as_pil_image()
                     if pil.mode not in ("RGB", "L"):
                         pil = pil.convert("RGB")
-                    salida = io.BytesIO(); pil.save(salida, "JPEG", quality=CALIDAD_JPEG, optimize=True)
-                    if salida.tell() >= len(img.read_raw_bytes()):
+                    foto = filtro == pikepdf.Name.DCTDecode
+                    salida = io.BytesIO(); pil.save(salida, "JPEG", quality=CALIDAD_FOTO if foto else CALIDAD_JPEG, optimize=True, progressive=foto)
+                    if salida.tell() >= crudo * (0.8 if foto else 1):   # un JPEG ya aligerado no se vuelve a tocar
                         continue
                     img.write(salida.getvalue(), filter=pikepdf.Name.DCTDecode)
                     img.ColorSpace = pikepdf.Name.DeviceGray if pil.mode == "L" else pikepdf.Name.DeviceRGB
                     img.BitsPerComponent = 8
                     if "/DecodeParms" in img:
                         del img["/DecodeParms"]
+                    jpeg += 1
+            if jpeg:
+                hecho.append(f"{jpeg} imágenes en JPEG más ligero, misma resolución")
             pdf.save(tmp, compress_streams=True, object_stream_mode=pikepdf.ObjectStreamMode.generate)
-        doc = abrir_pdf(tmp); ok = len(doc) == n; doc.close()
-        if ok and tmp.stat().st_size < ruta.stat().st_size * 0.7:
+        if hecho and tmp.stat().st_size < ruta.stat().st_size * 0.7 and se_ve_igual(ruta, tmp):
             antes = ruta.stat().st_size
             tmp.replace(ruta)
-            cambios.append(f"Aligerado: {ruta.name} ({antes / 1048576:.1f} → {ruta.stat().st_size / 1048576:.1f} MB, "
-                           f"imágenes en JPEG de calidad {CALIDAD_JPEG}, misma resolución)")
+            cambios.append(f"Aligerado: {ruta.name} ({antes / 1048576:.1f} → {ruta.stat().st_size / 1048576:.1f} MB, {'; '.join(hecho)})")
     except Exception as e:
         avisos.append(f"{ruta.name}: no se ha podido aligerar ({e}); se publica tal cual.")
     finally:

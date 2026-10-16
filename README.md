@@ -51,8 +51,11 @@ Para agrupar materiales que ya están subidos, pon el mismo `"recurso"` en sus b
 
 ### Si algo sale mal
 
-- **PDF muy pesados** (más de 5 MB, como las diapositivas exportadas como imágenes): las imágenes se pasan
-  solas a JPEG de buena calidad, con la misma resolución (de 20 MB a unos 3 MB). En *Actions* sale «Aligerado».
+- **PDF pesados** (más de 2 MB): se aligeran solos, con la misma resolución. Las imágenes sin comprimir pasan
+  a JPEG de buena calidad (de 20 MB a unos 3 MB); las fotos en JPEG guardadas con más calidad de la que se nota
+  se vuelven a guardar al 65 % (un 40 % menos); y si todas las páginas repiten el mismo fondo dibujado (miles de
+  puntos), se guarda una sola vez (de 2,7 MB a 0,25 MB). Solo se publica el resultado si cada página se ve igual
+  que la original. En *Actions* sale «Aligerado».
   Para los que ya están publicados: `python scripts/actualizar_catalogo.py --aligerar-todo`.
 - **Varias subidas seguidas:** no hace falta esperar entre una y otra. Cada publicación espera a que
   termine la anterior y parte de lo que esta ya guardó.

@@ -107,7 +107,9 @@ function lanzarImpresion(){
   };
   document.body.classList.add("imprimiendo");
   addEventListener("afterprint", limpiar, {once:true});
-  setTimeout(()=> window.print(), 50);
+  // las fotos (monedas y billetes) tienen que estar cargadas antes de abrir el diálogo de imprimir
+  const fotos = [...$("impresion").querySelectorAll("img")].map(i=> i.complete ? null : new Promise(r=>{ i.onload = i.onerror = r; }));
+  Promise.all(fotos).then(()=> setTimeout(()=> window.print(), 50));
 }
 
 /* Una hoja de ficha en papel con el estilo de las fichas multinivel: regletas, título, etiqueta (nivel o

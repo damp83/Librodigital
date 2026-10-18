@@ -1342,6 +1342,77 @@ footer.pie .marca{margin-bottom:12px}
 .hj-mini div{display:flex;gap:.6mm}
 .hj-mini i{width:7mm;height:5mm;border:.3mm solid #5b6676;border-radius:1mm;display:grid;place-items:center;font:700 8pt var(--font-titulos);font-style:normal;background:#fff}
 .hj-mini i.dada{background:#dfe9fb;border-color:var(--azul)}
+/* colores fijos en papel (aunque la web esté en modo oscuro) */
+.hoja{--ink:#16202e;--ink-2:#3a495d;--muted:#5b687a;--surface:#fff;--surface-2:#f0f3f7;--accent:#1b5fd6;--line:#e1e6ed;--line-strong:#cbd3de}
+.hj-sec{font:700 12pt var(--font-titulos);margin:1mm 0 2.5mm}
+.hj-sec b{font-weight:800}
+.hj-caja{display:inline-block;min-width:13mm;height:7.5mm;padding:0 1.5mm;border:.35mm solid #7d8796;border-radius:1.8mm;background:#fff;vertical-align:middle;
+  text-align:center;font:700 12pt/7mm var(--font-titulos)}
+.hj-caja.ancha{min-width:22mm}
+.hj-nowrap{white-space:nowrap}
+.hj-nregletas i[style*="#f4f4f4"],.hj-pbarras i[style*="#f4f4f4"]{box-shadow:inset 0 0 0 .25mm #8a94a3}
+.hj-caja.llena{color:var(--azul);border-color:var(--azul)}
+.hj-linea{display:inline-block;width:42mm;height:6mm;border-bottom:.35mm solid #7d8796}
+/* Cartones del bingo */
+.hj-cartones{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);gap:5mm;height:100%}
+.hj-carton{display:flex;flex-direction:column;gap:2mm;padding:3mm;border:.45mm dashed #8a94a3;border-radius:3mm;min-height:0}
+.hj-carton > p{margin:0;display:flex;justify-content:space-between;font-size:9.5pt;color:var(--gris)}
+.hj-carton > p b{font:700 11pt var(--font-titulos);color:var(--tinta)}
+.hj-ccasillas{flex:1;display:grid;gap:1.5mm;min-height:0}
+.hj-ccasillas > span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1mm;border:.4mm solid #5b6676;border-radius:1.8mm}
+.hj-ccasillas b{font:700 20pt/1 var(--font-titulos)}
+.hoja .dn-pieza.moneda:not(.foto){--d:34px!important}
+.hoja .dn-pieza.moneda:not(.foto) b{font-size:10px}
+.hj-cregletas{display:flex;gap:.6mm}
+.hj-cregletas i{height:2.4mm;border-radius:.4mm;box-shadow:inset 0 -.4mm 0 rgba(0,0,0,.15);outline:.2mm solid rgba(0,0,0,.25)}
+.hj-cnombre{font-size:8.5pt!important}
+/* Relojes */
+.hj-relojes{display:grid;grid-template-columns:repeat(3,1fr);gap:1mm 4mm;margin-bottom:1.5mm}
+.hj-reloj{position:relative;display:flex;flex-direction:column;align-items:center;gap:1mm}
+.hj-reloj > .hj-n,.hj-intervalo > .hj-n,.hj-dinero > .hj-n{position:absolute;left:0;top:0}
+.hj-reloj .rj-esfera{width:28mm}
+.hj-reloj p{margin:0;font-size:9.5pt;text-align:center;min-height:5.5mm}
+.hj-intervalos{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.hj-intervalo{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1mm 3mm;padding:2mm;border:.35mm solid var(--linea);border-radius:3mm}
+.hj-intervalo .rj-esfera{width:20mm}
+.hj-intervalo p{width:100%;margin:0;font-size:9.5pt;text-align:center}
+.hj-flecha{font-size:16pt;color:var(--gris)}
+/* Casos (sumas que pasan de 100 y número escondido) */
+.hj-casos{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);gap:4mm;height:100%}
+.hj-caso{display:flex;flex-direction:column;gap:1.2mm;padding:2.5mm 3mm;border:.35mm solid var(--linea);border-radius:3mm;font-size:10.5pt;min-height:0;overflow:hidden}
+.hj-caso .hj-caja{height:6.5mm;line-height:6mm}
+.hj-caso p{margin:0}
+.hj-caso-tit{display:flex;align-items:center;gap:2.5mm;font:600 13pt var(--font-titulos)}
+.hj-caso-tit b{color:var(--azul)}
+.hj-placa-fila{display:flex;align-items:flex-end;gap:2mm}
+.hj-placa-fila > b{align-self:center;font-size:14pt}
+.hj-placa{display:grid;grid-template-columns:repeat(10,2.2mm);gap:.25mm;padding:.5mm;border-radius:1mm;background:#c9d1dc}
+.hj-placa i{width:2.2mm;height:2.2mm;background:#fff}
+.hj-placa i.falta{box-shadow:inset 0 0 0 .25mm var(--azul)}
+.hj-pbarras{display:flex;align-items:flex-end;gap:.7mm}
+.hj-pbarras i{width:2.2mm;border-radius:.5mm}
+.hj-arbol{width:100%;height:auto;max-height:100%}
+.hj-aramas line{stroke:#c9d1dc;stroke-width:4}
+.hj-acaja{fill:#fff;stroke:#5b6676;stroke-width:3}
+.hj-acaja.fija{fill:#eef3fb;stroke:var(--azul)}
+.hj-anum{font:700 30px var(--font-titulos);fill:var(--tinta);text-anchor:middle}
+.hj-anum.sol{fill:var(--azul)}
+.hj-nregletas{display:flex;flex-wrap:wrap;gap:.7mm}
+.hj-nregletas i{display:grid;place-items:center;height:3.8mm;border-radius:.7mm;font:700 7pt var(--font-titulos);font-style:normal;box-shadow:inset 0 -.5mm 0 rgba(0,0,0,.15)}
+.hj-opcion{display:inline-block;padding:.2mm 2.5mm;border:.3mm solid #7d8796;border-radius:99px;font-size:10pt}
+.hj-opcion.buena{border:.6mm solid var(--azul);color:var(--azul);font-weight:700}
+/* Dinero */
+.hj-dineros{display:grid;grid-template-columns:1fr 1fr;gap:2.5mm;margin-bottom:2mm}
+.hj-dinero{position:relative;display:flex;flex-direction:column;gap:1.5mm;padding:2mm 3mm 2mm 9mm;border:.35mm solid var(--linea);border-radius:3mm;font-size:11pt}
+.hj-dinero p{margin:0}
+.hj-monton{display:flex;flex-wrap:wrap;align-items:center;gap:1.5mm}
+.hoja .dn-pieza.foto{--esc:.56}
+.hoja .dn-pieza.billete:not(.foto){width:72px;height:39px}
+.hoja .dn-pieza.billete:not(.foto) b{font-size:15px}
+.hj-compra{font-size:10.5pt}
+.hj-vuelta{flex-direction:row;align-items:center;gap:3mm}
+.hj-vuelta > div:last-child{display:flex;flex-direction:column;gap:1.5mm}
+.hj-credito{margin:0;font-size:8pt;color:var(--gris)}
 .rc-pieza{box-sizing:border-box;height:10mm;border:.3mm solid #333;display:flex;align-items:center;justify-content:flex-end;padding-right:1.2mm;
   font:600 7pt var(--font);-webkit-print-color-adjust:exact;print-color-adjust:exact}
 
@@ -1661,6 +1732,7 @@ footer.pie .marca{margin-bottom:12px}
       <div class="b-acciones">
         <button class="bt azul b-sacar" id="bSacar"><svg class="ic" data-icon="bola"></svg>Sacar número</button>
         <button class="bt suave" id="bMostrar" hidden>Mostrar la respuesta</button>
+        <button class="bt suave" id="bImprimir"><svg class="ic" data-icon="imprimir"></svg>Imprimir cartones</button>
       </div>
     </section>
     <aside class="b-lado" aria-labelledby="bTabTit">
@@ -1875,7 +1947,7 @@ footer.pie .marca{margin-bottom:12px}
     <label class="b-select"><span>Nivel</span><select id="neNivel"></select></label>
     <label class="b-select"><span>Números</span><select id="neHasta"><option value="50">hasta 50</option><option value="99">hasta 99</option></select></label>
     <span class="pi-hechas" id="neHechos" aria-live="polite"></span>
-    <div class="reg-acc"><a class="icbtn" href="#/leer/Numero_Escondido_corregido.pdf" data-icon="proyectar" aria-label="Ver la presentación del número escondido" title="Presentación"></a><button class="icbtn" id="nePantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+    <div class="reg-acc"><a class="icbtn" href="#/leer/Numero_Escondido_corregido.pdf" data-icon="proyectar" aria-label="Ver la presentación del número escondido" title="Presentación"></a><button class="icbtn" id="neImprimir" data-icon="imprimir" aria-label="Imprimir una ficha" title="Imprimir ficha"></button><button class="icbtn" id="nePantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="ap-zona" id="neCuerpo"></div><div class="pi-teclado" id="neTeclado" role="group" aria-label="Escribir un número" hidden></div></div>
 </div>
@@ -1889,7 +1961,7 @@ footer.pie .marca{margin-bottom:12px}
     </div>
     <label class="b-select"><span>Nivel</span><select id="ciNivel"></select></label>
     <span class="pi-hechas" id="ciHechos" aria-live="polite"></span>
-    <div class="reg-acc"><button class="icbtn" id="ciPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+    <div class="reg-acc"><button class="icbtn" id="ciImprimir" data-icon="imprimir" aria-label="Imprimir una ficha" title="Imprimir ficha"></button><button class="icbtn" id="ciPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="ap-zona" id="ciCuerpo"></div><div class="pi-teclado" id="ciTeclado" role="group" aria-label="Escribir un número"></div></div>
 </div>
@@ -1909,7 +1981,7 @@ footer.pie .marca{margin-bottom:12px}
       <button class="chip" id="rjDigital" aria-pressed="false">Hora digital</button>
     </span>
     <span class="pi-hechas" id="rjHechos" aria-live="polite"></span>
-    <div class="reg-acc"><button class="icbtn" id="rjPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+    <div class="reg-acc"><button class="icbtn" id="rjImprimir" data-icon="imprimir" aria-label="Imprimir una ficha" title="Imprimir ficha"></button><button class="icbtn" id="rjPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="ap-zona" id="rjCuerpo"></div></div>
 </div>
@@ -1926,7 +1998,7 @@ footer.pie .marca{margin-bottom:12px}
     <label class="b-select"><span>Nivel</span><select id="dnNivel"></select></label>
     <span class="pi-ayudas" role="group" aria-label="Ayudas"><button class="chip" id="dnTotal" aria-pressed="true">Ver lo que llevo</button><button class="chip" id="dnFotos" aria-pressed="true">Fotos reales</button></span>
     <span class="pi-hechas" id="dnHechos" aria-live="polite"></span>
-    <div class="reg-acc"><button class="icbtn" id="dnPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+    <div class="reg-acc"><button class="icbtn" id="dnImprimir" data-icon="imprimir" aria-label="Imprimir una ficha" title="Imprimir ficha"></button><button class="icbtn" id="dnPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="ap-zona" id="dnCuerpo"></div><div class="pi-teclado" id="dnTeclado" role="group" aria-label="Escribir la cantidad en euros" hidden></div></div>
 </div>

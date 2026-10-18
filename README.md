@@ -131,6 +131,14 @@ Su entrada del catálogo y su portada se quitan solas.
     Los datos están en `ruta.json` (se puede editar; las pruebas avisan si algo no existe).
   - **Para las familias** (`#/familias`): guía para acompañar en casa, las diez regletas con su valor,
     consejos y un botón para imprimir regletas de papel a tamaño real para recortar.
+  - **Fichas en papel de las herramientas** (botón de la impresora en cada una; mismo diseño que las fichas
+    multinivel, con hoja de soluciones «Para el docente»; salen del banco, así que cada ficha es distinta):
+    *Minuto de cálculo* (40 operaciones), *Pirámides* (6), *Bombo del bingo* (6 cartones distintos del juego
+    elegido para recortar; del 1 al 10 y decenas, con sus regletas dibujadas), *El reloj* (6 para leer, 6 para
+    dibujar las agujas y 2 intervalos), *Sumas que pasan de 100* (6 de «Busco el 100» con la placa o 6
+    superárboles), *El número escondido* (6 casos con los pasos del detective) y *El dinero* (4 montones para
+    contar y 4 compras para la vuelta, con las fotos o los dibujos). Ninguna se sale del A4: lo comprueban
+    las pruebas.
   - **Imprimir páginas sueltas**: en el lector, botón *Imprimir*: esta página, un rango o todo el material
     (y *Guardar como PDF* para quedarse solo con esas páginas). Desde ahí también se descarga el PDF.
   - **Rotulador** (botón *Rotulador* o tecla **R**, también en proyección): escribir y subrayar sobre la

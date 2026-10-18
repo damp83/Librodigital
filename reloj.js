@@ -87,7 +87,8 @@ function esferaRJ(t, opciones){
     if(o.minutos) s += '<text x="'+(Math.sin(a)*164).toFixed(1)+'" y="'+(-Math.cos(a)*164 + 6).toFixed(1)+'" class="rj-min">'+(n === 12 ? "00" : String(n*5).padStart(2, "0"))+'</text>';
   }
   const aguja = (ang, largo, ancho, clase) => '<g class="rj-aguja '+clase+'" transform="rotate('+ang.toFixed(1)+')"><line y1="16" y2="'+(-largo)+'" stroke-width="'+ancho+'"/><circle cy="'+(-largo)+'" r="'+(ancho/2)+'"/></g>';
-  s += aguja(h * 30, 70, 12, "horas") + aguja(m * 6, 118, 7, "minutos") + '<circle r="9" class="rj-eje"/></svg>';
+  if(o.agujas !== false) s += aguja(h * 30, 70, 12, "horas") + aguja(m * 6, 118, 7, "minutos");
+  s += '<circle r="9" class="rj-eje"/></svg>';
   return s;
 }
 
@@ -100,6 +101,7 @@ function iniciarReloj(){
     document.querySelectorAll("#vReloj .segmentos button").forEach(b=> b.onclick = ()=>{ RJ.modo = b.dataset.modo; guardarRJ(); nuevoRetoRJ(); });
     $("rjMinutos").onclick = ()=>{ RJ.minutos = !RJ.minutos; guardarRJ(); pintarReloj(); };
     $("rjDigital").onclick = ()=>{ RJ.digital = !RJ.digital; guardarRJ(); pintarReloj(); };
+    $("rjImprimir").onclick = imprimirReloj;
     if(document.fullscreenEnabled) $("rjPantalla").onclick = ()=> pantallaCompleta("vReloj"); else $("rjPantalla").hidden = true;
   }
   if(!RJ.reto && RJ.modo !== "libre") nuevoRetoRJ(); else pintarReloj();
@@ -160,6 +162,27 @@ function responderRJ(x){
   if(bien) RJ.hechos++;
   pintarReloj();
   $("rjOtra")?.focus();
+}
+
+/* ---------- Ficha en papel: 6 relojes para leer, 6 para dibujar las agujas y 2 intervalos ---------- */
+function imprimirReloj(){
+  const nivel = NIVELES_RJ[RJ.nivel], horas = [], vistas = new Set();
+  for(let t=0; horas.length < 12 && t < 200; t++){ const {t:x} = delMazo("rj-ficha-"+RJ.nivel, listaRJ(RJ.nivel)); if(!vistas.has(x)){ vistas.add(x); horas.push(x); } }
+  const intervalos = [delMazo("rj-intervalo-"+RJ.nivel, listaIntervalos(RJ.nivel)), delMazo("rj-intervalo-"+RJ.nivel, listaIntervalos(RJ.nivel))];
+  const leer = horas.slice(0, 6), dibujar = horas.slice(6, 12);
+  const caja = (n, esfera, pie) => '<div class="hj-reloj"><span class="hj-n">'+n+'</span>'+esfera+'<p>'+pie+'</p></div>';
+  const intervalo = (iv, i, sol) => '<div class="hj-intervalo"><span class="hj-n">'+(13 + i)+'</span>'+esferaRJ(iv.inicio, {minutos:false})+'<span class="hj-flecha">→</span>'+
+    esferaRJ((iv.inicio + iv.d) % 720, {minutos:false})+'<p>Empieza a '+horaEnPalabras(iv.inicio)+' y acaba a '+horaEnPalabras((iv.inicio + iv.d) % 720)+'. ¿Cuánto tiempo pasa?<br>'+
+    (sol ? '<b>'+duracionEnPalabras(iv.d)+'</b>' : '<span class="hj-linea"></span>')+'</p></div>';
+  const cuerpo = sol => '<h2 class="hj-sec">¿Qué hora es? Escríbela.</h2><div class="hj-relojes">'+leer.map((t, i)=> caja(i+1, esferaRJ(t), sol ? '<b>'+mayuscula(horaEnPalabras(t))+'</b>' : '<span class="hj-linea"></span>')).join("")+'</div>'+
+    '<h2 class="hj-sec">Dibuja las agujas: la <b class="rj-c-h">corta</b> para la hora y la <b class="rj-c-m">larga</b> para los minutos.</h2><div class="hj-relojes">'+
+      dibujar.map((t, i)=> caja(i+7, esferaRJ(t, {agujas:sol}), '<b>'+mayuscula(horaEnPalabras(t))+'</b>')).join("")+'</div>'+
+    '<h2 class="hj-sec">¿Cuánto tiempo pasa?</h2><div class="hj-intervalos">'+intervalos.map((iv, i)=> intervalo(iv, i, sol)).join("")+'</div>';
+  $("impresion").innerHTML =
+    hojaPapel({titulo:"El reloj", sub:"La hora y los intervalos de tiempo", eti:"Nivel: "+nivel.txt, pagina:1, paginas:2,
+      datos:[["Nombre", "", 3.2], ["Fecha", "", 1.4], ["Aciertos", "&nbsp;&nbsp;&nbsp;&nbsp; / 14", 1.3]], cuerpo:cuerpo(false)})+
+    hojaPapel({titulo:"Soluciones", sub:"El reloj · nivel "+nivel.txt+" · los mismos relojes de la ficha", eti:"Para el docente", docente:true, pagina:2, paginas:2, cuerpo:cuerpo(true)});
+  lanzarImpresion();
 }
 
 /* ---------- Mover las agujas ---------- */

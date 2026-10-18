@@ -822,9 +822,16 @@ footer.pie .marca{margin-bottom:12px}
 .dn-pieza.b5{background:#7f8893}.dn-pieza.b10{background:#c0443f}.dn-pieza.b20{background:#3f6fc0}.dn-pieza.b50{background:#d97a22}
 .dn-pieza.b100{background:#2f8f4d}.dn-pieza.b200{background:#b8901c}
 .dn-cosa{font-size:1.3em}
+/* Fotos del BCE, en proporción con su tamaño real (las monedas, a 2,6 px por mm; los billetes, a 1,15 px por mm) */
+.dn-pieza.foto{--esc:1;background:none;border:0;outline:0;box-shadow:none}
+.dn-pieza.foto.moneda{width:calc(var(--mm)*2.6px*var(--esc));height:auto;aspect-ratio:1;border-radius:50%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
+.dn-pieza.foto.billete{width:calc(var(--mm)*1.15px*var(--esc));height:auto;border-radius:3px;box-shadow:0 2px 5px rgba(0,0,0,.3);overflow:hidden}
+.dn-pieza.foto img{display:block;width:100%;height:auto;pointer-events:none;user-select:none;-webkit-user-select:none}
+.dn-credito{margin:0;font-size:12.5px;color:var(--muted)}
 @media (max-width:760px){
   .dn-pieza.billete{width:88px;height:48px}.dn-pieza.billete b{font-size:16px}
   .dn-pieza.moneda{--d:44px !important}
+  .dn-pieza.foto{--esc:.72}
 }
 
 /* Multiplicar con regletas */
@@ -1917,7 +1924,7 @@ footer.pie .marca{margin-bottom:12px}
       <button data-modo="vuelta" aria-pressed="false">La vuelta</button>
     </div>
     <label class="b-select"><span>Nivel</span><select id="dnNivel"></select></label>
-    <span class="pi-ayudas" role="group" aria-label="Ayudas"><button class="chip" id="dnTotal" aria-pressed="true">Ver lo que llevo</button></span>
+    <span class="pi-ayudas" role="group" aria-label="Ayudas"><button class="chip" id="dnTotal" aria-pressed="true">Ver lo que llevo</button><button class="chip" id="dnFotos" aria-pressed="true">Fotos reales</button></span>
     <span class="pi-hechas" id="dnHechos" aria-live="polite"></span>
     <div class="reg-acc"><button class="icbtn" id="dnPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>

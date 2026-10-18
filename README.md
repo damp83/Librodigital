@@ -204,7 +204,10 @@ Su entrada del catálogo y su portada se quitan solas.
     - *El reloj* (`#/reloj`, en `reloj.js`): reloj de agujas que se arrastran (la de las horas avanza sola).
       Libre, «¿Qué hora es?», «Pon la hora» y «¿Cuánto pasa?» (intervalos). Niveles: en punto y media, y cuarto
       y menos cuarto, de 5 en 5. Ayudas: minutos alrededor de la esfera y hora digital.
-    - *El dinero* (`#/dinero`, en `dinero.js`): monedas y billetes dibujados. Libre, «¿Cuánto hay?», «Paga
+    - *El dinero* (`#/dinero`, en `dinero.js`): monedas y billetes con fotos oficiales del Banco Central Europeo
+      (carpeta `dinero/`, sacadas de su cartel «Billetes de la serie Europa / Las monedas en euros»; los billetes
+      llevan «specimen» y se ven más pequeños que los reales, como piden sus normas) en proporción con su tamaño
+      real, o dibujos sencillos (botón «Fotos reales»). Libre, «¿Cuánto hay?», «Paga
       justo» (dice si se podía pagar con menos piezas) y «La vuelta» (contando hacia arriba). Niveles: hasta
       20 €, hasta 100 €, tres cifras (hasta 500 €) y con céntimos.
     - *El número escondido* (`#/escondido`, en `escondido.js`, ficha destacada junto al Minuto): trabaja la

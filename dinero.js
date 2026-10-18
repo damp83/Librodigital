@@ -1,6 +1,9 @@
 /* =====================================================================
    EL DINERO (#/dinero)
-   Monedas y billetes de euro dibujados (sin imitar los reales) para contar, pagar y calcular la vuelta.
+   Monedas y billetes de euro para contar, pagar y calcular la vuelta: fotos oficiales del Banco Central Europeo
+   (cartel «Billetes de la serie Europa / Las monedas en euros»; los billetes llevan «specimen», como piden sus
+   normas de reproducción, y se ven más pequeños que los reales) o dibujos sencillos, a elegir.
+   Las monedas y los billetes guardan la proporción de su tamaño real.
    - Libre: tocar monedas y billetes para ponerlos en la mesa; se ve cuánto hay.
    - ¿Cuánto hay?: un monton de monedas y billetes; se escribe el total.
    - Paga justo: algo cuesta un precio; se paga con las monedas y billetes de la caja. Al acertar, se dice
@@ -11,10 +14,12 @@
    aproximar.js ($, leer, guardar, esc, azar, barajar, apTeclado…).
    ===================================================================== */
 
-const DN = Object.assign({modo:"contar", nivel:"e100", verTotal:true}, leer("aula-dinero", {}),
+const DN = Object.assign({modo:"contar", nivel:"e100", verTotal:true, fotos:true}, leer("aula-dinero", {}),
   {mesa:[], reto:null, escrito:"", respuesta:null, aviso:"", hechos:0});
 let dineroListo = false, dnSig = 1;
-const guardarDN = () => guardar("aula-dinero", {modo:DN.modo, nivel:DN.nivel, verTotal:DN.verTotal});
+const guardarDN = () => guardar("aula-dinero", {modo:DN.modo, nivel:DN.nivel, verTotal:DN.verTotal, fotos:DN.fotos});
+/* Tamaño real en milímetros: diámetro de las monedas y ancho de los billetes */
+const MM_DN = {1:16.25, 2:18.75, 5:21.25, 10:19.75, 20:22.25, 50:24.25, 100:23.25, 200:25.75, 500:120, 1000:127, 2000:133, 5000:140, 10000:147, 20000:153};
 const NIVELES_DN = {
   e20:  {txt:"Hasta 20 €",            piezas:[100, 200, 500, 1000, 2000],            min:300,   max:2000,  paso:100},
   e100: {txt:"Hasta 100 €",           piezas:[100, 200, 500, 1000, 2000, 5000],      min:1100,  max:10000, paso:100},
@@ -29,6 +34,8 @@ const esBillete = v => v >= 500;
 function piezaDN(v, atributos){
   const nombre = esBillete(v) ? "Billete de "+v/100+" euros" : v >= 100 ? "Moneda de "+v/100+(v === 100 ? " euro" : " euros") : "Moneda de "+v+" céntimos";
   const texto = v >= 100 ? v/100+" €" : v+" c";
+  if(DN.fotos) return '<span class="dn-pieza foto '+(esBillete(v) ? "billete" : "moneda")+'" style="--mm:'+MM_DN[v]+'" '+(atributos || "")+' role="img" aria-label="'+nombre+'">'+
+    '<img src="dinero/'+(esBillete(v) ? "b"+v/100+".jpg" : "m"+v+".png")+'" alt="" draggable="false"></span>';
   return '<span class="dn-pieza '+(esBillete(v) ? "billete b"+v/100 : "moneda m"+v)+'" '+(atributos || "")+' role="img" aria-label="'+nombre+'"><b>'+texto+'</b></span>';
 }
 /* El menor número de piezas para pagar justo (con euros vale ir cogiendo siempre la más grande que quepa) */
@@ -81,6 +88,7 @@ function iniciarDinero(){
     $("dnNivel").onchange = e=>{ DN.nivel = e.target.value; guardarDN(); nuevoRetoDN(); };
     document.querySelectorAll("#vDinero .segmentos button").forEach(b=> b.onclick = ()=>{ DN.modo = b.dataset.modo; guardarDN(); nuevoRetoDN(); });
     $("dnTotal").onclick = ()=>{ DN.verTotal = !DN.verTotal; guardarDN(); pintarDinero(); };
+    $("dnFotos").onclick = ()=>{ DN.fotos = !DN.fotos; guardarDN(); pintarDinero(); };
     apTeclado("dnTeclado", teclaDN);
     if(document.fullscreenEnabled) $("dnPantalla").onclick = ()=> pantallaCompleta("vDinero"); else $("dnPantalla").hidden = true;
   }
@@ -102,7 +110,7 @@ function pintarDinero(){
   const r = DN.reto, c = $("dnCuerpo"), respondido = DN.respuesta !== null;
   $("dnNivel").value = DN.nivel;
   document.querySelectorAll("#vDinero .segmentos button").forEach(b=> b.setAttribute("aria-pressed", b.dataset.modo === DN.modo));
-  $("dnTotal").setAttribute("aria-pressed", DN.verTotal);
+  $("dnTotal").setAttribute("aria-pressed", DN.verTotal); $("dnFotos").setAttribute("aria-pressed", DN.fotos);
   $("dnHechos").textContent = DN.hechos ? "★ "+DN.hechos : "";
   let h = "", teclado = false;
   const entrada = (texto, bien) => '<p class="ap-escrito ne-escrito'+(respondido ? (bien ? " bien" : " mal") : DN.aviso ? " mal" : "")+'" aria-live="polite">'+texto+' <b>'+
@@ -139,6 +147,7 @@ function pintarDinero(){
     else if(DN.aviso) h += '<p class="ap-explica mal" role="status">'+esc(DN.aviso)+'</p>';
   }
   if(respondido && DN.modo !== "libre") h += '<div class="pt-acciones"><button class="bt azul" id="dnOtro">'+(DN.modo === "contar" ? "Otro monton" : "Otra compra")+'</button></div>';
+  if(DN.fotos) h += '<p class="dn-credito">Fotos de monedas y billetes: Banco Central Europeo. Los billetes llevan «specimen» (muestra) y se ven más pequeños que los de verdad.</p>';
   c.innerHTML = h;
   $("dnTeclado").hidden = !teclado;
   c.querySelectorAll(".dn-coger").forEach(b=> b.onclick = ()=>{ DN.mesa.push({id: dnSig++, v:+b.dataset.v}); DN.aviso = ""; pintarDinero(); });

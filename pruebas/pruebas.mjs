@@ -45,7 +45,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -250,6 +250,83 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await accesibilidad(p);
   await p.click('#vEscondido .segmentos [data-modo="cuaderno"]'); await accesibilidad(p);
   await p.click('#vEscondido .segmentos [data-modo="error"]'); await accesibilidad(p);
+  // Sumas que pasan de 100: todos los casos cuadran paso a paso; una suma entera con el teclado en cada estrategia
+  await p.goto(WEB+"#/cien"); await p.waitForSelector("#vCien:not([hidden]) .ap-pregunta");
+  const cienMal = await p.evaluate(()=>{
+    const fallos = [], antes = CI.modo;
+    for(const modo of ["cien", "arbol"]) for(const nivel of Object.keys(NIVELES_CI[modo])){
+      CI.modo = modo; const l = listaCI(modo, nivel);
+      if(l.length < 10) fallos.push(modo+"-"+nivel+": pocos casos");
+      for(const c of l){
+        const p = pasosCI(c), fin = p[p.length - 1].r;
+        if(fin !== c.a + c.b || c.a + c.b <= (modo === "cien" ? 100 : 0)) fallos.push(c.k+": el resultado no cuadra");
+        if(modo === "cien" && p[0].r + p[1].r !== c.b) fallos.push(c.k+": la rotura no cuadra");
+        if(modo === "arbol" && nivel !== "sin" && nivel !== "mezcla" && p[0].r < 100) fallos.push(c.k+": no se forma la placa");
+      }
+    }
+    CI.modo = antes; return fallos;
+  });
+  exigir(!cienMal.length, "sumas que pasan de 100: "+cienMal.slice(0,4).join("; "));
+  for(const modo of ["cien", "arbol"]){
+    await p.click('#vCien .segmentos [data-modo="'+modo+'"]');
+    for(let k=0; k<6 && await p.isVisible("#ciTeclado"); k++){
+      const r = await p.evaluate(()=> pasosCI(CI.caso)[CI.paso].r);
+      for(const t of [...String(r), "✓"]) await p.click('#ciTeclado [data-t="'+t+'"]');
+    }
+    exigir(/¡Muy bien!/.test(await p.textContent("#ciCuerpo")), "sumas que pasan de 100 ("+modo+"): no se termina la suma con el teclado");
+    await accesibilidad(p);
+  }
+  // El reloj: la hora en palabras, arrastrar la aguja larga hasta el 3 (y cuarto) y una pregunta de cada tipo
+  await p.goto(WEB+"#/reloj"); await p.waitForSelector("#vReloj:not([hidden]) .rj-esfera");
+  const palabras = await p.evaluate(()=> [195, 225, 90, 0, 710, 65].map(horaEnPalabras).join(" | "));
+  exigir(palabras === "las tres y cuarto | las cuatro menos cuarto | la una y media | las doce en punto | las doce menos diez | la una y cinco",
+    "reloj: la hora en palabras falla («"+palabras+"»)");
+  await p.click('#vReloj .segmentos [data-modo="libre"]');
+  await p.evaluate(()=>{ RJ.t = 4 * 60; pintarReloj(); });
+  const esfera = await p.locator("#rjCuerpo .rj-esfera").boundingBox(), cx = esfera.x + esfera.width/2, cy = esfera.y + esfera.height/2, rad = esfera.width * 110 / 360;
+  await p.mouse.move(cx, cy - rad); await p.mouse.down(); await p.mouse.move(cx + rad, cy, {steps:8}); await p.mouse.up();
+  const tras = await p.evaluate(()=> RJ.t);
+  exigir(tras === 4 * 60 + 15, "reloj: al llevar la aguja larga al 3 no marca las cuatro y cuarto (marca "+tras+" min)");
+  for(const modo of ["leer", "intervalo"]){
+    await p.click('#vReloj .segmentos [data-modo="'+modo+'"]');
+    const bien = await p.evaluate(()=> RJ.modo === "intervalo" ? RJ.reto.d : RJ.reto.t);
+    await p.click('#rjCuerpo .ap-opcion[data-t="'+bien+'"]');
+    exigir(/¡Muy bien!/.test(await p.textContent("#rjCuerpo")), "reloj ("+modo+"): la respuesta buena no se da por buena");
+    await accesibilidad(p);
+  }
+  await p.click('#vReloj .segmentos [data-modo="poner"]'); await accesibilidad(p);
+  // El dinero: el mínimo de piezas, pagar justo tocando la caja y contar un montón
+  await p.goto(WEB+"#/dinero"); await p.waitForSelector("#vDinero:not([hidden]) .ap-pregunta");
+  const minimo = await p.evaluate(()=> minimoPiezas(3700, NIVELES_DN.e100.piezas).join("+"));
+  exigir(minimo === "2000+1000+500+200", "dinero: el mínimo de piezas para 37 € falla ("+minimo+")");
+  await p.click('#vDinero .segmentos [data-modo="pagar"]');
+  await p.evaluate(()=>{ DN.nivel = "e100"; nuevoRetoDN(); DN.reto.precio = 3700; pintarDinero(); });
+  for(const v of [2000, 1000, 500, 200]) await p.click('#dnCuerpo .dn-coger[data-v="'+v+'"]');
+  await p.click("#dnPagar");
+  exigir(/¡Justo 37 €!/.test(await p.textContent("#dnCuerpo")), "dinero: pagar justo 37 € no funciona");
+  await accesibilidad(p);
+  await p.click('#vDinero .segmentos [data-modo="contar"]');
+  const total = await p.evaluate(()=> DN.reto.total / 100);
+  for(const t of [...String(total), "✓"]) await p.click('#dnTeclado [data-t="'+t+'"]');
+  exigir(/¡Muy bien!/.test(await p.textContent("#dnCuerpo")), "dinero: contar el montón no funciona");
+  await accesibilidad(p);
+  await p.click('#vDinero .segmentos [data-modo="vuelta"]'); await accesibilidad(p);
+  // Multiplicar con regletas: construir y darle la vuelta, y un reto de «¿Cuántas veces?» entero
+  await p.goto(WEB+"#/multiplicar"); await p.waitForSelector("#vMultiplicar:not([hidden]) .mu-tren");
+  await p.click('#vMultiplicar .segmentos [data-modo="construir"]');
+  await p.evaluate(()=>{ MX.n = 4; MX.veces = 3; MX.girada = false; pintarMultiplicar(); });
+  await p.click("#muGirar");
+  exigir(await p.locator("#muCuerpo .mu-tren").count() === 2 && /3 × 4 = 4 × 3 = 12/.test(await p.textContent("#muCuerpo")), "multiplicar: darle la vuelta no muestra 3 × 4 = 4 × 3");
+  await accesibilidad(p);
+  for(const modo of ["cuantas", "doble"]){
+    await p.click('#vMultiplicar .segmentos [data-modo="'+modo+'"]');
+    for(let k=0; k<4 && await p.isVisible("#muTeclado"); k++){
+      const r = await p.evaluate(()=> pasosMX(MX.reto)[MX.paso].r);
+      for(const t of [...String(r), "✓"]) await p.click('#muTeclado [data-t="'+t+'"]');
+    }
+    exigir(/¡Muy bien!/.test(await p.textContent("#muCuerpo")), "multiplicar ("+modo+"): no se termina el reto con el teclado");
+    await accesibilidad(p);
+  }
   // Aproximaciones: la regla (el 5 sube), una ronda entera eligiendo bien y escribiendo
   await p.goto(WEB+"#/redondeo"); await p.waitForSelector("#vRedondeo:not([hidden]) .ap-pregunta");
   const reglas = await p.evaluate(()=> [apAproximar(44,10), apAproximar(45,10), apAproximar(449,100), apAproximar(450,100), apAproximar(97,10)].join());
@@ -326,7 +403,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));

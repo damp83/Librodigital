@@ -14,7 +14,7 @@
   /* Si la dirección se parece a una de la web (…/Librodigital/regletas, …/El_metro.pdf), se va allí directamente */
   (function(){
     var resto = decodeURIComponent(location.pathname.replace(/^\/Librodigital\/?/, "")).replace(/\/+$/, "");
-    var rutas = /^(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|ruta|familias)$/;
+    var rutas = /^(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|ruta|familias)$/;
     var destino = null;
     if(rutas.test(resto)) destino = "#/" + resto;
     else if(/^aula\/[a-z0-9-]+$/.test(resto)) destino = "#/" + resto;

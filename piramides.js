@@ -33,6 +33,7 @@ function iniciarPiramides(){
     $("piComprobar").onclick = ()=>{ PI.comprobada = true; PI.pista = null; pintarPiramide(); };
     $("piSolucion").onclick = ()=>{ PI.solucion = !PI.solucion; PI.pista = null; $("piSolucion").textContent = PI.solucion ? "Ocultar la solución" : "Ver la solución"; pintarPiramide(); };
     $("piNueva").onclick = ()=>{ $("piSolucion").textContent = "Ver la solución"; nuevaPiramide(); };
+    $("piImprimir").onclick = imprimirPiramides;
     if(document.fullscreenEnabled) $("piPantalla").onclick = ()=> pantallaCompleta("vPiramides"); else $("piPantalla").hidden = true;
   }
   if(!PI.v) nuevaPiramide(); else pintarPiramide();
@@ -102,6 +103,23 @@ function nuevaPiramide(){
   Object.assign(PI, {v, dada, resp:v.map(f=> f.map(()=> "")), sel:null, pista:null, solucion:false, comprobada:false});
   PI.sel = siguienteHueco(-1);
   pintarPiramide();
+}
+
+/* ---------- Ficha en papel: 6 pirámides del nivel, pisos y números elegidos, y sus soluciones ---------- */
+function imprimirPiramides(){
+  if(PI.pisos===5 && PI.hasta===10){ PI.hasta = 20; guardarPI(); }
+  const lista = [], vistas = new Set();
+  for(let t=0; lista.length < 6 && t < 60; t++){ const p = generarPiramide(); if(!vistas.has(p.k)){ vistas.add(p.k); lista.push(p); } }
+  const dibujo = (p, solucion) => '<div class="hj-pir">'+p.v.map((f,r)=> '<div>'+f.map((x,i)=>
+    '<span class="'+(p.dada[r][i] ? "dada" : "")+'">'+(p.dada[r][i] || solucion ? x : "")+'</span>').join("")+'</div>').join("")+'</div>';
+  const nivel = {facil:"Fácil", medio:"Medio", dificil:"Difícil"}[PI.nivel];
+  $("impresion").innerHTML =
+    '<div class="hoja"><h1>Pirámides numéricas · '+nivel+'</h1>'+
+      '<p class="hj-datos">Nombre: ______________________ &nbsp; Fecha: __________</p>'+
+      '<p class="hj-nota">Cada bloque es la suma de los dos que tiene debajo.</p>'+
+      '<div class="hj-pirs">'+lista.map(p=> dibujo(p, false)).join("")+'</div></div>'+
+    '<div class="hoja hj-soluciones"><h2>Soluciones</h2><div class="hj-pirs">'+lista.map(p=> dibujo(p, true)).join("")+'</div></div>';
+  lanzarImpresion();
 }
 
 /* ---------- Estado de cada bloque ---------- */

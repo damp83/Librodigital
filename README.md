@@ -175,6 +175,7 @@ Su entrada del catálogo y su portada se quitan solas.
       Ayudas: *Pista* (marca un bloque que ya se puede calcular y la operación: «5 + 3 = ?» o «12 − 5 = ?»),
       *Partes y todo* (al elegir un bloque se marcan sus dos partes), *Regletas* dentro de los bloques,
       *Corregir al momento* o con «Comprobar», y «Ver la solución». Teclado en pantalla y del ordenador.
+      *Imprimir ficha*: 6 pirámides del nivel, pisos y números elegidos, con una hoja de soluciones.
     - *Aproximaciones* (`#/redondeo`, en `aproximar.js`): aproximar a la decena o a la centena. Niveles:
       decenas hasta 100, decenas hasta 1000, centenas hasta 1000 y mezclado. Se elige entre las dos vecinas
       o se escribe. Ayudas: recta numérica con la mitad marcada, distancias a cada vecina y pista. Al
@@ -191,7 +192,8 @@ Su entrada del catálogo y su portada se quitan solas.
       Reto (dobles de números grandes, sumar y restar 9, decenas). Los tipos se pueden quitar o poner.
       Se corrige al escribir tantas cifras como tiene la respuesta; al fallar puede enseñar la estrategia
       («8 + 7 = 8 + 8 − 1»). Al final: aciertos, fallos, récord personal del nivel, los últimos intentos y
-      las operaciones para repasar. En el modo aula toma el nivel de la clase.
+      las operaciones para repasar. En el modo aula toma el nivel de la clase. *Imprimir ficha*: 40 operaciones
+      distintas del nivel y los tipos elegidos, con hueco para el nombre y los aciertos, y una hoja de soluciones.
     - *El número escondido* (`#/escondido`, en `escondido.js`, ficha destacada junto al Minuto): trabaja la
       presentación y la ficha «El juego del número escondido» (2.º). Se busca un número dentro de otro (el 12
       dentro del 37) con los tres pasos del detective: mirar los dieces y los unos, romper una pieza si falta y
@@ -249,6 +251,13 @@ Para probarla en tu ordenador hace falta un servidor (con doble clic en `index.h
 la lista): `python3 -m http.server` dentro de la carpeta y entra en `http://localhost:8000`.
 Para actualizar el catálogo a mano: `pip install pypdfium2 pillow` y
 `python scripts/actualizar_catalogo.py`.
+
+- **Direcciones que no existen**: `404.html` dice «Aquí falta una pieza» y ofrece volver al aula. Si la dirección
+  se parece a una de la web (`…/Librodigital/regletas`, `…/El_metro.pdf`), lleva directamente allí.
+- **Buscadores**: `sitemap.xml` lista la web y todos los PDF; lo rehace solo el script del catálogo. Para que
+  Google lo tenga en cuenta, se envía una vez en Google Search Console («Sitemaps»):
+  `https://damp83.github.io/Librodigital/sitemap.xml`. (En una web de GitHub dentro de una carpeta, un
+  `robots.txt` no serviría: los buscadores solo leen el de la raíz del dominio.)
 
 ## Enlaces directos
 

@@ -345,7 +345,7 @@ await prueba("Las fichas en papel del Minuto y de las pirámides se preparan bie
   await p.goto(WEB+"#/piramides"); await p.waitForSelector("#piImprimir"); await p.click("#piImprimir");
   await p.waitForFunction(()=> window.__impreso === 2);
   const pir = await p.evaluate(()=>{
-    const pirs = [...document.querySelectorAll("#impresion .hj-soluciones .hj-pir")];
+    const pirs = [...document.querySelectorAll("#impresion .hoja:nth-child(2) .hj-pir")];
     const cuadra = pirs.every(d=>{ const f = [...d.children].map(r=> [...r.children].map(x=> +x.textContent));
       return f.every((fila, r)=> r === f.length-1 || fila.every((x, i)=> x === f[r+1][i] + f[r+1][i+1])); });
     return {n: document.querySelectorAll("#impresion .hoja:first-child .hj-pir").length, cuadra}; });

@@ -110,6 +110,19 @@ function lanzarImpresion(){
   setTimeout(()=> window.print(), 50);
 }
 
+/* Una hoja de ficha en papel con el estilo de las fichas multinivel: regletas, título, etiqueta (nivel o
+   «Para el docente»), recuadros para los datos, instrucciones, el contenido y el pie con la autoría */
+function hojaPapel(o){
+  const regletas = REGLETA.slice(1).map((r, i)=> '<i style="flex:'+(i+1)+';background:'+r.c+'"></i>').join("");
+  return '<section class="hoja'+(o.docente ? " hj-docente" : "")+'"><header><div class="hj-regletas">'+regletas+'</div>'+
+      '<div class="hj-tit"><div><h1>'+o.titulo+'</h1><p>'+o.sub+'</p></div>'+(o.eti ? '<span class="hj-eti">'+o.eti+'</span>' : '')+'</div></header>'+
+    (o.datos ? '<div class="hj-datos">'+o.datos.map(([etiqueta, valor, ancho])=> '<div style="flex:'+(ancho || 1)+'"><span>'+etiqueta+'</span><b>'+(valor || "")+'</b></div>').join("")+'</div>' : '<div style="height:5mm"></div>')+
+    (o.instrucciones ? '<div class="hj-instr">'+o.instrucciones+'</div>' : '')+
+    '<div class="hj-cuerpo">'+o.cuerpo+'</div>'+
+    '<footer class="hj-pie"><span>© '+new Date().getFullYear()+' Diego Alberto Moya · Licencia CC BY-NC-SA 4.0 · Aula de Matemáticas Manipulativas</span>'+
+      '<span>Página '+o.pagina+' de '+o.paginas+'</span></footer></section>';
+}
+
 function imprimirRecortables(){
   const ancho = 180;   // mm útiles en un A4 con márgenes de 10 mm
   let filas = "";

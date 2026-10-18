@@ -196,13 +196,18 @@ function imprimirMinuto(){
     if(o && !vistas.has(o.q)){ vistas.add(o.q); ops.push(o); }
   }
   barajar(ops);
-  const hueco = '<span class="hj-hueco"></span>';
-  const linea = o => o.q.includes("?") ? esc(o.q).replace("?", hueco) : esc(o.q)+" = "+hueco;
+  const caja = '<span class="hj-caja"></span>', nivel = esc(MIN_NIVELES[MN.nivel].txt);
+  const tiempo = MN.tiempo < 60 ? MN.tiempo+" segundos" : MN.tiempo === 60 ? "1 minuto" : MN.tiempo/60+" minutos";
+  const linea = o => o.q.includes("?") ? esc(o.q).replace("?", caja) : esc(o.q)+" = "+caja;
+  const num = i => '<span class="hj-n">'+(i+1)+'</span>';
   $("impresion").innerHTML =
-    '<div class="hoja"><h1>Minuto de cálculo · '+esc(MIN_NIVELES[MN.nivel].txt)+'</h1>'+
-      '<p class="hj-datos">Nombre: ______________________ &nbsp; Fecha: __________ &nbsp; Tiempo: '+(MN.tiempo < 60 ? MN.tiempo+" s" : MN.tiempo/60+" min")+' &nbsp; Aciertos: ____ de '+ops.length+'</p>'+
-      '<ol class="hj-ops">'+ops.map(o=> '<li>'+linea(o)+'</li>').join("")+'</ol></div>'+
-    '<div class="hoja"><h2>Soluciones</h2><ol class="hj-sol">'+ops.map(o=> '<li>'+esc(o.q.includes("?") ? o.q.replace("?", o.r) : o.q+" = "+o.r)+'</li>').join("")+'</ol></div>';
+    hojaPapel({titulo:"Minuto de cálculo", sub:"¿Cuántas operaciones haces en "+tiempo+"?", eti:"Nivel "+nivel, pagina:1, paginas:2,
+      datos:[["Nombre", "", 3.2], ["Fecha", "", 1.4], ["Aciertos", "&nbsp;&nbsp;&nbsp;&nbsp; / "+ops.length, 1.4]],
+      instrucciones:'<p>⏱️ Tienes <b>'+tiempo+'</b>. Cuando te digan «¡ya!», escribe el resultado en cada casilla, de arriba abajo. Si una se te atasca, pasa a la siguiente.'+
+        '<span class="hj-tipos">'+tipos.map(t=> '<span>'+esc(MIN_TIPOS[t].txt)+'</span>').join("")+'</span></p>',
+      cuerpo:'<ol class="hj-ops">'+ops.map((o, i)=> '<li>'+num(i)+'<span>'+linea(o)+'</span></li>').join("")+'</ol>'})+
+    hojaPapel({titulo:"Soluciones", sub:"Minuto de cálculo · nivel "+nivel+" · las mismas 40 operaciones de la ficha", eti:"Para el docente", docente:true, pagina:2, paginas:2,
+      cuerpo:'<ol class="hj-sol">'+ops.map((o, i)=> '<li>'+num(i)+'<span>'+(o.q.includes("?") ? esc(o.q).replace("?", "<b>"+o.r+"</b>") : esc(o.q)+" = <b>"+o.r+"</b>")+'</span></li>').join("")+'</ol>'});
   lanzarImpresion();
 }
 function marcaTexto(){

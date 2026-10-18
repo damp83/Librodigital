@@ -228,6 +228,11 @@ Su entrada del catálogo y su portada se quitan solas.
     - *Geoplano*: 24 figuras para copiar y 15 de simetría.
     - *Calculadora*: 162 retos de tecla rota.
     - *Pirámides*: no se repite ninguna de las últimas 150 de cada nivel.
+    - *Sumas que pasan de 100*: cada nivel tiene su mazo, de 20 sumas con dieces a 2501 en el superárbol mezclado.
+    - *Multiplicar*: las multiplicaciones de cada nivel y los dobles y mitades.
+    - *El reloj*: las horas de cada nivel (para leer y para poner, por separado) y cada hora de inicio con cada duración.
+    - *El dinero*: los precios de cada nivel (para pagar y para la vuelta, por separado); los montones para contar
+      no repiten ninguno de los últimos 150.
   - **Modo aula por curso** (`#/aula/3-anios`, `4-anios`, `5-anios`, `1-primaria`, `2-primaria`): una pantalla
     sencilla para las tabletas o la pizarra de una clase, con las fichas del trimestre actual, «Seguir» con
     la última ficha abierta, los materiales y las herramientas de ese curso con iconos grandes y el reto en

@@ -44,19 +44,27 @@ function listaRJ(nivel){
   for(let t=0; t<720; t+=paso) if(nivel === "media" || t % (nivel === "cuarto" ? 30 : 15)) l.push({k:"h"+t, t});   // en cada nivel, sobre todo lo nuevo
   return l;
 }
+const DURACIONES_RJ = {media:[30, 60, 90, 120, 150, 180], cuarto:[15, 30, 45, 60, 75, 90, 105, 120], cinco:[5, 10, 20, 25, 35, 40, 50, 65, 80]};
+const listasIntervalo = {};
+function listaIntervalos(nivel){
+  if(listasIntervalo[nivel]) return listasIntervalo[nivel];
+  const l = [], paso = NIVELES_RJ[nivel].paso;
+  for(let inicio=0; inicio<720; inicio+=paso) for(const d of DURACIONES_RJ[nivel]) l.push({k:"i"+inicio+"+"+d, inicio, d});
+  return listasIntervalo[nivel] = l;
+}
 function nuevoRetoRJ(){
   const paso = NIVELES_RJ[RJ.nivel].paso;
   RJ.respuesta = null; RJ.aviso = "";
   if(RJ.modo === "leer" || RJ.modo === "poner"){
-    const {t} = delMazo("rj-"+RJ.nivel, listaRJ(RJ.nivel));
+    const {t} = delMazo("rj-"+RJ.modo+"-"+RJ.nivel, listaRJ(RJ.nivel));
     const opciones = new Set([t]);
     const parecidas = [t + 60, t - 60, (t + 30) % 720, 720 - t, Math.floor(t/60)*60 + (60 - t % 60) % 60, t + paso, t - paso].map(x=> ((x % 720) + 720) % 720);
     for(const x of barajar(parecidas)) if(opciones.size < 3 && x % paso === 0) opciones.add(x);
     RJ.reto = {t, opciones: barajar([...opciones])};
     if(RJ.modo === "poner") RJ.t = (t + 4 * 60 + paso * 2) % 720;   // las agujas empiezan en otra hora
   }else if(RJ.modo === "intervalo"){
-    const durs = RJ.nivel === "media" ? [30, 60, 90, 120, 150, 180] : RJ.nivel === "cuarto" ? [15, 30, 45, 60, 75, 90, 105, 120] : [5, 10, 20, 25, 35, 40, 50, 65, 80];
-    const d = durs[azar(0, durs.length - 1)], inicio = azar(0, Math.floor(719 / paso)) * paso;
+    const durs = DURACIONES_RJ[RJ.nivel];
+    const {inicio, d} = delMazo("rj-intervalo-"+RJ.nivel, listaIntervalos(RJ.nivel));   // del banco: cada hora de inicio con cada duración
     const opciones = new Set([d]);
     for(const x of barajar(durs.filter(x=> x !== d))) if(opciones.size < 3) opciones.add(x);
     RJ.reto = {inicio, fin:(inicio + d) % 720, d, opciones: barajar([...opciones])};

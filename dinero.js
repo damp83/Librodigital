@@ -10,7 +10,7 @@
      con cuántas piezas se podía pagar como mínimo.
    - La vuelta: se paga con un billete; ¿cuánto te devuelven? (contando hacia arriba).
    Niveles: hasta 20 €, hasta 100 €, números de tres cifras (hasta 500 €) y con céntimos (hasta 10 €).
-   Todo se cuenta en céntimos por dentro. Usa las utilidades de index.html, herramientas.js, aula.js y
+   Los precios y los montones salen del banco (banco.js): no se repiten. Todo se cuenta en céntimos por dentro. Usa las utilidades de index.html, herramientas.js, aula.js y
    aproximar.js ($, leer, guardar, esc, azar, barajar, apTeclado…).
    ===================================================================== */
 
@@ -46,27 +46,36 @@ function minimoPiezas(c, piezas){
 }
 
 /* ---------- Los retos ---------- */
-function precioDN(){
-  const n = NIVELES_DN[DN.nivel], pasos = Math.floor((n.max - n.min) / n.paso);
-  return n.min + azar(0, pasos) * n.paso;
+/* Del banco (banco.js): los precios salen de un mazo con todos los del nivel y no se repiten hasta agotarlo;
+   los montones para contar no repiten ninguno de los últimos 150 */
+const listasDN = {};
+function preciosDN(nivel, maximo){
+  const n = NIVELES_DN[nivel], clave = nivel+"-"+maximo;
+  if(!listasDN[clave]){ listasDN[clave] = []; for(let c=n.min; c<=maximo; c+=n.paso) listasDN[clave].push({k:"p"+c, c}); }
+  return listasDN[clave];
 }
+const precioDN = (modo, maximo) => delMazo("dn-"+modo+"-"+DN.nivel, preciosDN(DN.nivel, maximo || NIVELES_DN[DN.nivel].max)).c;
 function nuevoRetoDN(){
   const n = NIVELES_DN[DN.nivel];
   Object.assign(DN, {mesa:[], escrito:"", respuesta:null, aviso:""});
   if(DN.modo === "contar"){
-    let total = 0, monton = [];
-    for(let t=0; t<50; t++){
-      monton = Array.from({length: azar(3, DN.nivel === "e500" ? 6 : 7)}, ()=> n.piezas[azar(0, n.piezas.length - 1)]).sort((a,b)=> b - a);
-      total = monton.reduce((s,v)=> s + v, 0);
-      if(total >= n.min / 2 && total <= n.max) break;
-    }
+    const generar = ()=>{
+      let total = 0, monton = [];
+      for(let t=0; t<50; t++){
+        monton = Array.from({length: azar(3, DN.nivel === "e500" ? 6 : 7)}, ()=> n.piezas[azar(0, n.piezas.length - 1)]).sort((a,b)=> b - a);
+        total = monton.reduce((s,v)=> s + v, 0);
+        if(total >= n.min / 2 && total <= n.max) break;
+      }
+      return {k: monton.join("+"), monton, total};
+    };
+    const {monton, total} = sinRepetir("dn-contar-"+DN.nivel, generar, 150);
     DN.reto = {monton, total, opciones: DN.nivel === "cent" ? opcionesCent(total) : null};
   }else if(DN.modo === "pagar"){
     const [icono, cosa] = COSAS_DN[azar(0, COSAS_DN.length - 1)];
-    DN.reto = {icono, cosa, precio: precioDN()};
+    DN.reto = {icono, cosa, precio: precioDN("pagar")};
   }else if(DN.modo === "vuelta"){
     const [icono, cosa] = COSAS_DN[azar(0, COSAS_DN.length - 1)];
-    const precio = Math.min(precioDN(), n.max - n.paso);   // se paga con el billete (o la moneda de euro) más pequeño que llega, o a veces con el siguiente
+    const precio = precioDN("vuelta", n.max - n.paso);   // se paga con el billete (o la moneda de euro) más pequeño que llega, o a veces con el siguiente
     const pagos = (DN.nivel === "cent" ? [100, 200, 500, 1000, 2000] : [500, 1000, 2000, 5000, 10000, 20000, 50000]).filter(v=> v > precio);
     const pago = pagos[Math.random() < .3 && pagos.length > 1 ? 1 : 0];
     DN.reto = {icono, cosa, precio, pago, vuelta: pago - precio, opciones: DN.nivel === "cent" ? opcionesCent(pago - precio) : null};

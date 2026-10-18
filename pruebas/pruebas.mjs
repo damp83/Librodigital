@@ -327,6 +327,23 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
     exigir(/¡Muy bien!/.test(await p.textContent("#muCuerpo")), "multiplicar ("+modo+"): no se termina el reto con el teclado");
     await accesibilidad(p);
   }
+  // Banco de las herramientas nuevas: cada mazo saca todos sus retos sin repetir antes de volver a barajar
+  const mazosMal = await p.evaluate(()=>{
+    const mazos = [];
+    for(const modo of ["cien", "arbol"]) for(const nivel of Object.keys(NIVELES_CI[modo])) mazos.push(["ci-"+modo+"-"+nivel, listaCI(modo, nivel)]);
+    for(const nivel of Object.keys(NIVELES_RJ)) mazos.push(["rj-leer-"+nivel, listaRJ(nivel)], ["rj-intervalo-"+nivel, listaIntervalos(nivel)]);
+    for(const nivel of Object.keys(NIVELES_DN)) mazos.push(["dn-pagar-"+nivel, preciosDN(nivel, NIVELES_DN[nivel].max)]);
+    for(const nivel of Object.keys(NIVELES_MX)) mazos.push(["mu-"+nivel, listaMX(nivel)], ["mu-dm-"+nivel, listaDoble(nivel)]);
+    const fallos = [];
+    for(const [clave, lista] of mazos){
+      reiniciarMazo(clave);
+      const sacados = new Set(lista.map(()=> delMazo(clave, lista).k));
+      if(sacados.size !== lista.length) fallos.push(clave+": se repite antes de agotar ("+sacados.size+" de "+lista.length+")");
+      reiniciarMazo(clave);
+    }
+    return fallos;
+  });
+  exigir(!mazosMal.length, "banco de las herramientas nuevas: "+mazosMal.slice(0,3).join("; "));
   // Aproximaciones: la regla (el 5 sube), una ronda entera eligiendo bien y escribiendo
   await p.goto(WEB+"#/redondeo"); await p.waitForSelector("#vRedondeo:not([hidden]) .ap-pregunta");
   const reglas = await p.evaluate(()=> [apAproximar(44,10), apAproximar(45,10), apAproximar(449,100), apAproximar(450,100), apAproximar(97,10)].join());

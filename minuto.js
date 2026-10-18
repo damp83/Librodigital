@@ -137,7 +137,8 @@ function pintarMinuto(){
         '<button class="cm-tipo" data-tipo="'+k+'" aria-pressed="'+tipos.includes(k)+'"><b>'+v.txt+'</b><span>'+v.ej+'</span></button>').join("")+'</div>'+
       '<div class="mn-fila"><button class="chip" id="mnEstrategia" aria-pressed="'+MN.estrategia+'">Ver la estrategia al fallar</button>'+
         marcaTexto()+'</div>'+
-      '<button class="bt azul mn-empezar" id="mnEmpezar">'+svg("bola")+'¡Empezar!</button></div>';
+      '<div class="mn-fila"><button class="bt azul mn-empezar" id="mnEmpezar">'+svg("bola")+'¡Empezar!</button>'+
+        '<button class="bt suave" id="mnImprimir">'+svg("imprimir")+'Imprimir ficha</button></div></div>';
     c.querySelectorAll("[data-nivel]").forEach(b=> b.onclick = ()=>{ MN.nivel = b.dataset.nivel; MN.tipos = null; guardarMN(); pintarMinuto(); });
     c.querySelectorAll("[data-tiempo]").forEach(b=> b.onclick = ()=>{ MN.tiempo = +b.dataset.tiempo; guardarMN(); pintarMinuto(); });
     c.querySelectorAll("[data-tipo]").forEach(b=> b.onclick = ()=>{
@@ -147,6 +148,7 @@ function pintarMinuto(){
       MN.tipos = iguales ? null : actuales; guardarMN(); pintarMinuto(); });
     $("mnEstrategia").onclick = ()=>{ MN.estrategia = !MN.estrategia; guardarMN(); pintarMinuto(); };
     $("mnEmpezar").onclick = empezarMN;
+    $("mnImprimir").onclick = imprimirMinuto;
     return;
   }
   if(MN.fase === "cuenta"){
@@ -186,6 +188,23 @@ function pintarMinuto(){
   $("mnCambiar").onclick = ()=>{ MN.fase = "inicio"; pintarMinuto(); };
 }
 const solucionMN = x => x.q.includes("?") ? x.q.replace("?", x.r) : x.q+" = "+x.r;
+/* Ficha en papel: 40 operaciones del nivel y los tipos elegidos (repartidas entre los tipos) y sus soluciones */
+function imprimirMinuto(){
+  const tipos = tiposMN(), porTipo = tipos.map(t=> barajar(listaMin(t).slice())), ops = [], vistas = new Set();
+  for(let i=0; ops.length < 40 && i < 2000; i++){
+    const o = porTipo[i % porTipo.length].pop();
+    if(o && !vistas.has(o.q)){ vistas.add(o.q); ops.push(o); }
+  }
+  barajar(ops);
+  const hueco = '<span class="hj-hueco"></span>';
+  const linea = o => o.q.includes("?") ? esc(o.q).replace("?", hueco) : esc(o.q)+" = "+hueco;
+  $("impresion").innerHTML =
+    '<div class="hoja"><h1>Minuto de cálculo · '+esc(MIN_NIVELES[MN.nivel].txt)+'</h1>'+
+      '<p class="hj-datos">Nombre: ______________________ &nbsp; Fecha: __________ &nbsp; Tiempo: '+(MN.tiempo < 60 ? MN.tiempo+" s" : MN.tiempo/60+" min")+' &nbsp; Aciertos: ____ de '+ops.length+'</p>'+
+      '<ol class="hj-ops">'+ops.map(o=> '<li>'+linea(o)+'</li>').join("")+'</ol></div>'+
+    '<div class="hoja"><h2>Soluciones</h2><ol class="hj-sol">'+ops.map(o=> '<li>'+esc(o.q.includes("?") ? o.q.replace("?", o.r) : o.q+" = "+o.r)+'</li>').join("")+'</ol></div>';
+  lanzarImpresion();
+}
 function marcaTexto(){
   const clave = MN.nivel+"-"+MN.tiempo+(MN.tipos && MN.tipos.length ? "-" + MN.tipos.slice().sort().join(".") : ""), m = MN.marcas[clave];
   return m && m.record ? '<span class="mn-record">🏆 Récord en este dispositivo: <b>'+m.record+'</b></span>' : '';

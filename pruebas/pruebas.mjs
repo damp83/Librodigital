@@ -334,6 +334,24 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
 
 /* ---------- Móvil ---------- */
 const MOVIL = {viewport:{width:390, height:844}, isMobile:true, hasTouch:true};
+await prueba("Las fichas en papel del Minuto y de las pirámides se preparan bien", ()=> conPagina({}, async p=>{
+  await p.addInitScript(()=>{ window.print = ()=>{ window.__impreso = (window.__impreso || 0) + 1; }; });
+  await p.goto(WEB+"#/minuto"); await p.waitForSelector("#mnImprimir"); await p.click("#mnImprimir");
+  await p.waitForFunction(()=> window.__impreso === 1);
+  const minuto = await p.evaluate(()=>{ const ops = [...document.querySelectorAll("#impresion .hj-ops li")].map(li=> li.textContent);
+    return {n: ops.length, distintas: new Set(ops).size, soluciones: document.querySelectorAll("#impresion .hj-sol li").length}; });
+  exigir(minuto.n === 40 && minuto.distintas === 40 && minuto.soluciones === 40, "minuto: la ficha no trae 40 operaciones distintas con solución "+JSON.stringify(minuto));
+  await p.evaluate(()=> dispatchEvent(new Event("afterprint")));
+  await p.goto(WEB+"#/piramides"); await p.waitForSelector("#piImprimir"); await p.click("#piImprimir");
+  await p.waitForFunction(()=> window.__impreso === 2);
+  const pir = await p.evaluate(()=>{
+    const pirs = [...document.querySelectorAll("#impresion .hj-soluciones .hj-pir")];
+    const cuadra = pirs.every(d=>{ const f = [...d.children].map(r=> [...r.children].map(x=> +x.textContent));
+      return f.every((fila, r)=> r === f.length-1 || fila.every((x, i)=> x === f[r+1][i] + f[r+1][i+1])); });
+    return {n: document.querySelectorAll("#impresion .hoja:first-child .hj-pir").length, cuadra}; });
+  exigir(pir.n === 6 && pir.cuadra, "pirámides: la ficha no trae 6 pirámides con soluciones correctas "+JSON.stringify(pir));
+}));
+
 await prueba("La portada no salta mientras carga, ni con una conexión lenta", async ()=>{
   const fallos = [];
   for(const opciones of [MOVIL, {viewport:{width:1440, height:900}}]){

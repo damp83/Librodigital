@@ -529,7 +529,28 @@ def main():
     # 5. Comprobación final
     validar(catalogo)
     escribir_catalogo(catalogo)
+    if not errores:
+        escribir_sitemap(catalogo)
     return terminar()
+
+
+WEB = "https://damp83.github.io/Librodigital/"
+
+def escribir_sitemap(catalogo):
+    """sitemap.xml para que los buscadores encuentren la web y cada PDF (las vistas con # no se indexan)."""
+    from urllib.parse import quote
+    from xml.sax.saxutils import escape
+    fechas = [m["fecha"] for m in catalogo if isinstance(m, dict) and m.get("fecha")]
+    urls = [(WEB, max(fechas) if fechas else None)]
+    urls += [(WEB + "materiales/" + quote(m["archivo"]), m.get("fecha")) for m in catalogo
+             if isinstance(m, dict) and m.get("archivo") and m.get("tipo") != "Programación"]
+    lineas = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for url, fecha in urls:
+        lineas.append("  <url><loc>" + escape(url) + "</loc>" + ("<lastmod>" + fecha + "</lastmod>" if fecha else "") + "</url>")
+    texto = "\n".join(lineas + ["</urlset>", ""])
+    destino = RAIZ / "sitemap.xml"
+    if not destino.exists() or destino.read_text(encoding="utf-8") != texto:
+        destino.write_text(texto, encoding="utf-8")
 
 
 def terminar():

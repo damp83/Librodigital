@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- GitHub Pages muestra esta página para cualquier dirección que no existe. La base hace que las rutas
+     funcionen aunque la dirección rota tenga varias carpetas (…/Librodigital/a/b/c). -->
+<base href="/Librodigital/">
+<title>Página no encontrada · Aula de Matemáticas Manipulativas</title>
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='4' width='6' height='5' rx='1' fill='%23e3261f'/%3E%3Crect x='2' y='11' width='16' height='5' rx='1' fill='%23f2c200'/%3E%3Crect x='2' y='18' width='22' height='5' rx='1' fill='%232b2b2b'/%3E%3Crect x='2' y='25' width='28' height='5' rx='1' fill='%23f57c22'/%3E%3C/svg%3E">
+<script>
+  /* Si la dirección se parece a una de la web (…/Librodigital/regletas, …/El_metro.pdf), se va allí directamente */
+  (function(){
+    var resto = decodeURIComponent(location.pathname.replace(/^\/Librodigital\/?/, "")).replace(/\/+$/, "");
+    var rutas = /^(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|ruta|familias)$/;
+    var destino = null;
+    if(rutas.test(resto)) destino = "#/" + resto;
+    else if(/^aula\/[a-z0-9-]+$/.test(resto)) destino = "#/" + resto;
+    else if(/^(materiales\/)?[^\/]+\.pdf$/i.test(resto)) destino = "#/leer/" + encodeURIComponent(resto.replace(/^materiales\//, ""));
+    if(destino) location.replace("/Librodigital/" + destino);
+    try { var t = localStorage.getItem("aula-tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+  })();
+</script>
+<style>
+@font-face{font-family:"Poppins";font-weight:600;font-display:swap;src:url(lib/fuentes/poppins-600.woff2) format("woff2")}
+:root{--bg:#f5f7fa;--surface:#fff;--ink:#0f1b2d;--muted:#5b687a;--line:#e1e6ed;--accent:#1b5fd6;--on-accent:#fff}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){--bg:#0e1622;--surface:#152030;--ink:#e8edf4;--muted:#9aa8ba;--line:#26364b;--accent:#6ea2ff;--on-accent:#0e1622} }
+:root[data-theme="dark"]{--bg:#0e1622;--surface:#152030;--ink:#e8edf4;--muted:#9aa8ba;--line:#26364b;--accent:#6ea2ff;--on-accent:#0e1622}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:var(--bg);color:var(--ink);
+  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{width:min(520px,100%);text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:32px 24px;box-shadow:0 8px 24px -12px rgba(15,27,45,.25)}
+.regletas{display:flex;flex-direction:column;gap:6px;width:min(260px,80%);margin:0 auto 22px}
+.regletas i{display:block;height:16px;border-radius:4px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+.regletas i.falta{background:transparent;border:3px dashed var(--muted);box-shadow:none}
+h1{font:600 clamp(22px,5vw,28px)/1.25 "Poppins",system-ui,sans-serif;margin:0 0 8px}
+p{margin:0 0 22px;color:var(--muted)}
+.botones{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+a{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:12px;font-weight:600;text-decoration:none;border:1px solid var(--line);color:var(--ink)}
+a.principal{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <div class="regletas" aria-hidden="true">
+    <i style="width:40%;background:#c2185b"></i>
+    <i style="width:70%;background:#2b2b2b"></i>
+    <i class="falta" style="width:100%"></i>
+  </div>
+  <h1>Aquí falta una pieza</h1>
+  <p>Esta página no existe o ha cambiado de sitio. Los materiales y las herramientas siguen en el aula.</p>
+  <div class="botones">
+    <a class="principal" href="./">Ir al aula</a>
+    <a href="./#/ruta">Ruta del curso</a>
+  </div>
+</main>
+</body>
+</html>

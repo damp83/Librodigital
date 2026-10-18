@@ -1171,6 +1171,24 @@ footer.pie .marca{margin-bottom:12px}
 .recortables h1{font:700 18pt var(--font-titulos);margin:0 0 2mm}
 .recortables p{font-size:10pt;margin:0 0 5mm;color:#444}
 .rc-fila{display:flex;gap:0;margin-bottom:2.5mm;height:10mm}
+/* Fichas en papel de las herramientas (Minuto de cálculo, pirámides) */
+.hoja{font-family:var(--font);color:#111;background:#fff}
+.hoja + .hoja{break-before:page;page-break-before:always}
+.hoja h1{font:700 18pt var(--font-titulos);margin:0 0 3mm}
+.hoja h2{font:700 14pt var(--font-titulos);margin:0 0 4mm}
+.hj-datos{font-size:11pt;margin:0 0 6mm}
+.hj-nota{font-size:11pt;margin:-3mm 0 6mm;color:#444}
+.hj-ops{columns:2;column-gap:14mm;margin:0;padding-left:9mm;font:600 15pt var(--font-titulos)}
+.hj-ops li{margin-bottom:4mm;break-inside:avoid}
+.hj-hueco{display:inline-block;width:16mm;height:1em;border-bottom:.4mm solid #111;vertical-align:baseline}
+.hj-sol{columns:4;column-gap:8mm;margin:0;padding-left:7mm;font-size:10pt;line-height:1.6}
+.hj-pirs{display:grid;grid-template-columns:1fr 1fr;gap:12mm 8mm}
+.hj-pir{display:flex;flex-direction:column;align-items:center;gap:1.5mm;break-inside:avoid}
+.hj-pir div{display:flex;gap:1.5mm}
+.hj-pir span{width:15mm;height:11mm;border:.4mm solid #111;border-radius:2mm;display:grid;place-items:center;font:700 14pt var(--font-titulos)}
+.hj-pir span.dada{background:#e9edf2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.hj-soluciones .hj-pirs{gap:8mm}
+.hj-soluciones .hj-pir span{width:11mm;height:8mm;font-size:10pt}
 .rc-pieza{box-sizing:border-box;height:10mm;border:.3mm solid #333;display:flex;align-items:center;justify-content:flex-end;padding-right:1.2mm;
   font:600 7pt var(--font);-webkit-print-color-adjust:exact;print-color-adjust:exact}
 
@@ -1671,6 +1689,7 @@ footer.pie .marca{margin-bottom:12px}
       <button class="bt suave" id="piComprobar">Comprobar</button>
       <button class="bt suave" id="piSolucion">Ver la solución</button>
       <button class="bt azul" id="piNueva">Nueva pirámide</button>
+      <button class="bt suave" id="piImprimir"><svg class="ic" data-icon="imprimir"></svg>Imprimir ficha</button>
       <span class="pi-hechas" id="piHechas"></span>
     </div>
   </div>
@@ -1945,7 +1964,8 @@ function listaTipos(partes){
   return t.length>1 ? t.slice(0,-1).join(", ")+" y "+t[t.length-1] : t[0];
 }
 const nombreBase = a => a.replace(/\.pdf$/i,"");
-const esNuevo = m => m.fecha && (Date.now() - Date.parse(m.fecha)) < 30*864e5;   // «Nuevo» durante 30 días
+const ESTRENO = "2026-09-28";   // los materiales con los que se abrió la web no cuentan como nuevos
+const esNuevo = m => m.fecha && m.fecha > ESTRENO && (Date.now() - Date.parse(m.fecha)) < 30*864e5;   // «Nuevo» durante 30 días
 function textoEtapas(m){   // m: material o recurso (cualquier objeto con "etapas")
   if(m.etapas.length===1) return NOMBRE_ETAPA[m.etapas[0]];
   const a = m.etapas[0], b = m.etapas[m.etapas.length-1];

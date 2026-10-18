@@ -194,6 +194,19 @@ Su entrada del catálogo y su portada se quitan solas.
       («8 + 7 = 8 + 8 − 1»). Al final: aciertos, fallos, récord personal del nivel, los últimos intentos y
       las operaciones para repasar. En el modo aula toma el nivel de la clase. *Imprimir ficha*: 40 operaciones
       distintas del nivel y los tipos elegidos, con hueco para el nombre y los aciertos, y una hoja de soluciones.
+    - *Sumas que pasan de 100* (`#/cien`, en `cien.js`): dos estrategias de 2.º paso a paso con el teclado.
+      *Busco el 100*: al 70 le faltan 30, rompo el 50 en 30 y 20, 100 + 20 = 120, viéndolo en la placa del 100
+      (niveles con dieces y casi 100). *Superárbol*: dieces y unos en un árbol; 10 naranjas forman la placa y, si
+      los unos llegan a 10, nace un diez nuevo (niveles sin placa, con placa y doble reagrupación).
+    - *Multiplicar con regletas* (`#/multiplicar`, en `multiplicar.js`): «3 veces el 4» con regletas iguales,
+      suma repetida y «Darle la vuelta» (propiedad conmutativa); «¿Cuántas veces?» y «Doble y mitad».
+      Niveles: tablas del 2, 5 y 10; del 2 al 5; todas.
+    - *El reloj* (`#/reloj`, en `reloj.js`): reloj de agujas que se arrastran (la de las horas avanza sola).
+      Libre, «¿Qué hora es?», «Pon la hora» y «¿Cuánto pasa?» (intervalos). Niveles: en punto y media, y cuarto
+      y menos cuarto, de 5 en 5. Ayudas: minutos alrededor de la esfera y hora digital.
+    - *El dinero* (`#/dinero`, en `dinero.js`): monedas y billetes dibujados. Libre, «¿Cuánto hay?», «Paga
+      justo» (dice si se podía pagar con menos piezas) y «La vuelta» (contando hacia arriba). Niveles: hasta
+      20 €, hasta 100 €, tres cifras (hasta 500 €) y con céntimos.
     - *El número escondido* (`#/escondido`, en `escondido.js`, ficha destacada junto al Minuto): trabaja la
       presentación y la ficha «El juego del número escondido» (2.º). Se busca un número dentro de otro (el 12
       dentro del 37) con los tres pasos del detective: mirar los dieces y los unos, romper una pieza si falta y

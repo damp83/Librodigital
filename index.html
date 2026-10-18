@@ -746,6 +746,118 @@ footer.pie .marca{margin-bottom:12px}
 @media (min-width:1180px){ .herr-destacada{grid-column:span 2} }   /* las dos destacadas, una al lado de la otra */
 @media (min-width:761px) and (max-width:1179px){ .herr-destacada{grid-column:span 1} }
 
+/* Sumas que pasan de 100 */
+.ci-material{--c:clamp(11px,min(2.4vw,3vh),24px);display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,2vw,24px);flex-wrap:wrap}
+.ci-pila{display:flex;flex-direction:column;align-items:center;gap:6px}
+.ci-pila > b{font:700 clamp(18px,2.6vh,26px) var(--font-titulos);color:var(--ink-2)}
+.ci-placa{display:grid;grid-template-columns:repeat(10,var(--c));gap:1px;padding:3px;border-radius:6px;background:var(--line-strong)}
+.ci-celda{display:block;width:var(--c);height:var(--c);border-radius:2px;background:var(--surface)}
+.ci-celda.falta{background:var(--surface);outline:2px dashed color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:-3px}
+.ci-celda.rellena{box-shadow:inset 0 0 0 2px var(--accent)}
+.ci-mas{font:700 clamp(26px,4vh,40px) var(--font-titulos);align-self:center;color:var(--muted)}
+.ci-barras{display:flex;align-items:flex-end;gap:4px;min-height:calc(var(--c)*10 + 6px)}
+.ci-barra{width:var(--c);height:calc(var(--n)*(var(--c) + 1px));border-radius:4px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;
+  font:700 calc(var(--c)*.55) var(--font-titulos);font-style:normal;box-shadow:inset -3px 0 0 rgba(0,0,0,.15)}
+.ci-arbol{width:min(720px,100%);height:auto}
+.ci-rama{stroke:var(--line-strong);stroke-width:4}
+.ci-caja{fill:var(--surface);stroke:var(--line-strong);stroke-width:3}
+.ci-caja.tronco{fill:var(--surface-2);stroke:var(--ink-2)}
+.ci-caja.diez{stroke:var(--r10)}
+.ci-caja.uno{stroke:var(--r6)}
+.ci-caja.total{stroke:var(--accent);stroke-width:4}
+.ci-caja.activa{fill:var(--brand-soft);stroke:var(--accent);stroke-width:5}
+.ci-num{font:700 30px var(--font-titulos);fill:var(--ink);text-anchor:middle}
+.ci-mat{--m:clamp(4px,.7vw,7px);display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap;justify-content:center}
+.ci-mat > span{align-self:center;font-weight:700;color:var(--ink-2);margin-left:8px}
+.ci-mplaca{width:calc(var(--m)*10);height:calc(var(--m)*10);border-radius:3px;background-color:var(--r10);
+  background-image:linear-gradient(rgba(0,0,0,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.18) 1px,transparent 1px);background-size:var(--m) var(--m)}
+.ci-mbarra{width:var(--m);height:calc(var(--m)*10);border-radius:2px}
+.ci-muno{width:var(--m);height:calc(var(--m)*var(--n));border-radius:2px}
+.ci-pasos{font-size:clamp(20px,3.2vh,32px)}
+
+/* El reloj */
+.rj-esfera{width:min(440px,78vw,52vh);height:auto;flex:none}
+.rj-borde{fill:var(--ink-2)}
+.rj-fondo{fill:var(--surface)}
+.rj-raya{stroke:var(--muted);stroke-width:2}
+.rj-raya5{stroke:var(--ink);stroke-width:4}
+.rj-num{font:700 30px var(--font-titulos);fill:var(--ink);text-anchor:middle}
+.rj-min{font:700 14px var(--font);fill:var(--accent);text-anchor:middle}
+.rj-aguja line{stroke-linecap:round}
+.rj-aguja.horas line{stroke:#e3261f}.rj-aguja.horas circle{fill:#e3261f}
+.rj-aguja.minutos line{stroke:#2c77c4}.rj-aguja.minutos circle{fill:#2c77c4}
+.rj-eje{fill:var(--ink)}
+.rj-esfera.movible{cursor:grab;touch-action:none}
+.rj-hora{margin:0;font:700 clamp(22px,3.6vh,36px) var(--font-titulos)}
+.rj-dig{display:inline-block;margin-left:10px;padding:2px 14px;border-radius:10px;background:#1c2330;color:#7ff0a8;font:700 1em ui-monospace,monospace;letter-spacing:.05em}
+.rj-ayuda{margin:0;color:var(--muted)}
+.rj-c-h{color:#d0211b}.rj-c-m{color:#2c77c4}
+.rj-dos{display:flex;align-items:center;justify-content:center;gap:clamp(8px,3vw,40px);flex-wrap:wrap}
+.rj-dos figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.rj-dos figcaption{font-weight:700;color:var(--ink-2)}
+.rj-dos .rj-esfera{width:min(260px,40vw,36vh)}
+.rj-dos figure p{margin:0;font:700 22px ui-monospace,monospace}
+.rj-flecha{font-size:40px;color:var(--muted)}
+
+/* El dinero */
+.dn-caja{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;padding:10px 14px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line)}
+.dn-coger,.dn-quitar{border:0;background:none;padding:2px;border-radius:12px;cursor:pointer;color:inherit}
+.dn-coger:hover,.dn-quitar:hover{transform:translateY(-2px)}
+.dn-mesa{width:min(900px,100%);display:flex;flex-direction:column;gap:10px;padding:12px 14px;border:3px dashed var(--line-strong);border-radius:18px;background:var(--surface);text-align:left;min-height:120px}
+.dn-mesa h2{margin:0;font-size:15px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.04em}
+.dn-mesa h2 b{color:var(--accent);font-size:20px;text-transform:none;letter-spacing:0}
+.dn-piezas,.dn-monton{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dn-monton{justify-content:center;padding:14px;border-radius:18px;background:color-mix(in srgb,#8d5a2b 12%,var(--surface))}
+.dn-pieza{display:inline-grid;place-items:center;flex:none;box-shadow:0 2px 4px rgba(0,0,0,.25),inset 0 -3px 0 rgba(0,0,0,.15);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.dn-pieza b{font:700 14px var(--font-titulos);white-space:nowrap}
+.dn-pieza.moneda{border-radius:50%;width:var(--d);height:var(--d);color:#2a2000}
+.dn-pieza.m5{--d:46px;background:#c07a3f;color:#fff}
+.dn-pieza.m10{--d:44px;background:#e0b12e;border:3px solid #b8901c}
+.dn-pieza.m20{--d:50px;background:#e0b12e;border:3px solid #b8901c}
+.dn-pieza.m50{--d:56px;background:#e0b12e;border:3px solid #b8901c}
+.dn-pieza.m100{--d:56px;background:radial-gradient(circle,#d9dee5 0 58%,#d4a72c 60%);color:#1c2330}
+.dn-pieza.m200{--d:62px;background:radial-gradient(circle,#e0b12e 0 58%,#d9dee5 60%);color:#1c2330}
+.dn-pieza.billete{width:116px;height:62px;border-radius:6px;color:#fff;border:2px solid rgba(255,255,255,.5);outline:1px solid rgba(0,0,0,.2)}
+.dn-pieza.billete b{font-size:20px;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.dn-pieza.b5{background:#7f8893}.dn-pieza.b10{background:#c0443f}.dn-pieza.b20{background:#3f6fc0}.dn-pieza.b50{background:#d97a22}
+.dn-pieza.b100{background:#2f8f4d}.dn-pieza.b200{background:#b8901c}
+.dn-cosa{font-size:1.3em}
+@media (max-width:760px){
+  .dn-pieza.billete{width:88px;height:48px}.dn-pieza.billete b{font-size:16px}
+  .dn-pieza.moneda{--d:44px !important}
+}
+
+/* Multiplicar con regletas */
+.mu-mandos{display:flex;flex-direction:column;align-items:center;gap:10px}
+.mu-elige{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;align-items:flex-end}
+.mu-r{border:0;height:30px;width:calc(var(--n)*7px + 18px);border-radius:5px;font:700 13px var(--font-titulos);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18);cursor:pointer}
+.mu-r[style*="#f4f4f4"]{box-shadow:inset 0 0 0 1px #c8ced6,inset 0 -3px 0 rgba(0,0,0,.12)}
+.mu-r.elegida{outline:3px solid var(--accent);outline-offset:2px}
+.mu-veces{display:flex;align-items:center;gap:12px}
+.mu-veces b{font:700 22px var(--font-titulos);min-width:5.5ch;text-align:center}
+.mu-dos{--u:clamp(14px,min(3.1vw,3.6vh),34px);display:flex;align-items:flex-start;justify-content:center;gap:clamp(12px,3vw,40px);flex-wrap:wrap}
+.mu-dos figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px}
+.mu-dos figcaption{font:600 clamp(18px,2.6vh,26px) var(--font-titulos)}
+.mu-igual{align-self:center;font:700 36px var(--font-titulos);color:var(--muted)}
+.mu-tren{display:flex;flex-direction:column;gap:3px}
+.mu-regleta{display:grid;place-items:center;width:calc(var(--n)*var(--u));height:var(--u);border-radius:4px;font:700 calc(var(--u)*.55) var(--font-titulos);font-style:normal;
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+.mu-regleta[style*="#f4f4f4"]{box-shadow:inset 0 0 0 1px #c8ced6,inset 0 -3px 0 rgba(0,0,0,.12)}
+.mu-suma{margin:0;font:600 clamp(18px,2.8vh,28px) var(--font-titulos);color:var(--ink-2)}
+.mu-barra,.mu-mitades{--ub:min(26px,(100vw - 60px)/52);display:flex;gap:2px}
+.mu-barra i{display:grid;place-items:center;width:calc(var(--n)*var(--ub));height:calc(var(--ub)*1.3);border-radius:4px;font:700 13px var(--font-titulos);font-style:normal;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+.mu-dos figure > .mu-barra + .mu-barra{margin-top:-4px}
+.mu-mitades{gap:6px;margin-top:4px}
+.mu-mitades.vacia i{display:block;width:calc(var(--n)*var(--ub) - 3px);height:calc(var(--ub)*1.3);border:3px dashed var(--line-strong);border-radius:4px}
+@media (max-width:760px){
+  #vReloj .segmentos,#vDinero .segmentos,#vMultiplicar .segmentos,#vCien .segmentos{width:100%}
+  #vReloj .segmentos,#vDinero .segmentos{display:grid;grid-template-columns:1fr 1fr}   /* cuatro modos: dos filas */
+  #vReloj .segmentos button,#vDinero .segmentos button,#vMultiplicar .segmentos button,#vCien .segmentos button{flex:1;padding:6px 6px;font-size:13px}
+  #ciPantalla,#rjPantalla,#dnPantalla,#muPantalla{display:none}
+  .mu-dos:not(.girada){--u:min(30px,(100vw - 40px)/10.5)}
+  .mu-dos.girada{--u:min(24px,(100vw - 90px)/20)}
+}
+
 /* El número escondido */
 .ne-sello{margin:0;align-self:flex-end;transform:rotate(-4deg);border:3px solid #c62828;color:#c62828;border-radius:8px;padding:2px 10px;font:800 13px var(--font-titulos);text-transform:uppercase;letter-spacing:.08em}
 .ne-zonas{--u:clamp(22px,min(3.6vw,5.2vh),46px);display:flex;gap:16px;flex-wrap:wrap;justify-content:center;width:100%}
@@ -1350,6 +1462,22 @@ footer.pie .marca{margin-bottom:12px}
           <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g font-family="sans-serif" font-weight="700" text-anchor="middle"><text x="50" y="36" font-size="20" fill="#1c2330">48+31</text><text x="50" y="70" font-size="26" fill="#2c77c4">≈ 80</text></g><rect x="18" y="80" width="64" height="8" rx="4" fill="#e3e8ef"/><rect x="18" y="80" width="58" height="8" rx="4" fill="#2c8537"/></svg></span>
           <span class="herr-txt"><b>Estimación</b><span>Estimar sumas y restas redondeando: elegir la más cercana, más o menos que… y paso a paso.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
         </a>
+        <a class="herr-ficha" href="#/cien">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g stroke="#fff" stroke-width="1.2"><rect x="8" y="14" width="56" height="39" fill="#f57c22"/></g><g fill="none" stroke="#f57c22" stroke-width="2" stroke-dasharray="3 2.4"><rect x="9" y="56" width="54" height="16" rx="1"/></g><path d="M8 27h56M8 40h56M14 14v39M19.6 14v39M25.2 14v39M30.8 14v39M36.4 14v39M42 14v39M47.6 14v39M53.2 14v39M58.8 14v39" stroke="#fff" stroke-width=".8"/><rect x="72" y="14" width="7" height="58" rx="1.5" fill="#f57c22"/><rect x="83" y="14" width="7" height="58" rx="1.5" fill="#f57c22"/><text x="50" y="92" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="14" fill="#2c77c4">100 + 20</text></svg></span>
+          <span class="herr-txt"><b>Sumas que pasan de 100</b><span>Busco el 100 (70 + 50 = 100 + 20) y el superárbol: 10 naranjas forman la placa del 100.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a class="herr-ficha" href="#/multiplicar">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="14" y="16" width="44" height="14" rx="3" fill="#c2185b"/><rect x="14" y="34" width="44" height="14" rx="3" fill="#c2185b"/><rect x="14" y="52" width="44" height="14" rx="3" fill="#c2185b"/><g font-family="sans-serif" font-weight="700" text-anchor="middle"><text x="36" y="27" font-size="10" fill="#fff">4</text><text x="36" y="45" font-size="10" fill="#fff">4</text><text x="36" y="63" font-size="10" fill="#fff">4</text><text x="78" y="46" font-size="15" fill="#1c2330">×3</text><text x="50" y="90" font-size="15" fill="#2c77c4">3 × 4 = 12</text></g></svg></span>
+          <span class="herr-txt"><b>Multiplicar con regletas</b><span>«3 veces el 4»: regletas iguales, suma repetida, darle la vuelta, el doble y la mitad.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a class="herr-ficha" href="#/reloj">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#fff" stroke="#33425c" stroke-width="6"/><g stroke="#33425c" stroke-width="3" stroke-linecap="round"><path d="M50 15v6M85 50h-6M50 85v-6M15 50h6"/></g><path d="M50 50L50 22" stroke="#2c77c4" stroke-width="5" stroke-linecap="round"/><path d="M50 50L68 58" stroke="#e3261f" stroke-width="7" stroke-linecap="round"/><circle cx="50" cy="50" r="5" fill="#33425c"/></svg></span>
+          <span class="herr-txt"><b>El reloj</b><span>Agujas que se arrastran: qué hora es, pon la hora y cuánto tiempo pasa. En punto, y cuarto, de 5 en 5.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a class="herr-ficha" href="#/dinero">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="8" y="22" width="62" height="36" rx="4" fill="#3f73c8"/><text x="39" y="46" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="15" fill="#fff">20 €</text><circle cx="70" cy="66" r="20" fill="#d9dee5" stroke="#d4a72c" stroke-width="7"/><text x="70" y="71" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="13" fill="#1c2330">1 €</text><circle cx="34" cy="76" r="14" fill="#e0b12e" stroke="#b8901c" stroke-width="2"/><text x="34" y="80" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="10" fill="#2a2000">50 c</text></svg></span>
+          <span class="herr-txt"><b>El dinero</b><span>Monedas y billetes: cuánto hay, paga justo y la vuelta. Hasta 20 €, 100 €, tres cifras y céntimos.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
       </div>
     </section>
     <section class="materiales" id="materiales" aria-labelledby="matTit">
@@ -1743,6 +1871,72 @@ footer.pie .marca{margin-bottom:12px}
     <div class="reg-acc"><a class="icbtn" href="#/leer/Numero_Escondido_corregido.pdf" data-icon="proyectar" aria-label="Ver la presentación del número escondido" title="Presentación"></a><button class="icbtn" id="nePantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="ap-zona" id="neCuerpo"></div><div class="pi-teclado" id="neTeclado" role="group" aria-label="Escribir un número" hidden></div></div>
+</div>
+
+<div class="vista" id="vCien" hidden role="dialog" aria-modal="true" aria-labelledby="vCiTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vCiTit">Sumas que pasan de 100</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Estrategia">
+      <button data-modo="cien" aria-pressed="true">Busco el 100</button>
+      <button data-modo="arbol" aria-pressed="false">Superárbol</button>
+    </div>
+    <label class="b-select"><span>Nivel</span><select id="ciNivel"></select></label>
+    <span class="pi-hechas" id="ciHechos" aria-live="polite"></span>
+    <div class="reg-acc"><button class="icbtn" id="ciPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona" id="ciCuerpo"></div><div class="pi-teclado" id="ciTeclado" role="group" aria-label="Escribir un número"></div></div>
+</div>
+
+<div class="vista" id="vReloj" hidden role="dialog" aria-modal="true" aria-labelledby="vRjTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vRjTit">El reloj</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Qué hacer">
+      <button data-modo="libre" aria-pressed="false">Libre</button>
+      <button data-modo="leer" aria-pressed="true">¿Qué hora es?</button>
+      <button data-modo="poner" aria-pressed="false">Pon la hora</button>
+      <button data-modo="intervalo" aria-pressed="false">¿Cuánto pasa?</button>
+    </div>
+    <label class="b-select"><span>Nivel</span><select id="rjNivel"></select></label>
+    <span class="pi-ayudas" role="group" aria-label="Ayudas">
+      <button class="chip" id="rjMinutos" aria-pressed="true">Minutos</button>
+      <button class="chip" id="rjDigital" aria-pressed="false">Hora digital</button>
+    </span>
+    <span class="pi-hechas" id="rjHechos" aria-live="polite"></span>
+    <div class="reg-acc"><button class="icbtn" id="rjPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona" id="rjCuerpo"></div></div>
+</div>
+
+<div class="vista" id="vDinero" hidden role="dialog" aria-modal="true" aria-labelledby="vDnTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vDnTit">El dinero</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Qué hacer">
+      <button data-modo="libre" aria-pressed="false">Libre</button>
+      <button data-modo="contar" aria-pressed="true">¿Cuánto hay?</button>
+      <button data-modo="pagar" aria-pressed="false">Paga justo</button>
+      <button data-modo="vuelta" aria-pressed="false">La vuelta</button>
+    </div>
+    <label class="b-select"><span>Nivel</span><select id="dnNivel"></select></label>
+    <span class="pi-ayudas" role="group" aria-label="Ayudas"><button class="chip" id="dnTotal" aria-pressed="true">Ver lo que llevo</button></span>
+    <span class="pi-hechas" id="dnHechos" aria-live="polite"></span>
+    <div class="reg-acc"><button class="icbtn" id="dnPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona" id="dnCuerpo"></div><div class="pi-teclado" id="dnTeclado" role="group" aria-label="Escribir la cantidad en euros" hidden></div></div>
+</div>
+
+<div class="vista" id="vMultiplicar" hidden role="dialog" aria-modal="true" aria-labelledby="vMuTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vMuTit">Multiplicar con regletas</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Qué hacer">
+      <button data-modo="construir" aria-pressed="true">Construye</button>
+      <button data-modo="cuantas" aria-pressed="false">¿Cuántas veces?</button>
+      <button data-modo="doble" aria-pressed="false">Doble y mitad</button>
+    </div>
+    <label class="b-select" id="muNivelCaja"><span>Nivel</span><select id="muNivel"></select></label>
+    <span class="pi-hechas" id="muHechos" aria-live="polite"></span>
+    <div class="reg-acc"><button class="icbtn" id="muPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona" id="muCuerpo"></div><div class="pi-teclado" id="muTeclado" role="group" aria-label="Escribir un número" hidden></div></div>
 </div>
 
 <div class="vista" id="vRedondeo" hidden role="dialog" aria-modal="true" aria-labelledby="vRedTit">
@@ -2706,13 +2900,13 @@ function panelNotas(c){
 let rutaPrevia = location.hash;
 function ruta(){
   // herramientas, secciones y modo aula viven en herramientas.js, secciones.js y aula.js: si alguno no ha cargado, se avisa
-  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
+  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
   // modo aula: la tableta recuerda su clase y vuelve a ella en lugar de ir a la biblioteca
   const cl = location.hash.match(/^#\/aula\/([\w-]+)\/?$/);
   if(cl){ cerrarLector(); abrirClase(cl[1]); rutaPrevia = location.hash; return; }
   const claseGuardada = leer("aula-clase", null);
   if(claseGuardada && (location.hash==="" || location.hash==="#/" || location.hash==="#")){ location.replace("#/aula/"+claseGuardada); return; }
-  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
+  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   if(typeof cerrarHerramienta==="function") cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
@@ -2779,7 +2973,7 @@ if("serviceWorker" in navigator && (location.protocol==="https:" || location.hos
    Entonces las fichas de las herramientas no hacen nada. Si pasa, se borran las copias guardadas del código
    (los PDF guardados se conservan) y se recarga una vez; si aun así falta algo, se avisa en pantalla. */
 const PIEZAS = ["abrirHerramienta", "cerrarHerramienta", "iniciarRegletas", "iniciarBombo", "iniciarRuta", "iniciarFamilias",
-                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "iniciarEscondido", "delMazo"];
+                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "iniciarEscondido", "iniciarCien", "iniciarReloj", "iniciarDinero", "iniciarMultiplicar", "delMazo"];
 function codigoIncompleto(){ return PIEZAS.filter(n=> typeof window[n] !== "function"); }
 function avisarCodigo(){
   const a = $("avisoCodigo"); if(!a.hidden) return;
@@ -2832,5 +3026,9 @@ listo.then(repararCodigo).then(seguir=> seguir ? fetch("catalogo.json", {cache:"
 <script src="aproximar.js"></script>
 <script src="minuto.js"></script>
 <script src="escondido.js"></script>
+<script src="cien.js"></script>
+<script src="reloj.js"></script>
+<script src="dinero.js"></script>
+<script src="multiplicar.js"></script>
 </body>
 </html>

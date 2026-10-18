@@ -111,14 +111,20 @@ function imprimirPiramides(){
   const lista = [], vistas = new Set();
   for(let t=0; lista.length < 6 && t < 60; t++){ const p = generarPiramide(); if(!vistas.has(p.k)){ vistas.add(p.k); lista.push(p); } }
   const dibujo = (p, solucion) => '<div class="hj-pir">'+p.v.map((f,r)=> '<div>'+f.map((x,i)=>
-    '<span class="'+(p.dada[r][i] ? "dada" : "")+'">'+(p.dada[r][i] || solucion ? x : "")+'</span>').join("")+'</div>').join("")+'</div>';
-  const nivel = {facil:"Fácil", medio:"Medio", dificil:"Difícil"}[PI.nivel];
+    '<span class="'+(p.dada[r][i] ? "dada" : solucion ? "hallada" : "")+'">'+(p.dada[r][i] || solucion ? x : "")+'</span>').join("")+'</div>').join("")+'</div>';
+  const tarjeta = (p, i, solucion) => '<div class="hj-pir-caja"><span class="hj-n">'+(i+1)+'</span>'+dibujo(p, solucion)+(solucion ? '' : '<span class="hj-comp">La he comprobado</span>')+'</div>';
+  const nivel = {facil:"Fácil", medio:"Medio", dificil:"Difícil"}[PI.nivel], tam = {3:"--bw:19mm;--bh:12.5mm", 4:"--bw:16mm;--bh:10.5mm", 5:"--bw:14.5mm;--bh:8mm;--bf:11.5pt"}[PI.pisos];
+  const sub = PI.pisos+" pisos · números hasta "+PI.hasta;
+  const ayuda = {facil:"Empieza por abajo y ve sumando hacia arriba.", medio:"Unas veces sumas y otras restas: busca primero un bloque que ya se pueda calcular.",
+                 dificil:"Casi todo está arriba: baja restando. El todo menos una parte es la otra parte."}[PI.nivel];
+  const mini = '<span class="hj-mini" aria-hidden="true"><div><i class="dada">5</i></div><div><i class="dada">2</i><i>3</i></div></span>';
   $("impresion").innerHTML =
-    '<div class="hoja"><h1>Pirámides numéricas · '+nivel+'</h1>'+
-      '<p class="hj-datos">Nombre: ______________________ &nbsp; Fecha: __________</p>'+
-      '<p class="hj-nota">Cada bloque es la suma de los dos que tiene debajo.</p>'+
-      '<div class="hj-pirs">'+lista.map(p=> dibujo(p, false)).join("")+'</div></div>'+
-    '<div class="hoja hj-soluciones"><h2>Soluciones</h2><div class="hj-pirs">'+lista.map(p=> dibujo(p, true)).join("")+'</div></div>';
+    hojaPapel({titulo:"Pirámides numéricas", sub, eti:"Nivel "+nivel, pagina:1, paginas:2,
+      datos:[["Nombre", "", 3.2], ["Fecha", "", 1.4], ["Hechas", "&nbsp;&nbsp;&nbsp;&nbsp; / "+lista.length, 1.2]],
+      instrucciones: mini+'<p>Cada bloque es <b>la suma de los dos que tiene debajo</b>: 2 + 3 = 5. Si falta uno de abajo, resta: 5 − 2 = 3. '+ayuda+'</p>',
+      cuerpo:'<div class="hj-pirs" style="'+tam+'">'+lista.map((p, i)=> tarjeta(p, i, false)).join("")+'</div>'})+
+    hojaPapel({titulo:"Soluciones", sub:"Pirámides numéricas · nivel "+nivel+" · "+sub+". Con fondo, los bloques que ya venían; en azul, los que había que encontrar.", eti:"Para el docente", docente:true, pagina:2, paginas:2,
+      cuerpo:'<div class="hj-pirs" style="'+tam+'">'+lista.map((p, i)=> tarjeta(p, i, true)).join("")+'</div>'});
   lanzarImpresion();
 }
 

@@ -123,6 +123,7 @@ function iniciarBombo(){
       BO.salidos = []; BO.visto = true; guardarBombo(); pintarBombo();
     };
     if(!window.speechSynthesis) $("bVoz").hidden = true;
+    $("bImprimir").onclick = imprimirCartones;
   }
   pintarBombo();
 }
@@ -157,6 +158,29 @@ function sacarNumero(){
     num.textContent = quedan[Math.floor(Math.random()*quedan.length)];
     if(++vueltas > 10){ clearInterval(t); final(); }
   }, 55);
+}
+/* Cartones en papel para el juego elegido: 6 por hoja, todos distintos, para recortar.
+   En los juegos del 1 al 10 y de decenas, cada número lleva sus regletas dibujadas debajo. */
+function imprimirCartones(){
+  const m = MODOS[BO.modo] || MODOS.n1, todos = numerosDelModo();
+  const casillas = todos.length <= 10 ? 4 : todos.length <= 49 ? 9 : 12, columnas = casillas === 4 ? 2 : casillas === 9 ? 3 : 4;
+  const cartones = [], vistos = new Set();
+  for(let t=0; cartones.length < 6 && t < 500; t++){
+    const c = barajar(todos.slice()).slice(0, casillas).sort((a,b)=> a - b);
+    if(!vistos.has(c.join())){ vistos.add(c.join()); cartones.push(c); }
+  }
+  const conRegletas = todos.length <= 10;
+  const dibujo = v => !conRegletas ? "" : '<span class="hj-cregletas">'+(m.decenas ? Array(v/10).fill(10) : [v]).map(x=>
+    '<i style="width:'+(m.decenas ? 2.4 : x*2.4)+'mm;background:'+REGLETA[x].c+'"></i>').join("")+'</span>';
+  const instrucciones = BO.modo === "amigos" ? "Cuando salga un número, busca en tu cartón <b>su amigo del 100</b> (el que suma 100 con él) y táchalo."
+    : BO.reves ? "Se enseñan las regletas: <b>di qué número forman</b> y, si lo tienes, táchalo."
+    : "Cuando salga un número, <b>táchalo si lo tienes</b> en tu cartón. ¡Bingo cuando los taches todos!";
+  $("impresion").innerHTML = hojaPapel({titulo:"Cartones del bingo", sub:m.nombre+(m.decenas ? " · 10, 20… 90" : m.de ? " · del "+m.de+" al "+m.a : ""), eti:"Para recortar", pagina:1, paginas:1,
+    instrucciones:'<p>✂️ Recorta por la línea de puntos. '+instrucciones+'</p>',
+    cuerpo:'<div class="hj-cartones">'+cartones.map((c, i)=> '<div class="hj-carton"><p><b>Bingo de las regletas</b><span>Cartón '+(i+1)+'</span></p>'+
+      '<div class="hj-ccasillas" style="grid-template-columns:repeat('+columnas+',1fr)">'+c.map(v=> '<span><b>'+v+'</b>'+dibujo(v)+'</span>').join("")+'</div>'+
+      '<p class="hj-cnombre">Nombre: ____________________</p></div>').join("")+'</div>'});
+  lanzarImpresion();
 }
 function pintarBombo(){
   $("bModo").value = BO.modo;

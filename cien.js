@@ -74,6 +74,7 @@ function iniciarCien(){
     document.querySelectorAll("#vCien .segmentos button").forEach(b=> b.onclick = ()=>{ CI.modo = b.dataset.modo; guardarCI(); nuevoCasoCI(); });
     $("ciNivel").onchange = e=>{ CI.nivel[CI.modo] = e.target.value; guardarCI(); nuevoCasoCI(); };
     apTeclado("ciTeclado", teclaCI);
+    $("ciImprimir").onclick = imprimirCien;
     if(document.fullscreenEnabled) $("ciPantalla").onclick = ()=> pantallaCompleta("vCien"); else $("ciPantalla").hidden = true;
   }
   if(!CI.caso) nuevoCasoCI(); else pintarCien();
@@ -165,6 +166,49 @@ function pintarCien(){
   $("ciTeclado").hidden = terminado;
   $("ciNueva").onclick = nuevoCasoCI;
   $("ciPista")?.addEventListener("click", ()=>{ CI.pista = !CI.pista; CI.aviso = ""; pintarCien(); });
+}
+/* ---------- Ficha en papel: 6 sumas de la estrategia y el nivel elegidos, con sus soluciones ---------- */
+function imprimirCien(){
+  const nivel = CI.nivel[CI.modo], lista = listaCI(CI.modo, nivel), casos = [], vistos = new Set();
+  for(let t=0; casos.length < 6 && t < 200; t++){ const c = delMazo("ci-ficha-"+CI.modo+"-"+nivel, lista); if(!vistos.has(c.k)){ vistos.add(c.k); casos.push(c); } }
+  const caja = (v, sol) => '<span class="hj-caja'+(sol ? " llena" : "")+'">'+(sol ? v : "")+'</span>';
+  const placa = c => {   // la placa del 100 con el primer número y lo que falta, y el segundo número en regletas
+    let celdas = "";
+    for(let i=0; i<100; i++){ const fila = Math.floor(i/10), resto = c.a - fila*10;
+      celdas += i < c.a ? '<i style="background:'+REGLETA[resto >= 10 ? 10 : resto].c+'"></i>' : '<i class="falta"></i>'; }
+    const barras = [...Array(Math.floor(c.b/10)).fill(10), ...(c.b % 10 ? [c.b % 10] : [])].map(n=> '<i style="height:'+(n*2.2)+'mm;background:'+REGLETA[n].c+'"></i>').join("");
+    return '<div class="hj-placa-fila"><div class="hj-placa">'+celdas+'</div><b>+</b><div class="hj-pbarras">'+barras+'</div></div>';
+  };
+  const arbol = (c, sol) => {   // el superárbol con los huecos
+    const p = pasosCI(c), doble = p.length === 5, da = Math.floor(c.a/10)*10, db = Math.floor(c.b/10)*10;
+    const t = (x, y, w, v, fijo) => '<rect x="'+(x - w/2)+'" y="'+(y - 22)+'" width="'+w+'" height="44" rx="9" class="hj-acaja'+(fijo ? " fija" : "")+'"/>'+
+      (fijo || sol ? '<text x="'+x+'" y="'+(y + 10)+'" class="hj-anum'+(fijo ? "" : " sol")+'">'+v+'</text>' : "");
+    const l = (x1, y1, x2, y2) => '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'"/>';
+    let s = '<svg class="hj-arbol" viewBox="120 12 560 '+(doble ? 456 : 384)+'"><g class="hj-aramas">'+
+      l(250, 64, 180, 138) + l(250, 64, 320, 138) + l(550, 64, 480, 138) + l(550, 64, 620, 138) + l(180, 182, 300, 254) + l(480, 182, 300, 254) + l(320, 182, 560, 254) + l(620, 182, 560, 254);
+    s += doble ? l(560, 298, 300, 364) + l(300, 298, 300, 364) + l(300, 408, 430, 440) + l(560, 408, 430, 440) : l(300, 298, 430, 344) + l(560, 298, 430, 344);
+    s += '</g>' + t(250, 42, 120, c.a, true) + '<text x="400" y="54" class="hj-anum">+</text>' + t(550, 42, 120, c.b, true);
+    s += t(180, 160, 96, da) + t(320, 160, 80, c.a % 10) + t(480, 160, 96, db) + t(620, 160, 80, c.b % 10) + t(300, 276, 150, p[0].r) + t(560, 276, 130, p[1].r);
+    if(doble) s += t(560, 386, 150, "10 + "+p[2].r) + t(300, 386, 150, p[3].r);
+    return s + t(430, doble ? 440 : 366, 170, c.a + c.b) + '</svg>';
+  };
+  const ficha = (c, i, sol) => {
+    const p = pasosCI(c);
+    let h = '<div class="hj-caso"><p class="hj-caso-tit"><span class="hj-n">'+(i+1)+'</span><b>'+c.a+' + '+c.b+'</b></p>';
+    if(CI.modo === "cien") h += placa(c) + '<p>Al '+c.a+' le faltan '+caja(p[0].r, sol)+' para 100.</p><p>Rompo el '+c.b+' en '+caja(p[0].r, sol)+' y '+caja(p[1].r, sol)+'.</p>'+
+      '<p>'+c.a+' + '+c.b+' = 100 + '+caja(p[1].r, sol)+' = '+caja(c.a + c.b, sol)+'</p>';
+    else h += arbol(c, sol);
+    return h + '</div>';
+  };
+  const titulo = CI.modo === "cien" ? "Busco el 100" : "El superárbol", sub = NIVELES_CI[CI.modo][nivel];
+  const instr = CI.modo === "cien" ? '<p>1 · ¿Cuánto le falta al primer número para llegar a 100? (cuenta las casillas vacías) 2 · Rompe el otro número para sacar justo esa parte. 3 · Forma el 100 y suma lo que ha sobrado.</p>'
+    : '<p>1 · Separa cada número en dieces y unos. 2 · Suma los dieces: 10 naranjas forman la placa del 100. 3 · Suma los unos: si llegan a 10, nace un diez nuevo. 4 · Junta todo.</p>';
+  $("impresion").innerHTML =
+    hojaPapel({titulo, sub:"Sumas que pasan de 100 · "+sub, eti:"2.º", pagina:1, paginas:2, datos:[["Nombre", "", 3.2], ["Fecha", "", 1.4], ["Aciertos", "&nbsp;&nbsp;&nbsp;&nbsp; / 6", 1.2]],
+      instrucciones:instr, cuerpo:'<div class="hj-casos">'+casos.map((c, i)=> ficha(c, i, false)).join("")+'</div>'})+
+    hojaPapel({titulo:"Soluciones", sub:titulo+" · "+sub+" · las mismas sumas de la ficha", eti:"Para el docente", docente:true, pagina:2, paginas:2,
+      cuerpo:'<div class="hj-casos">'+casos.map((c, i)=> ficha(c, i, true)).join("")+'</div>'});
+  lanzarImpresion();
 }
 function teclaCI(t){
   const pasos = pasosCI(CI.caso), p = pasos[CI.paso];

@@ -72,6 +72,7 @@ function iniciarEscondido(){
     $("neHasta").onchange = e=>{ NE.hasta = +e.target.value; guardarNE(); nuevoCaso(); };
     document.querySelectorAll("#vEscondido .segmentos button").forEach(b=> b.onclick = ()=>{ NE.modo = b.dataset.modo; guardarNE(); nuevoCaso(); });
     apTeclado("neTeclado", teclaNE);
+    $("neImprimir").onclick = imprimirEscondido;
     if(document.fullscreenEnabled) $("nePantalla").onclick = ()=> pantallaCompleta("vEscondido"); else $("nePantalla").hidden = true;
   }
   if(!NE.caso) nuevoCaso(); else pintarEscondido();
@@ -263,6 +264,28 @@ function veredicto(v){
   if((v === "bien") === bien){ if(bien){ NE.fase = "hecho"; NE.hechos++; } }
   else NE.fase = "hecho";
   pintarEscondido();
+}
+
+/* ---------- Ficha en papel: 6 casos del nivel con los pasos del detective, y sus soluciones ---------- */
+function imprimirEscondido(){
+  const lista = listaNE(NE.nivel, NE.hasta), casos = [], vistos = new Set();
+  for(let t=0; casos.length < 6 && t < 200; t++){ const c = delMazo("ne-ficha-"+NE.nivel+"-"+NE.hasta, lista); if(!vistos.has(c.k)){ vistos.add(c.k); casos.push(c); } }
+  const caja = (v, sol) => '<span class="hj-caja'+(sol ? " llena" : "")+'">'+(sol ? v : "")+'</span>';
+  const regletas = n => [...Array(Math.floor(n/10)).fill(10), ...(n % 10 ? [n % 10] : [])].map(v=>
+    '<i style="width:'+(v*2.6)+'mm;background:'+REGLETA[v].c+';color:'+REGLETA[v].t+'">'+v+'</i>').join("");
+  const ficha = (c, i, sol) => '<div class="hj-caso"><p class="hj-caso-tit"><span class="hj-n">'+(i+1)+'</span>Busco el <b>'+c.h+'</b> dentro del <b>'+c.n+'</b></p>'+
+    '<div class="hj-nregletas">'+regletas(c.n)+'</div>'+
+    pasosCuaderno(c).map(p=> p.tipo === "elegir"
+      ? '<p>'+p.txt+' '+p.opciones.map(o=> '<span class="hj-opcion'+(sol && o === p.bien ? " buena" : "")+'">'+o+'</span>').join(" ")+'</p>'
+      : '<p>'+p.txt+' '+caja(p.bien, sol)+'</p>').join("")+'</div>';
+  const sub = NIVELES_NE[NE.nivel]+" · números hasta "+NE.hasta;
+  $("impresion").innerHTML =
+    hojaPapel({titulo:"El número escondido", sub, eti:"2.º", pagina:1, paginas:2, datos:[["Nombre", "", 3.2], ["Fecha", "", 1.4], ["Aciertos", "&nbsp;&nbsp;&nbsp;&nbsp; / 6", 1.2]],
+      instrucciones:'<p>🔍 Los tres pasos del detective: 1 · Miro el número con sus dieces y sus unos. 2 · Si me falta una pieza, rompo un diez o la regleta de los unos. 3 · Junto las piezas del número escondido y cuento lo que queda suelto. <b>Comprobación: escondido + lo que queda = el número de partida.</b></p>',
+      cuerpo:'<div class="hj-casos">'+casos.map((c, i)=> ficha(c, i, false)).join("")+'</div>'})+
+    hojaPapel({titulo:"Soluciones", sub:"El número escondido · "+sub+" · los mismos casos de la ficha", eti:"Para el docente", docente:true, pagina:2, paginas:2,
+      cuerpo:'<div class="hj-casos">'+casos.map((c, i)=> ficha(c, i, true)).join("")+'</div>'});
+  lanzarImpresion();
 }
 
 /* ---------- Teclado numérico (lo que queda, pasos del cuaderno, lo correcto) ---------- */

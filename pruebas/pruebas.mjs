@@ -303,7 +303,7 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.evaluate(()=>{ DN.nivel = "e100"; nuevoRetoDN(); DN.reto.precio = 3700; pintarDinero(); });
   for(const v of [2000, 1000, 500, 200]) await p.click('#dnCuerpo .dn-coger[data-v="'+v+'"]');
   await p.click("#dnPagar");
-  exigir(/¡Justo 37 €!/.test(await p.textContent("#dnCuerpo")), "dinero: pagar justo 37 € no funciona");
+  exigir(/¡Justo 37\s€!/.test(await p.textContent("#dnCuerpo")), "dinero: pagar justo 37 € no funciona");
   await accesibilidad(p);
   await p.click('#vDinero .segmentos [data-modo="contar"]');
   const total = await p.evaluate(()=> DN.reto.total / 100);
@@ -444,6 +444,24 @@ await prueba("Las fichas en papel del Minuto y de las pirámides se preparan bie
       return f.every((fila, r)=> r === f.length-1 || fila.every((x, i)=> x === f[r+1][i] + f[r+1][i+1])); });
     return {n: document.querySelectorAll("#impresion .hoja:first-child .hj-pir").length, cuadra}; });
   exigir(pir.n === 6 && pir.cuadra, "pirámides: la ficha no trae 6 pirámides con soluciones correctas "+JSON.stringify(pir));
+  // Las demás fichas en papel: traen lo que tienen que traer y nada pasa por encima del pie de página
+  const fichas = [["#/bombo", "#bImprimir", ".hj-carton", 6], ["#/reloj", "#rjImprimir", ".hoja:first-child .hj-reloj", 12],
+    ["#/cien", "#ciImprimir", ".hoja:first-child .hj-caso", 6], ["#/escondido", "#neImprimir", ".hoja:first-child .hj-caso", 6], ["#/dinero", "#dnImprimir", ".hoja:first-child .hj-dinero", 8]];
+  for(const [ruta, boton, pieza, cuantas] of fichas){
+    await p.evaluate(()=> dispatchEvent(new Event("afterprint")));
+    const antes = await p.evaluate(()=> window.__impreso);
+    await p.goto(WEB+ruta); await p.waitForSelector(boton, {state:"attached"}); await p.click(boton);
+    await p.waitForFunction(n=> window.__impreso > n, antes);
+    await p.emulateMedia({media:"print"});
+    const r = await p.evaluate(sel=>{
+      const n = document.querySelectorAll("#impresion "+sel).length, textos = [...document.querySelectorAll("#impresion "+sel)].map(x=> x.textContent);
+      const fuera = [...document.querySelectorAll("#impresion .hoja")].some(h=>{ const pie = h.querySelector(".hj-pie").getBoundingClientRect().top;
+        return [...h.querySelectorAll(".hj-cuerpo *")].some(e=>{ const b = e.getBoundingClientRect(); return b.height && b.bottom > pie + 1; }); });
+      return {n, distintas: new Set(textos).size, fuera};
+    }, pieza);
+    await p.emulateMedia({media:"screen"});
+    exigir(r.n === cuantas && r.distintas === cuantas && !r.fuera, "ficha en papel de "+ruta+": "+JSON.stringify(r));
+  }
 }));
 
 await prueba("La portada no salta mientras carga, ni con una conexión lenta", async ()=>{

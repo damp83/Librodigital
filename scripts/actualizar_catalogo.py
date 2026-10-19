@@ -404,6 +404,103 @@ def escribir_catalogo(catalogo):
     CATALOGO.write_text("[\n" + ",\n".join(bloques) + "\n]\n", encoding="utf-8")
 
 
+# ---------------------------------------------------------------------------
+# Revisión de textos: al publicar una ficha o presentación nueva, se leen sus páginas y se avisa de lo que
+# parece una errata (no se cambia nada: es un aviso en «Actions» para que la persona lo mire).
+#  - cuentas escritas que no cuadran: «70 + 60 = 120», «(80 + 20) + 30 = 100 + 30 = 140»;
+#  - un 1 con el nombre en plural: «1 placas», «1 naranjas»;
+#  - palabras repetidas: «el el»;
+#  - «pasan de 10» para la reagrupación: con 10 justos también se forma un diez («llegan a 10»).
+# Las cuentas de los ejercicios «Detective del error» (con BIEN / MAL al lado) se saltan: ahí el error es a propósito.
+# ---------------------------------------------------------------------------
+PLURALES_UNO = ("placas", "naranjas", "regletas", "unidades", "dieces", "decenas", "centenas", "euros", "céntimos",
+                "monedas", "billetes", "piezas", "cromos", "canicas", "horas", "minutos", "veces", "cuadros", "puntos")
+REPETIBLES = ("el", "la", "los", "las", "un", "una", "de", "del", "que", "y", "en", "a", "con", "se", "es", "por", "para", "lo", "al")
+SIGNOS = "+\\-−×x·"
+OPERACION = re.compile(r"[\d(][\d \t" + SIGNOS + r"()]*?(?:=[\d \t" + SIGNOS + r"()]+)+")
+# ejercicios en los que el error es a propósito (detective del error, ¿está bien o mal?)
+ERROR_A_PROPOSITO = re.compile(r"✔|✘|\bBIEN\b|\bMAL\b|bien o mal|[Cc]orrecto:|[Dd]etective del error|[Ll]o correcto|[Tt]acha|¿[Ee]s verdad|[Vv]erdadero o falso")
+
+def valor(expresion):
+    """Calcula «70 + (30 + 20)» o «3 · 4»; None si no es una cuenta completa (huecos, letras, decimales…)."""
+    e = expresion.strip().replace("−", "-").replace("×", "*").replace("·", "*")
+    e = re.sub(r"(?<=[\d)])\s*x\s*(?=[\d(])", "*", e)
+    if not e or not re.fullmatch(r"[\d\s+\-*()]+", e) or not re.search(r"\d", e) or re.search(r"[+\-*(]\s*$|^\s*[+\-*)]", e):
+        return None
+    if re.search(r"\d\s+\d|[+\-*]\s*[+\-*]", e) or e.count("(") != e.count(")"):   # «10 10 10» son etiquetas de regletas, no una cuenta
+        return None
+    try:
+        return eval(e, {"__builtins__": {}}, {})
+    except Exception:
+        return None
+
+def separar_cuentas(texto):
+    """Varias cuentas seguidas en la misma línea («2 + 2 = 4 20 + 20 = 40», o con « · » entre ellas en los
+    solucionarios) se separan; « · » solo es «veces» cuando no separa cuentas completas («3 · 4 = 12»)."""
+    texto = re.sub(r"^\s*\d+\)\s*", "", texto)                          # «3) …» es el número del ejercicio
+    trozos = texto.split(" · ")
+    if len(trozos) > 1 and all("=" in t for t in trozos):
+        return [c for t in trozos for c in separar_cuentas(t)]
+    if len(trozos) > 2:   # « · » a la vez de «veces» y de separador: no se puede saber cuál es cuál
+        return []
+    if len(trozos) == 2 and "=" not in trozos[0]:   # «3 · 4 = 12» es «veces» si son números de las tablas
+        a, b = re.match(r"\s*(\d*)", trozos[0]).group(1), re.match(r"\s*(\d*)", trozos[1]).group(1)
+        if not (a and b and int(a) <= 12 and int(b) <= 12):
+            return separar_cuentas(trozos[1])
+    # «… = 4 20 + 20 …»: un número seguido de otro número sin signo entre ellos empieza otra cuenta
+    return [c for c in re.split(r"(?<=[\d)])[ \t]+(?=[\d(])", texto) if "=" in c]
+
+def revisar_textos(ruta):
+    try:
+        doc = abrir_pdf(ruta)
+        paginas = [doc[i].get_textpage().get_text_range() for i in range(len(doc))]
+        doc.close()
+    except Exception:
+        return []
+    return revisar_paginas(paginas)
+
+def revisar_paginas(paginas):
+    hallazgos, pasan = [], False
+    for n, texto in enumerate(paginas, 1):
+        texto = texto.replace("\r", "")
+        for m in OPERACION.finditer(texto):
+            antes, despues = texto[max(0, m.start() - 200):m.start()], texto[m.end():m.end() + 160]
+            if re.search(r"[A-Za-zÁÉÍÓÚáéíóúñÑ][ \t]*$", antes) or re.match(r"[ \t]*[A-Za-zÁÉÍÓÚáéíóúñÑ]", despues):
+                continue   # «38 = 3 dieces», «ramas (8) = 48»: forma parte de una frase, no es una cuenta suelta
+            if ERROR_A_PROPOSITO.search(despues) or ERROR_A_PROPOSITO.search(antes):
+                continue
+            if re.match(r"[ \t]*\n[ \t]*[+\-−×·]", despues) or re.search(r"[+\-−×·=][ \t]*\n[ \t]*$", antes):
+                continue   # la cuenta sigue en la otra línea: no se puede comprobar entera
+            for cuenta in separar_cuentas(m.group(0)):
+                valores = [valor(p) for p in cuenta.split("=")]
+                # solo cuentas completas: si falta algo es un hueco para rellenar (o dos ejercicios pegados)
+                partes = [p.strip() for p in cuenta.split("=")]
+                # «17 = 10» o «20 + 20 = 10 + 10»: falta un signo dibujado o un hueco; una cuenta de verdad tiene
+                # alguna operación y algún resultado (un número solo)
+                if not any(re.fullmatch(r"\d+", p) for p in partes) or all(re.fullmatch(r"\d+", p) for p in partes):
+                    continue
+                if len(valores) >= 2 and None not in valores and len(set(valores)) > 1:
+                    hallazgos.append(f"pág. {n}: la cuenta «{' '.join(cuenta.split())}» no cuadra")
+        for m in re.finditer(r"(?<![\d,.])1 (" + "|".join(PLURALES_UNO) + r")\b", texto):
+            hallazgos.append(f"pág. {n}: «1 {m.group(1)}» debería ir en singular")
+        for m in re.finditer(r"(?<![\wáéíóúñ])(" + "|".join(REPETIBLES) + r")\s+\1(?![\wáéíóúñ])", texto, re.I):
+            hallazgos.append(f"pág. {n}: palabra repetida «{' '.join(m.group(0).split())}»")
+        pasan = pasan or bool(re.search(r"pasan? de 10\b", texto))
+    if pasan:
+        hallazgos.append("dice «pasan de 10» al reagrupar: con 10 justos también se forma un diez; quizá mejor «llegan a 10»")
+    vistos, unicos = set(), []
+    for h in hallazgos:
+        if h not in vistos:
+            vistos.add(h); unicos.append(h)
+    return unicos
+
+def avisar_revision(ruta):
+    hallazgos = revisar_textos(ruta)
+    if hallazgos:
+        avisos.append(f"Revisión de textos de {ruta.name} (solo es un aviso, mira si es una errata): " + "; ".join(hallazgos[:8])
+                      + (f"; y {len(hallazgos) - 8} más" if len(hallazgos) > 8 else ""))
+
+
 def main():
     catalogo = cargar_catalogo()
     if catalogo is None:
@@ -412,6 +509,9 @@ def main():
     if "--optimizar-todo" in sys.argv:
         for pdf in sorted(MATERIALES.glob("*.pdf")):
             optimizar(pdf)
+    if "--revisar-todo" in sys.argv:    # revisión de textos de todos los PDF publicados
+        for pdf in sorted(MATERIALES.glob("*.pdf")):
+            avisar_revision(pdf)
     if "--aligerar-todo" in sys.argv:   # los PDF ya publicados que pesan demasiado
         for pdf in sorted(MATERIALES.glob("*.pdf")):
             aligerar(pdf)
@@ -446,6 +546,7 @@ def main():
         shutil.move(str(pdf), destino)
         optimizar(destino)
         aligerar(destino)
+        avisar_revision(destino)
         if destino.name in por_archivo:
             regenerar.add(destino.name)
             cambios.append(f"Sustituido: {destino.name} (se conservan título, curso y descripción)")

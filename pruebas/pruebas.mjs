@@ -8,6 +8,7 @@
 import { chromium } from "playwright";
 import { readFileSync, appendFileSync } from "node:fs";
 import { createRequire } from "node:module";
+import { execFileSync } from "node:child_process";
 
 const WEB = process.env.WEB || "http://localhost:8000/";
 const RAIZ = new URL("../", import.meta.url);
@@ -23,6 +24,20 @@ async function prueba(nombre, fn){
 const exigir = (cond, msg) => { if(!cond) throw new Error(msg); };
 
 /* ---------- Datos: la ruta del curso apunta a cosas que existen ---------- */
+await prueba("La revisión de textos avisa de las erratas y no de lo que está bien", ()=>{
+  const casos = {
+    "Total: 75 + 76 = 140 + 11 = 152": true, "62 + 56 = 110 + 8 = 118": false, "70 + 50 = (70 + 30) + 20 = 100 + 20 = 120": false,
+    "3 · 4 = 13": true, "3 · 4 = 12": false, "Hugo: 8 + 6 = (8 + 3) + 3 = 10 + 3 = 13\n✔ ✘": false, "2 + 2 = 4 20 + 20 = 40": false,
+    "5) 130 · 130 · 110 · 110.": false, "9) 65 + 54 = 119 · 78 + 73 = 152 · 82 + 45 = 127": true,
+    "Tiene 1 placas": true, "Leo las horas y y media": true, "38 = 3 dieces y 8": false, "Rodea los que valen 45 y tacha los que no. 45 = 30 + 10 + 4": false};
+  const codigo = "import sys, json; sys.path.insert(0, 'scripts'); import actualizar_catalogo as a; " +
+    "casos = json.loads(sys.stdin.read()); print(json.dumps({t: bool(a.revisar_paginas([t])) for t in casos}))";
+  const r = JSON.parse(execFileSync("python3", ["-c", codigo], {cwd: new URL("../", import.meta.url), input: JSON.stringify(Object.keys(casos))}).toString());
+  const mal = Object.entries(casos).filter(([t, esperado])=> r[t] !== esperado).map(([t])=> "«"+t+"»");
+  exigir(!mal.length, "la revisión se equivoca con "+mal.join(", "));
+  return Object.keys(casos).length+" casos";
+});
+
 await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
   const porArchivo = Object.fromEntries(catalogo.map(m=>[m.archivo, m]));
   const recursos = new Set(catalogo.map(m=>m.recurso).filter(Boolean));

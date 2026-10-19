@@ -51,6 +51,12 @@ Para agrupar materiales que ya están subidos, pon el mismo `"recurso"` en sus b
 
 ### Si algo sale mal
 
+- **Revisión de textos**: al publicar un PDF nuevo, se leen sus páginas y en *Actions* sale un aviso («Revisión de
+  textos de …») si algo parece una errata: una cuenta escrita que no cuadra («75 + 76 = 140 + 11 = 152»), un 1
+  con el nombre en plural («1 placas»), una palabra repetida («y y») o «pasan de 10» al reagrupar (con 10 justos
+  también se forma un diez). Solo avisa, no cambia nada. Se saltan los huecos para rellenar y los ejercicios en
+  los que el error es a propósito (detective del error, ✔ ✘, «tacha los que no»). Para revisar todo lo publicado:
+  `python scripts/actualizar_catalogo.py --revisar-todo`.
 - **PDF pesados** (más de 2 MB): se aligeran solos, con la misma resolución. Las imágenes sin comprimir pasan
   a JPEG de buena calidad (de 20 MB a unos 3 MB); las fotos en JPEG guardadas con más calidad de la que se nota
   se vuelven a guardar al 65 % (un 40 % menos); y si todas las páginas repiten el mismo fondo dibujado (miles de

@@ -170,8 +170,9 @@ function imprimirCartones(){
     if(!vistos.has(c.join())){ vistos.add(c.join()); cartones.push(c); }
   }
   const conRegletas = todos.length <= 10;
-  const dibujo = v => !conRegletas ? "" : '<span class="hj-cregletas">'+(m.decenas ? Array(v/10).fill(10) : [v]).map(x=>
-    '<i style="width:'+(m.decenas ? 2.4 : x*2.4)+'mm;background:'+REGLETA[x].c+'"></i>').join("")+'</span>';
+  // del 11 al 20: un diez y las unidades, más estrechas para que quepan en la casilla
+  const dibujo = v => !conRegletas ? "" : '<span class="hj-cregletas">'+(m.decenas ? Array(v/10).fill(10) : v > 10 ? [10, v - 10] : [v]).map(x=>
+    '<i style="width:'+(m.decenas ? 2.4 : x*(v > 10 ? 1.6 : 2.4))+'mm;background:'+REGLETA[x].c+'"></i>').join("")+'</span>';
   const instrucciones = BO.modo === "amigos" ? "Cuando salga un número, busca en tu cartón <b>su amigo del 100</b> (el que suma 100 con él) y táchalo."
     : BO.reves ? "Se enseñan las regletas: <b>di qué número forman</b> y, si lo tienes, táchalo."
     : "Cuando salga un número, <b>táchalo si lo tienes</b> en tu cartón. ¡Bingo cuando los taches todos!";

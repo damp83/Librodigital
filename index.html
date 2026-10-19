@@ -1343,11 +1343,11 @@ footer.pie .marca{margin-bottom:12px}
 .d-opciones input[type=number]{width:4.2em;height:36px;border:1px solid var(--line-strong);border-radius:8px;padding:0 8px;background:var(--surface);font-size:15px}
 #impresion{display:none}
 @media print{
-  @page{margin:10mm}
+  @page{size:A4;margin:12mm}
   body.imprimiendo > *:not(#impresion){display:none !important}
   body.imprimiendo{background:#fff}
   body.imprimiendo #impresion{display:block}
-  #impresion img{display:block;width:100%;height:auto;max-height:275mm;object-fit:contain;margin:0 auto;break-after:page;page-break-after:always}
+  #impresion img{display:block;width:100%;height:auto;max-height:266mm;object-fit:contain;margin:0 auto;break-after:page;page-break-after:always}
   #impresion img:last-child{break-after:auto;page-break-after:auto}
   .recortables{font-family:var(--font);color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
@@ -1356,7 +1356,7 @@ footer.pie .marca{margin-bottom:12px}
 .rc-fila{display:flex;gap:0;margin-bottom:2.5mm;height:10mm}
 /* Fichas en papel de las herramientas (Minuto de cálculo, pirámides): el estilo de las fichas multinivel del aula */
 .hoja{--azul:#1b5fd6;--tinta:#16202e;--gris:#5b687a;--linea:#c9d1dc;--suave:#eef3fb;
-  height:275mm;display:flex;flex-direction:column;overflow:hidden;font-family:var(--font);color:var(--tinta);background:#fff;
+  height:266mm;display:flex;flex-direction:column;overflow:hidden;font-family:var(--font);color:var(--tinta);background:#fff;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
 .hoja + .hoja{break-before:page;page-break-before:always}
 .hj-regletas{display:flex;gap:1mm;height:2.6mm;margin-bottom:4mm}
@@ -1443,7 +1443,7 @@ footer.pie .marca{margin-bottom:12px}
 .hj-flecha{font-size:16pt;color:var(--gris)}
 /* Casos (sumas que pasan de 100 y número escondido) */
 .hj-casos{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);gap:4mm;height:100%}
-.hj-caso{display:flex;flex-direction:column;gap:1.2mm;padding:2.5mm 3mm;border:.35mm solid var(--linea);border-radius:3mm;font-size:10.5pt;min-height:0;overflow:hidden}
+.hj-caso{display:flex;flex-direction:column;gap:.9mm;padding:2.2mm 3mm;border:.35mm solid var(--linea);border-radius:3mm;font-size:10pt;min-height:0;overflow:hidden}
 .hj-caso .hj-caja{height:6.5mm;line-height:6mm}
 .hj-caso p{margin:0}
 .hj-caso-tit{display:flex;align-items:center;gap:2.5mm;font:600 13pt var(--font-titulos)}
@@ -1476,6 +1476,9 @@ footer.pie .marca{margin-bottom:12px}
 .hj-compra{font-size:10.5pt}
 .hj-vuelta{flex-direction:row;align-items:center;gap:3mm}
 .hj-vuelta > div:last-child{display:flex;flex-direction:column;gap:1.5mm}
+/* 500 € se pagan con varios billetes: en abanico, para que la tarjeta no crezca */
+.hj-vuelta .hj-monton{flex:none;flex-direction:column;flex-wrap:nowrap;gap:0}
+.hj-vuelta .hj-monton > .dn-pieza.foto + .dn-pieza.foto{margin-top:-8.5mm}
 .hj-credito{margin:0;font-size:8pt;color:var(--gris)}
 .rc-pieza{box-sizing:border-box;height:10mm;border:.3mm solid #333;display:flex;align-items:center;justify-content:flex-end;padding-right:1.2mm;
   font:600 7pt var(--font);-webkit-print-color-adjust:exact;print-color-adjust:exact}

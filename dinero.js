@@ -66,6 +66,8 @@ function generarMontonDN(){   // de 3 a 7 monedas y billetes del nivel, con un t
   }
   return {k: monton.join("+"), monton, total};
 }
+/* El pago en piezas: el billete de 500 € ya no se fabrica (y no hay foto), así que 500 € se pagan con 200 + 200 + 100 */
+const piezasPagoDN = pago => pago > 20000 ? minimoPiezas(pago, [20000, 10000, 5000]) : [pago];
 function compraVueltaDN(){   // una compra para calcular la vuelta: se paga con el billete más pequeño que llega, o a veces con el siguiente
   const n = NIVELES_DN[DN.nivel], [icono, cosa] = COSAS_DN[azar(0, COSAS_DN.length - 1)];
   const precio = precioDN("vuelta", n.max - n.paso);
@@ -154,7 +156,7 @@ function pintarDinero(){
     }
   }else if(DN.modo === "vuelta"){
     h = '<p class="ap-pregunta"><span class="dn-cosa" aria-hidden="true">'+r.icono+'</span> '+mayusculaDN(r.cosa)+(/^un[oa]s /.test(r.cosa) ? " cuestan" : " cuesta")+' <b>'+euros(r.precio)+'</b>. Pagas con:</p>'+
-        '<div class="dn-monton">'+piezaDN(r.pago)+'</div><p class="ap-pregunta">¿Cuánto te devuelven?</p>';
+        '<div class="dn-monton">'+piezasPagoDN(r.pago).map(v=> piezaDN(v)).join("")+'</div><p class="ap-pregunta">¿Cuánto te devuelven?</p>';
     if(r.opciones) h += '<div class="ap-opciones">'+r.opciones.map(x=>{
       const clase = !respondido ? "" : x === r.vuelta ? " bien" : x === DN.respuesta ? " mal" : "";
       return '<button class="ap-opcion texto'+clase+'" data-c="'+x+'"'+(respondido ? " disabled" : "")+'>'+euros(x)+'</button>'; }).join("")+'</div>';
@@ -192,8 +194,8 @@ function imprimirDinero(){
   const cuerpo = sol => '<h2 class="hj-sec">¿Cuánto dinero hay?</h2><div class="hj-dineros">'+montones.map((m, i)=>
       '<div class="hj-dinero"><span class="hj-n">'+(i+1)+'</span><div class="hj-monton">'+m.monton.map(v=> piezaDN(v)).join("")+'</div><p>Hay '+caja(m.total, sol)+'</p></div>').join("")+'</div>'+
     '<h2 class="hj-sec">La vuelta: ¿cuánto te devuelven?</h2><div class="hj-dineros">'+compras.map((c, i)=>
-      '<div class="hj-dinero hj-vuelta"><span class="hj-n">'+(i+5)+'</span><div class="hj-monton">'+piezaDN(c.pago)+'</div><div><p class="hj-compra"><span class="dn-cosa">'+c.icono+'</span> '+
-      mayusculaDN(c.cosa)+(/^un[oa]s /.test(c.cosa) ? " cuestan " : " cuesta ")+'<b>'+euros(c.precio)+'</b>. Pagas con '+(esBillete(c.pago) ? "este billete" : "esta moneda")+'.</p><p>Me devuelven '+caja(c.vuelta, sol)+'</p></div></div>').join("")+'</div>'+
+      '<div class="hj-dinero hj-vuelta"><span class="hj-n">'+(i+5)+'</span><div class="hj-monton">'+piezasPagoDN(c.pago).map(v=> piezaDN(v)).join("")+'</div><div><p class="hj-compra"><span class="dn-cosa">'+c.icono+'</span> '+
+      mayusculaDN(c.cosa)+(/^un[oa]s /.test(c.cosa) ? " cuestan " : " cuesta ")+'<b>'+euros(c.precio)+'</b>. Pagas con '+(piezasPagoDN(c.pago).length > 1 ? "estos billetes" : esBillete(c.pago) ? "este billete" : "esta moneda")+'.</p><p>Me devuelven '+caja(c.vuelta, sol)+'</p></div></div>').join("")+'</div>'+
     (DN.fotos ? '<p class="hj-credito">Fotos de monedas y billetes: Banco Central Europeo. Los billetes llevan «specimen» (muestra).</p>' : '');
   $("impresion").innerHTML =
     hojaPapel({titulo:"El dinero", sub:"Contar dinero y calcular la vuelta · "+NIVELES_DN[DN.nivel].txt, eti:"Euros", pagina:1, paginas:2,

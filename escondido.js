@@ -271,8 +271,10 @@ function imprimirEscondido(){
   const lista = listaNE(NE.nivel, NE.hasta), casos = [], vistos = new Set();
   for(let t=0; casos.length < 6 && t < 200; t++){ const c = delMazo("ne-ficha-"+NE.nivel+"-"+NE.hasta, lista); if(!vistos.has(c.k)){ vistos.add(c.k); casos.push(c); } }
   const caja = (v, sol) => '<span class="hj-caja'+(sol ? " llena" : "")+'">'+(sol ? v : "")+'</span>';
-  const regletas = n => [...Array(Math.floor(n/10)).fill(10), ...(n % 10 ? [n % 10] : [])].map(v=>
-    '<i style="width:'+(v*2.6)+'mm;background:'+REGLETA[v].c+';color:'+REGLETA[v].t+'">'+v+'</i>').join("");
+  // las regletas a escala, pero todas en una fila aunque el número sea grande (con el 99 no cabrían en la tarjeta)
+  const regletas = n => { const mm = Math.min(2.6, 70/n);
+    return [...Array(Math.floor(n/10)).fill(10), ...(n % 10 ? [n % 10] : [])].map(v=>
+      '<i style="width:'+Math.max(3.6, v*mm).toFixed(1)+'mm;background:'+REGLETA[v].c+';color:'+REGLETA[v].t+'">'+v+'</i>').join(""); };
   const ficha = (c, i, sol) => '<div class="hj-caso"><p class="hj-caso-tit"><span class="hj-n">'+(i+1)+'</span>Busco el <b>'+c.h+'</b> dentro del <b>'+c.n+'</b></p>'+
     '<div class="hj-nregletas">'+regletas(c.n)+'</div>'+
     pasosCuaderno(c).map(p=> p.tipo === "elegir"

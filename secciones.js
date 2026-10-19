@@ -130,7 +130,7 @@ function hojaPapel(o){
 }
 
 function imprimirRecortables(){
-  const ancho = 180;   // mm útiles en un A4 con márgenes de 10 mm
+  const ancho = 180;   // mm útiles en un A4 con márgenes de 12 mm (186 mm), con un poco de holgura
   let filas = "";
   for(let n=1; n<=10; n++){
     const r = REGLETA[n], cuantas = Math.floor(ancho / (n*10));

@@ -528,6 +528,42 @@ await prueba("Las fichas en papel del Minuto y de las pirámides se preparan bie
   }
 }));
 
+await prueba("Las fichas en papel caben en un A4 con todos los niveles, sin ejercicios cortados", ()=> conPagina({}, async p=>{
+  await p.addInitScript(()=>{ window.print = ()=>{}; });
+  await p.goto(WEB); await p.waitForSelector("#herr");
+  const casos = await p.evaluate(()=>{
+    const c = [];
+    for(const n of Object.keys(MIN_NIVELES)) c.push([`minuto ${n}`, `MN.nivel="${n}";imprimirMinuto()`]);
+    for(const pi of [3,4,5]) for(const h of [10,20,100]) c.push([`pirámides ${pi} pisos hasta ${h}`, `PI.pisos=${pi};PI.hasta=${h};PI.nivel="dificil";imprimirPiramides()`]);
+    for(const m of ["cien","arbol"]) for(const n of Object.keys(NIVELES_CI[m] || NIVELES_CI)) c.push([`cien ${m} ${n}`, `CI.modo="${m}";CI.nivel["${m}"]="${n}";imprimirCien()`]);
+    for(const n of Object.keys(NIVELES_DN)) c.push([`dinero ${n}`, `DN.nivel="${n}";imprimirDinero()`]);
+    for(const n of Object.keys(NIVELES_NE)) c.push([`escondido ${n} hasta 99`, `NE.nivel="${n}";NE.hasta=99;imprimirEscondido()`]);
+    for(const n of Object.keys(NIVELES_RJ)) c.push([`reloj ${n}`, `RJ.nivel="${n}";imprimirReloj()`]);
+    for(const n of Object.keys(MODOS)) c.push([`bingo ${n}`, `BO.modo="${n}";imprimirCartones()`]);
+    return c;
+  });
+  await p.emulateMedia({media:"print"});
+  await p.setViewportSize({width: Math.round(186*96/25.4), height: 1100});   // el ancho útil de un A4 con márgenes de 12 mm
+  for(const [nombre, codigo] of casos){
+    const r = await p.evaluate(async codigo=>{
+      eval(codigo); await new Promise(r=> setTimeout(r, 100));
+      const fallos = [], hojas = document.querySelectorAll("#impresion .hoja");
+      hojas.forEach((h, ih)=>{
+        const H = h.getBoundingClientRect(), cuerpo = h.querySelector(".hj-cuerpo").getBoundingClientRect();
+        for(const e of h.querySelectorAll(".hj-cuerpo *")){
+          const q = e.getBoundingClientRect();
+          if((q.width || q.height) && (q.bottom > cuerpo.bottom + 1 || q.right > H.right + 1)){ fallos.push("hoja "+(ih+1)+": "+e.className+" se sale"); break; }
+          if(getComputedStyle(e).overflow === "hidden" && (e.scrollHeight > e.clientHeight + 2 || e.scrollWidth > e.clientWidth + 2)){ fallos.push("hoja "+(ih+1)+": "+e.className+" queda cortado"); break; }
+        }
+      });
+      return {fallos, hojas: hojas.length};
+    }, codigo).catch(e=> ({fallos:[e.message.split("\n")[0]], hojas:0}));
+    const pdf = (await p.pdf({preferCSSPageSize:true})).toString("latin1"), paginas = (pdf.match(/\/Type\s*\/Page[^s]/g) || []).length;
+    if(paginas !== r.hojas) r.fallos.push(paginas+" páginas impresas para "+r.hojas+" hojas");
+    exigir(!r.fallos.length, "ficha en papel «"+nombre+"»: "+r.fallos.join("; "));
+  }
+}));
+
 await prueba("La portada no salta mientras carga, ni con una conexión lenta", async ()=>{
   const fallos = [];
   for(const opciones of [MOVIL, {viewport:{width:1440, height:900}}]){

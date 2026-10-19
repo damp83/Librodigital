@@ -8,6 +8,7 @@
 import { chromium } from "playwright";
 import { readFileSync, appendFileSync } from "node:fs";
 import { createRequire } from "node:module";
+import { execFileSync } from "node:child_process";
 
 const WEB = process.env.WEB || "http://localhost:8000/";
 const RAIZ = new URL("../", import.meta.url);
@@ -23,6 +24,20 @@ async function prueba(nombre, fn){
 const exigir = (cond, msg) => { if(!cond) throw new Error(msg); };
 
 /* ---------- Datos: la ruta del curso apunta a cosas que existen ---------- */
+await prueba("La revisión de textos avisa de las erratas y no de lo que está bien", ()=>{
+  const casos = {
+    "Total: 75 + 76 = 140 + 11 = 152": true, "62 + 56 = 110 + 8 = 118": false, "70 + 50 = (70 + 30) + 20 = 100 + 20 = 120": false,
+    "3 · 4 = 13": true, "3 · 4 = 12": false, "Hugo: 8 + 6 = (8 + 3) + 3 = 10 + 3 = 13\n✔ ✘": false, "2 + 2 = 4 20 + 20 = 40": false,
+    "5) 130 · 130 · 110 · 110.": false, "9) 65 + 54 = 119 · 78 + 73 = 152 · 82 + 45 = 127": true,
+    "Tiene 1 placas": true, "Leo las horas y y media": true, "38 = 3 dieces y 8": false, "Rodea los que valen 45 y tacha los que no. 45 = 30 + 10 + 4": false};
+  const codigo = "import sys, json; sys.path.insert(0, 'scripts'); import actualizar_catalogo as a; " +
+    "casos = json.loads(sys.stdin.read()); print(json.dumps({t: bool(a.revisar_paginas([t])) for t in casos}))";
+  const r = JSON.parse(execFileSync("python3", ["-c", codigo], {cwd: new URL("../", import.meta.url), input: JSON.stringify(Object.keys(casos))}).toString());
+  const mal = Object.entries(casos).filter(([t, esperado])=> r[t] !== esperado).map(([t])=> "«"+t+"»");
+  exigir(!mal.length, "la revisión se equivoca con "+mal.join(", "));
+  return Object.keys(casos).length+" casos";
+});
+
 await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
   const porArchivo = Object.fromEntries(catalogo.map(m=>[m.archivo, m]));
   const recursos = new Set(catalogo.map(m=>m.recurso).filter(Boolean));
@@ -45,7 +60,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","escalera","series","mas","donde","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -344,6 +359,55 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
     return fallos;
   });
   exigir(!mazosMal.length, "banco de las herramientas nuevas: "+mazosMal.slice(0,3).join("; "));
+  // Infantil: la escalera completa, una serie, comparar y contar, y poner la pelota donde se pide
+  await p.goto(WEB+"#/escalera"); await p.waitForSelector("#vEscalera:not([hidden]) .inf-pieza");
+  await p.click('#vEscalera .segmentos [data-modo="ordenar"]');
+  await p.evaluate(()=>{ EC.nivel = "c10"; nuevoRetoEC(); });
+  await p.click('#ecCuerpo .inf-pieza[data-v="5"]');
+  exigir(await p.locator('#ecCuerpo .inf-pieza.no').count() === 1, "escalera: tocar una que no toca no se marca");
+  for(let v=1; v<=10; v++) await p.click('#ecCuerpo .inf-pieza[data-v="'+v+'"]');
+  exigir(await p.locator("#ecOtra").count() === 1 && await p.locator("#ecCuerpo .inf-escalera .inf-regleta").count() === 10, "escalera: ordenar las diez no la completa");
+  await accesibilidad(p);
+  for(const modo of ["igual", "larga"]){
+    await p.click('#vEscalera .segmentos [data-modo="'+modo+'"]');
+    const bien = await p.evaluate(()=> EC.modo === "igual" ? EC.reto.v : EC.reto.larga ? Math.max(EC.reto.a, EC.reto.b) : Math.min(EC.reto.a, EC.reto.b));
+    await p.click('#ecCuerpo .inf-pieza[data-v="'+bien+'"]');
+    exigir(await p.locator("#ecOtra").count() === 1, "escalera ("+modo+"): la buena no se da por buena");
+    await accesibilidad(p);
+  }
+  await p.goto(WEB+"#/series"); await p.waitForSelector("#vSeries:not([hidden]) .inf-serie");
+  const seriesMal = await p.evaluate(()=>{
+    const fallos = [];
+    for(const nivel of Object.keys(NIVELES_SR)) for(let k=0; k<30; k++){
+      SR.nivel = nivel; nuevoRetoSR();
+      const r = SR.reto, unidad = [...r.patron].length, todo = [...r.serie, r.correcta];
+      if(!todo.every((x, i)=> i < unidad || x === todo[i - unidad])) fallos.push(nivel+": la serie no se repite bien");
+      if(!r.opciones.includes(r.correcta) || new Set(r.opciones).size !== 3) fallos.push(nivel+": opciones mal");
+    }
+    return fallos;
+  });
+  exigir(!seriesMal.length, "series: "+seriesMal.slice(0,3).join("; "));
+  await p.click('#srCuerpo .inf-boton[data-i="'+(await p.evaluate(()=> SR.reto.correcta))+'"]');
+  exigir(await p.locator("#srOtra").count() === 1, "series: la ficha buena no completa la serie");
+  await accesibilidad(p);
+  await p.goto(WEB+"#/mas"); await p.waitForSelector("#vMas:not([hidden]) .inf-platos");
+  for(const modo of ["mas", "cuantos"]){
+    await p.click('#vMas .segmentos [data-modo="'+modo+'"]');
+    const bien = await p.evaluate(()=> MH.modo === "cuantos" ? '[data-n="'+MH.reto.a+'"]' : '[data-p="'+(MH.reto.a === MH.reto.b ? "iguales" : MH.reto.a > MH.reto.b ? "a" : "b")+'"]');
+    await p.click("#mhCuerpo "+bien);
+    exigir(await p.locator("#mhOtra").count() === 1 && await p.locator("#mhCuerpo .si").count() >= 1, "¿dónde hay más? ("+modo+"): la buena no se da por buena");
+    await accesibilidad(p);
+  }
+  await p.goto(WEB+"#/donde"); await p.waitForSelector("#vDonde:not([hidden]) .inf-escena");
+  await p.click('#vDonde .segmentos [data-modo="ver"]');
+  await p.click('#dsCuerpo [data-x="'+(await p.evaluate(()=> DS.reto.p))+'"]');
+  exigir(await p.locator("#dsOtra").count() === 1, "¿dónde está?: la buena no se da por buena");
+  await accesibilidad(p);
+  await p.click('#vDonde .segmentos [data-modo="poner"]');
+  const zona = await p.evaluate(()=> DS.reto.p === "lado" ? "izquierda" : DS.reto.p);
+  await p.click('#dsCuerpo .inf-zona[data-z="'+zona+'"]');
+  exigir(await p.locator("#dsOtra").count() === 1, "¿dónde está? (ponla): poner la pelota en su sitio no vale");
+  await accesibilidad(p);
   // Aproximaciones: la regla (el 5 sube), una ronda entera eligiendo bien y escribiendo
   await p.goto(WEB+"#/redondeo"); await p.waitForSelector("#vRedondeo:not([hidden]) .ap-pregunta");
   const reglas = await p.evaluate(()=> [apAproximar(44,10), apAproximar(45,10), apAproximar(449,100), apAproximar(450,100), apAproximar(97,10)].join());
@@ -420,7 +484,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "infantil.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));

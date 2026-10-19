@@ -51,6 +51,12 @@ Para agrupar materiales que ya están subidos, pon el mismo `"recurso"` en sus b
 
 ### Si algo sale mal
 
+- **Revisión de textos**: al publicar un PDF nuevo, se leen sus páginas y en *Actions* sale un aviso («Revisión de
+  textos de …») si algo parece una errata: una cuenta escrita que no cuadra («75 + 76 = 140 + 11 = 152»), un 1
+  con el nombre en plural («1 placas»), una palabra repetida («y y») o «pasan de 10» al reagrupar (con 10 justos
+  también se forma un diez). Solo avisa, no cambia nada. Se saltan los huecos para rellenar y los ejercicios en
+  los que el error es a propósito (detective del error, ✔ ✘, «tacha los que no»). Para revisar todo lo publicado:
+  `python scripts/actualizar_catalogo.py --revisar-todo`.
 - **PDF pesados** (más de 2 MB): se aligeran solos, con la misma resolución. Las imágenes sin comprimir pasan
   a JPEG de buena calidad (de 20 MB a unos 3 MB); las fotos en JPEG guardadas con más calidad de la que se nota
   se vuelven a guardar al 65 % (un 40 % menos); y si todas las páginas repiten el mismo fondo dibujado (miles de
@@ -226,6 +232,16 @@ Su entrada del catálogo y su portada se quitan solas.
       pieza rompo?, rompo el 7 en 2 y…, junto, queda, comprobación) y *¿Bien o mal?* (detective del error).
       Niveles: sin romper nada, rompo los unos, rompo un diez y mezcla; números hasta 50 o 99. Pista según el
       caso, ver la solución y enlace a la presentación. Los casos salen del banco y no se repiten.
+    - **Para Infantil · de 3 a 5 años** (en `infantil.js`, con letra grande, botones enormes, voz que lee el
+      reto —botón *Voz*, y *Escuchar otra vez*— y una fiesta de estrellas al acertar; sin cronómetro ni puntos):
+      - *La escalera* (`#/escalera`): regletas desordenadas. «Ordena» (tocarlas de la más corta a la más larga),
+        «¿Cuál es igual?» y «¿Cuál es más larga?». Niveles: colores hasta 5, colores hasta 10 y solo tamaños (grises).
+      - *Series de colores* (`#/series`): fichas de colores (cada color con su forma, para quien confunde colores);
+        ¿cuál va ahora? Niveles: AB, AAB y ABC.
+      - *¿Dónde hay más?* (`#/mas`): dos platos con puntos; «¿Dónde hay más?» y «¿Cuántos hay?» (con marco del 10).
+        Al responder se emparejan uno a uno y se ve lo que sobra. Niveles: muchos y pocos, hasta 5 y hasta 10 (con «iguales»).
+      - *¿Dónde está?* (`#/donde`): una pelota y una mesa o cajas. «¿Dónde está?» (elegir la palabra) y «Ponla…»
+        (tocar el sitio): encima, debajo, al lado, dentro, fuera, entre, lejos, izquierda y derecha. Niveles por edad.
   - **Banco de retos** (`banco.js`): las herramientas no repiten operaciones ni retos hasta haberlos usado
     todos. Cada tipo tiene un «mazo» con todos los posibles, barajado, que se guarda en el dispositivo (tampoco
     se repiten de un día para otro):
@@ -241,6 +257,7 @@ Su entrada del catálogo y su portada se quitan solas.
     - *El reloj*: las horas de cada nivel (para leer y para poner, por separado) y cada hora de inicio con cada duración.
     - *El dinero*: los precios de cada nivel (para pagar y para la vuelta, por separado); los montones para contar
       no repiten ninguno de los últimos 150.
+    - *Infantil*: cada herramienta, modo y nivel tiene su mazo (regletas, series, cantidades y posiciones).
   - **Modo aula por curso** (`#/aula/3-anios`, `4-anios`, `5-anios`, `1-primaria`, `2-primaria`): una pantalla
     sencilla para las tabletas o la pizarra de una clase, con las fichas del trimestre actual, «Seguir» con
     la última ficha abierta, los materiales y las herramientas de ese curso con iconos grandes y el reto en

@@ -18,20 +18,20 @@ const REGLETA = [null,
 /* ---------------------------------------------------------------------
    Vistas de herramientas
    --------------------------------------------------------------------- */
-const VISTAS = {regletas: "vRegletas", bombo: "vBombo", calculo: "vCalculo", panel: "vPanel", partes: "vPartes", marco: "vMarco", muros: "vMuros", geoplano: "vGeoplano", calculadora: "vCalculadora", piramides: "vPiramides", redondeo: "vRedondeo", estimacion: "vEstimacion", minuto: "vMinuto", escondido: "vEscondido", cien: "vCien", reloj: "vReloj", dinero: "vDinero", multiplicar: "vMultiplicar",
+const VISTAS = {regletas: "vRegletas", bombo: "vBombo", calculo: "vCalculo", panel: "vPanel", partes: "vPartes", marco: "vMarco", muros: "vMuros", geoplano: "vGeoplano", calculadora: "vCalculadora", piramides: "vPiramides", redondeo: "vRedondeo", estimacion: "vEstimacion", minuto: "vMinuto", escondido: "vEscondido", cien: "vCien", reloj: "vReloj", dinero: "vDinero", multiplicar: "vMultiplicar", escalera: "vEscalera", series: "vSeries", mas: "vMas", donde: "vDonde",
                 ruta: "vRuta", familias: "vFamilias", clase: "vClase"};
 let vistaAbierta = null, vistaDesdeBiblioteca = false;
 
 function abrirHerramienta(nombre){
   if(vistaAbierta===nombre) return;
   cerrarHerramienta();
-  vistaDesdeBiblioteca = rutaPrevia!=="__inicio__" && !/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|ruta|familias|aula)/.test(rutaPrevia);
+  vistaDesdeBiblioteca = rutaPrevia!=="__inicio__" && !/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|escalera|series|mas|donde|ruta|familias|aula)/.test(rutaPrevia);
   const v = $(VISTAS[nombre]);
   v.hidden = false; vistaAbierta = nombre;
   $("biblioteca").setAttribute("aria-hidden","true"); $("biblioteca").inert = true;
   document.body.style.overflow = "hidden";
   ({regletas: iniciarRegletas, bombo: iniciarBombo, calculo: iniciarCalculo, panel: iniciarPanel, partes: iniciarPartes,
-    marco: iniciarMarco, muros: iniciarMuros, geoplano: iniciarGeoplano, calculadora: iniciarCalculadora, piramides: iniciarPiramides, redondeo: iniciarRedondeo, estimacion: iniciarEstimacion, minuto: iniciarMinuto, escondido: iniciarEscondido, cien: iniciarCien, reloj: iniciarReloj, dinero: iniciarDinero, multiplicar: iniciarMultiplicar,
+    marco: iniciarMarco, muros: iniciarMuros, geoplano: iniciarGeoplano, calculadora: iniciarCalculadora, piramides: iniciarPiramides, redondeo: iniciarRedondeo, estimacion: iniciarEstimacion, minuto: iniciarMinuto, escondido: iniciarEscondido, cien: iniciarCien, reloj: iniciarReloj, dinero: iniciarDinero, multiplicar: iniciarMultiplicar, escalera: iniciarEscalera, series: iniciarSeries, mas: iniciarMas, donde: iniciarDonde,
     ruta: iniciarRuta, familias: iniciarFamilias, clase: iniciarClase})[nombre]();
   (v.querySelector(".v-cerrar") || v.querySelector("h1")).focus?.();
 }

@@ -865,6 +865,70 @@ footer.pie .marca{margin-bottom:12px}
   .mu-dos.girada{--u:min(24px,(100vw - 90px)/20)}
 }
 
+/* Herramientas de Infantil: grandes, con dibujos y voz */
+.herr-sub{font-size:17px;font-weight:600;margin:22px 0 12px;color:var(--ink-2)}
+.inf-zona-juego{position:relative;gap:clamp(12px,2.4vh,24px)}
+.inf-orden{margin:0;font:600 clamp(22px,3.4vh,34px)/1.3 var(--font-titulos)}
+.inf-orden span{font-size:1.2em}
+.inf-regleta{display:block;width:calc(var(--n)*var(--u,clamp(22px,min(4.6vw,5.4vh),52px)));height:calc(var(--u,clamp(22px,min(4.6vw,5.4vh),52px))*1.15);border-radius:7px;
+  box-shadow:inset 0 -5px 0 rgba(0,0,0,.18),inset 0 3px 0 rgba(255,255,255,.35),0 2px 4px rgba(0,0,0,.25)}
+.inf-regleta[style*="#f4f4f4"]{box-shadow:inset 0 0 0 1px #c8ced6,inset 0 -5px 0 rgba(0,0,0,.12)}
+.inf-regleta.gris{background:var(--surface);box-shadow:inset 0 0 0 3px var(--ink-2),inset 0 -5px 0 rgba(0,0,0,.1)}
+.inf-escalera{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:40px;padding:10px 14px;border-radius:16px;background:var(--surface-2)}
+.inf-hueco{width:calc(var(--n)*var(--u,clamp(22px,min(4.6vw,5.4vh),52px)));height:calc(var(--u,clamp(22px,min(4.6vw,5.4vh),52px))*1.15);border:3px dashed var(--line-strong);border-radius:7px}
+.inf-bandeja,.inf-opciones{display:flex;flex-wrap:wrap;gap:clamp(10px,2vw,22px);justify-content:center;align-items:center}
+.inf-opciones.columna{flex-direction:column;align-items:flex-start}
+.inf-pieza,.inf-boton{border:3px solid transparent;background:var(--surface);border-radius:16px;padding:10px;cursor:pointer;color:var(--ink);box-shadow:var(--sh-1);
+  transition:transform .12s}
+.inf-pieza:hover:not(:disabled),.inf-boton:hover:not(:disabled){transform:translateY(-3px)}
+.inf-pieza:disabled,.inf-boton:disabled{cursor:default}
+.inf-pieza.no,.inf-boton.no{border-color:#e3261f;animation:inf-no .4s}
+.inf-pieza.si,.inf-boton.si{border-color:var(--ok);background:var(--ok-soft)}
+@keyframes inf-no{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@media (prefers-reduced-motion:reduce){ .inf-pieza.no,.inf-boton.no{animation:none} .inf-fiesta{display:none} }
+.inf-modelo{padding:16px 20px;border-radius:18px;background:var(--surface-2);border:3px dashed var(--accent)}
+.inf-ficha{width:clamp(44px,min(8vw,9vh),86px);height:auto;flex:none}
+.inf-serie{display:flex;flex-wrap:wrap;gap:clamp(6px,1.2vw,14px);justify-content:center;align-items:center;padding:14px;border-radius:18px;background:var(--surface-2)}
+.inf-ficha.hueco{display:grid;place-items:center;aspect-ratio:1;border:4px dashed var(--accent);border-radius:14px;color:var(--accent);font:700 clamp(28px,5vh,48px) var(--font-titulos)}
+.inf-ficha.hueco.lleno{border-style:solid;border-color:var(--ok)}
+.inf-ficha.hueco .inf-ficha{width:100%}
+.inf-boton.numero{min-width:clamp(80px,12vw,130px);font:700 clamp(36px,7vh,64px)/1 var(--font-titulos);padding:16px 20px}
+.inf-platos{display:flex;flex-wrap:wrap;gap:clamp(14px,4vw,48px);justify-content:center}
+.inf-plato-svg{width:min(320px,40vw,42vh);height:auto;display:block}
+.inf-boton.plato{padding:8px}
+.inf-plato{fill:var(--surface);stroke:var(--line-strong);stroke-width:2.5}
+.inf-uno-uno{display:flex;flex-direction:column;gap:8px;padding:12px 16px;border-radius:16px;background:var(--surface-2)}
+.inf-fila{display:flex;gap:8px}
+.inf-fila i{width:30px;height:30px;border-radius:50%;box-shadow:inset 0 -3px 0 rgba(0,0,0,.2)}
+.inf-fila i.sobra{outline:4px solid var(--aviso);outline-offset:3px}
+.inf-explica{margin:0;font:600 clamp(18px,2.8vh,26px) var(--font-titulos)}
+.inf-marco{display:grid;grid-template-columns:repeat(5,40px);gap:4px;padding:6px;border-radius:10px;background:var(--ink-2)}
+.inf-marco i{height:40px;border-radius:6px;background:var(--surface)}
+.inf-marco i.lleno{background:radial-gradient(circle,var(--r2) 0 55%,var(--surface) 57%)}
+.inf-escena{width:min(640px,94vw,52vh*1.6);height:auto}
+.inf-escena.mini{width:clamp(110px,16vw,180px)}
+.inf-boton.dibujo{display:flex;flex-direction:column;align-items:center;gap:6px;font:600 clamp(15px,2.2vh,20px) var(--font-titulos)}
+.inf-suelo{fill:#e6d8c3}
+.inf-madera{fill:#8d5a2b}
+.inf-carton{fill:#d29a5c;stroke:#8d5a2b;stroke-width:3}
+.inf-carton.fondo{fill:#b98146}
+.inf-zona{cursor:pointer}
+.inf-zona circle{fill:color-mix(in srgb,var(--accent) 12%,transparent);stroke:var(--accent);stroke-width:3;stroke-dasharray:7 6}
+.inf-zona:hover circle,.inf-zona:focus circle{fill:color-mix(in srgb,var(--accent) 28%,transparent)}
+.inf-zona:focus{outline:none}
+.inf-otra{font-size:20px;padding:12px 30px}
+.inf-iguales.si{border-color:var(--ok);background:var(--ok-soft)}.inf-iguales.no{border-color:#e3261f}
+.inf-fiesta{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.inf-fiesta i{position:absolute;left:50%;top:40%;font-size:48px;color:#f2c200;font-style:normal;text-shadow:0 2px 4px rgba(0,0,0,.3);
+  animation:inf-estrella 1.2s ease-out forwards;--a:calc(var(--i)*51deg)}
+@keyframes inf-estrella{from{transform:translate(-50%,-50%) rotate(var(--a)) translateY(0) scale(.4);opacity:1}to{transform:translate(-50%,-50%) rotate(var(--a)) translateY(-180px) scale(1.2);opacity:0}}
+@media (max-width:760px){
+  .inf-vista .reg-barra{gap:8px 10px}
+  .inf-vista .segmentos{width:100%}
+  .inf-vista .b-select select{max-width:62vw}
+  .inf-vista .segmentos button{flex:1;padding:6px 4px;font-size:13px;white-space:normal}
+}
+
 /* El número escondido */
 .ne-sello{margin:0;align-self:flex-end;transform:rotate(-4deg);border:3px solid #c62828;color:#c62828;border-radius:8px;padding:2px 10px;font:800 13px var(--font-titulos);text-transform:uppercase;letter-spacing:.08em}
 .ne-zonas{--u:clamp(22px,min(3.6vw,5.2vh),46px);display:flex;gap:16px;flex-wrap:wrap;justify-content:center;width:100%}
@@ -1557,6 +1621,25 @@ footer.pie .marca{margin-bottom:12px}
           <span class="herr-txt"><b>El dinero</b><span>Monedas y billetes: cuánto hay, paga justo y la vuelta. Hasta 20 €, 100 €, tres cifras y céntimos.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
         </a>
       </div>
+      <h3 class="herr-sub" id="herrInfTit">Para Infantil · de 3 a 5 años</h3>
+      <div class="herr-rejilla" aria-labelledby="herrInfTit">
+        <a class="herr-ficha" href="#/escalera">
+          <span class="herr-ilus" aria-hidden="true"><i style="width:20%;background:var(--r2)"></i><i style="width:40%;background:var(--r4)"></i><i style="width:60%;background:var(--r6)"></i><i style="width:80%;background:var(--r8)"></i><i style="width:100%;background:var(--r10)"></i></span>
+          <span class="herr-txt"><b>La escalera</b><span>Ordenar las regletas de la más corta a la más larga, buscar una igual y cuál es más larga. Con voz.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a class="herr-ficha" href="#/series">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="16" cy="50" r="11" fill="#e3261f"/><rect x="31" y="39" width="22" height="22" rx="4" fill="#f2c200"/><circle cx="70" cy="50" r="11" fill="#e3261f"/><rect x="82" y="40" width="16" height="20" rx="4" fill="none" stroke="#2c77c4" stroke-width="3" stroke-dasharray="4 3"/><text x="90" y="55" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="13" fill="#2c77c4">?</text></svg></span>
+          <span class="herr-txt"><b>Series de colores</b><span>¿Qué ficha va ahora? Series AB para 3 años, AAB para 4 y ABC para 5.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a class="herr-ficha" href="#/mas">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><ellipse cx="27" cy="52" rx="22" ry="20" fill="#fff" stroke="#c9d1dc" stroke-width="3"/><ellipse cx="73" cy="52" rx="22" ry="20" fill="#fff" stroke="#c9d1dc" stroke-width="3"/><circle cx="27" cy="52" r="6" fill="#e3261f"/><g fill="#2c77c4"><circle cx="64" cy="44" r="5"/><circle cx="80" cy="44" r="5"/><circle cx="64" cy="60" r="5"/><circle cx="80" cy="60" r="5"/><circle cx="72" cy="52" r="5"/></g></svg></span>
+          <span class="herr-txt"><b>¿Dónde hay más?</b><span>Comparar dos grupos y verlo uno frente a otro. Y contar cuántos hay, hasta 10.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a class="herr-ficha" href="#/donde">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="18" y="40" width="64" height="7" rx="2" fill="#8d5a2b"/><rect x="23" y="47" width="6" height="34" fill="#8d5a2b"/><rect x="71" y="47" width="6" height="34" fill="#8d5a2b"/><circle cx="50" cy="71" r="10" fill="#e3261f"/><rect x="8" y="81" width="84" height="5" fill="#c9d1dc"/></svg></span>
+          <span class="herr-txt"><b>¿Dónde está?</b><span>Encima, debajo, dentro, fuera, al lado y entre: ver dónde está la pelota o ponerla.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
     </section>
     <section class="materiales" id="materiales" aria-labelledby="matTit">
       <div class="mat-cab">
@@ -2016,6 +2099,46 @@ footer.pie .marca{margin-bottom:12px}
     <div class="reg-acc"><button class="icbtn" id="muPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="ap-zona" id="muCuerpo"></div><div class="pi-teclado" id="muTeclado" role="group" aria-label="Escribir un número" hidden></div></div>
+</div>
+
+<div class="vista inf-vista" id="vEscalera" hidden role="dialog" aria-modal="true" aria-labelledby="vEscaleraTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vEscaleraTit">La escalera de regletas</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Juego"><button data-modo="ordenar" aria-pressed="false">Ordena</button><button data-modo="igual" aria-pressed="false">Busca una igual</button><button data-modo="larga" aria-pressed="false">¿Cuál es más larga?</button></div>
+    <label class="b-select"><span>Nivel</span><select id="ecNivel"></select></label>
+    <span class="pi-ayudas" role="group" aria-label="Voz"><button class="chip" id="ecVoz" aria-pressed="true"><svg class="ic" data-icon="voz"></svg>Voz</button><button class="chip" id="ecOir">Escuchar otra vez</button></span>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona inf-zona-juego" id="ecCuerpo"></div></div>
+</div>
+
+<div class="vista inf-vista" id="vSeries" hidden role="dialog" aria-modal="true" aria-labelledby="vSeriesTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vSeriesTit">Series de colores</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    
+    <label class="b-select"><span>Nivel</span><select id="srNivel"></select></label>
+    <span class="pi-ayudas" role="group" aria-label="Voz"><button class="chip" id="srVoz" aria-pressed="true"><svg class="ic" data-icon="voz"></svg>Voz</button><button class="chip" id="srOir">Escuchar otra vez</button></span>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona inf-zona-juego" id="srCuerpo"></div></div>
+</div>
+
+<div class="vista inf-vista" id="vMas" hidden role="dialog" aria-modal="true" aria-labelledby="vMasTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vMasTit">¿Dónde hay más?</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Juego"><button data-modo="mas" aria-pressed="false">¿Dónde hay más?</button><button data-modo="cuantos" aria-pressed="false">¿Cuántos hay?</button></div>
+    <label class="b-select"><span>Nivel</span><select id="mhNivel"></select></label>
+    <span class="pi-ayudas" role="group" aria-label="Voz"><button class="chip" id="mhVoz" aria-pressed="true"><svg class="ic" data-icon="voz"></svg>Voz</button><button class="chip" id="mhOir">Escuchar otra vez</button></span>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona inf-zona-juego" id="mhCuerpo"></div></div>
+</div>
+
+<div class="vista inf-vista" id="vDonde" hidden role="dialog" aria-modal="true" aria-labelledby="vDondeTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vDondeTit">¿Dónde está?</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Juego"><button data-modo="ver" aria-pressed="false">¿Dónde está?</button><button data-modo="poner" aria-pressed="false">Ponla tú</button></div>
+    <label class="b-select"><span>Nivel</span><select id="dsNivel"></select></label>
+    <span class="pi-ayudas" role="group" aria-label="Voz"><button class="chip" id="dsVoz" aria-pressed="true"><svg class="ic" data-icon="voz"></svg>Voz</button><button class="chip" id="dsOir">Escuchar otra vez</button></span>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona inf-zona-juego" id="dsCuerpo"></div></div>
 </div>
 
 <div class="vista" id="vRedondeo" hidden role="dialog" aria-modal="true" aria-labelledby="vRedTit">
@@ -2979,13 +3102,13 @@ function panelNotas(c){
 let rutaPrevia = location.hash;
 function ruta(){
   // herramientas, secciones y modo aula viven en herramientas.js, secciones.js y aula.js: si alguno no ha cargado, se avisa
-  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
+  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|escalera|series|mas|donde|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
   // modo aula: la tableta recuerda su clase y vuelve a ella en lugar de ir a la biblioteca
   const cl = location.hash.match(/^#\/aula\/([\w-]+)\/?$/);
   if(cl){ cerrarLector(); abrirClase(cl[1]); rutaPrevia = location.hash; return; }
   const claseGuardada = leer("aula-clase", null);
   if(claseGuardada && (location.hash==="" || location.hash==="#/" || location.hash==="#")){ location.replace("#/aula/"+claseGuardada); return; }
-  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
+  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|escalera|series|mas|donde|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   if(typeof cerrarHerramienta==="function") cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
@@ -3052,7 +3175,7 @@ if("serviceWorker" in navigator && (location.protocol==="https:" || location.hos
    Entonces las fichas de las herramientas no hacen nada. Si pasa, se borran las copias guardadas del código
    (los PDF guardados se conservan) y se recarga una vez; si aun así falta algo, se avisa en pantalla. */
 const PIEZAS = ["abrirHerramienta", "cerrarHerramienta", "iniciarRegletas", "iniciarBombo", "iniciarRuta", "iniciarFamilias",
-                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "iniciarEscondido", "iniciarCien", "iniciarReloj", "iniciarDinero", "iniciarMultiplicar", "delMazo"];
+                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "iniciarEscondido", "iniciarCien", "iniciarReloj", "iniciarDinero", "iniciarMultiplicar", "iniciarEscalera", "iniciarSeries", "iniciarMas", "iniciarDonde", "delMazo"];
 function codigoIncompleto(){ return PIEZAS.filter(n=> typeof window[n] !== "function"); }
 function avisarCodigo(){
   const a = $("avisoCodigo"); if(!a.hidden) return;
@@ -3109,5 +3232,6 @@ listo.then(repararCodigo).then(seguir=> seguir ? fetch("catalogo.json", {cache:"
 <script src="reloj.js"></script>
 <script src="dinero.js"></script>
 <script src="multiplicar.js"></script>
+<script src="infantil.js"></script>
 </body>
 </html>

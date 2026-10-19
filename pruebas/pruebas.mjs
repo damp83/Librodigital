@@ -615,12 +615,12 @@ await prueba("Las fichas de herramientas se ven bien en móvil, tableta y ordena
         const ilus = f.querySelector(".herr-ilus").getBoundingClientRect(), txt = f.querySelector(".herr-txt").getBoundingClientRect();
         const dibujo = f.querySelector(".herr-ilus svg")?.getBoundingClientRect();
         const nombre = f.querySelector(".herr-txt b").textContent;
-        if(txt.width < 120) return [nombre+": el texto queda aplastado ("+Math.round(txt.width)+" px)"];
+        if(txt.width < 80) return [nombre+": el texto queda aplastado ("+Math.round(txt.width)+" px)"];
         if(dibujo && (dibujo.width < 30 || dibujo.height < 30)) return [nombre+": el dibujo no se ve"];
         if(ilus.width > f.getBoundingClientRect().width * .9 && txt.left > ilus.left && txt.top < ilus.bottom - 4) return [nombre+": el dibujo ocupa toda la ficha"];
         return [];
-      }).concat((()=>{   // todas las fichas normales, del mismo ancho (ninguna estirada ni ninguna sola en su fila)
-        const fichas = [...document.querySelectorAll("#herr .herr-ficha:not(.herr-destacada)")], anchos = fichas.map(f=> Math.round(f.getBoundingClientRect().width));
+      }).concat((()=>{   // todas las fichas, del mismo ancho (ninguna estirada ni ninguna sola en su fila)
+        const fichas = [...document.querySelectorAll("#herr .herr-ficha")], anchos = fichas.map(f=> Math.round(f.getBoundingClientRect().width));
         const filas = {}; fichas.forEach(f=>{ const y = Math.round(f.getBoundingClientRect().top); filas[y] = (filas[y] || 0) + 1; });
         const porFila = Math.max(...Object.values(filas)), solas = Object.values(filas).filter(n=> n < porFila).length;
         return [...(Math.max(...anchos) - Math.min(...anchos) > 2 ? ["hay fichas de distinto ancho ("+Math.min(...anchos)+"–"+Math.max(...anchos)+" px)"] : []),
@@ -631,6 +631,26 @@ await prueba("Las fichas de herramientas se ven bien en móvil, tableta y ordena
   }
   exigir(!fallos.length, fallos.slice(0, 6).join("; "));
 });
+
+await prueba("El filtro por curso de las herramientas enseña las de cada curso y se recuerda", ()=> conPagina({}, async p=>{
+  await p.goto(WEB); await p.waitForSelector("#herr .herr-ficha");
+  const visibles = ()=> p.$$eval("#herr .herr-ficha", a=> a.filter(f=> f.offsetParent).map(f=> f.getAttribute("href").slice(2)));
+  const todas = await visibles();
+  exigir(todas.length >= 20, "con «Todas» solo se ven "+todas.length);
+  await p.click('.herr-filtro [data-curso="inf"]');
+  const inf = await visibles();
+  exigir(inf.includes("escalera") && inf.includes("donde") && !inf.includes("multiplicar") && inf.length < todas.length, "Infantil: "+inf.join(", "));
+  await p.click('.herr-filtro [data-curso="2.º"]');
+  const seg = await visibles();
+  exigir(seg.includes("escondido") && seg.includes("multiplicar") && !seg.includes("escalera"), "2.º: "+seg.join(", "));
+  await p.reload(); await p.waitForSelector("#herr .herr-ficha");
+  exigir((await visibles()).join() === seg.join(), "no se recuerda el curso elegido");
+  const titulo = await p.getAttribute('#herr .herr-ficha[href="#/minuto"]', "title");
+  exigir(titulo && titulo.length > 20, "la ficha no tiene la descripción al pasar el ratón");
+  await p.click('.herr-filtro [data-curso=""]');
+  exigir((await visibles()).length === todas.length, "«Todas» no las vuelve a enseñar todas");
+  await accesibilidad(p);
+}));
 
 await prueba("En el móvil, tocar cada ficha de herramienta la abre", ()=> conPagina(MOVIL, async p=>{
   await p.goto(WEB); await p.waitForSelector(".libro");

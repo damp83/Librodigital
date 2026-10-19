@@ -67,6 +67,10 @@ function pintarRuta(etapa){
     }).join("")+'</div>'+
     '<section class="ruta-todo"><h3>Para todo el curso</h3><div class="trim-enlaces">'+
         paraVarios.map(m=> enlaceMaterial(m.archivo, null, m.titulo, m.tipo+" · "+textoCurso(m), ICONO_TIPO[m.tipo])).join("")+
+        (etapa.includes("años") ? ['<a class="trim-enlace" href="#/escalera">'+svg("contenido")+'<span>La escalera<small>Ordenar y comparar regletas</small></span></a>',
+          '<a class="trim-enlace" href="#/series">'+svg("contenido")+'<span>Series de colores<small>'+(etapa === "3 años" ? "Series AB" : etapa === "4 años" ? "Series AAB y ABB" : "Series ABC y AABB")+'</small></span></a>',
+          '<a class="trim-enlace" href="#/mas">'+svg("contenido")+'<span>¿Dónde hay más?<small>Muchos, pocos e iguales'+(etapa === "5 años" ? "; contar hasta 10" : "")+'</small></span></a>',
+          '<a class="trim-enlace" href="#/donde">'+svg("contenido")+'<span>¿Dónde está?<small>Encima, debajo, dentro, fuera, al lado y entre</small></span></a>'].join("") : '')+
         '<a class="trim-enlace" href="#/regletas">'+svg("contenido")+'<span>Regletas virtuales<small>Herramienta para la pizarra digital</small></span></a>'+
         (etapa!=="3 años" ? '<a class="trim-enlace" href="#/bombo">'+svg("bola")+'<span>Bombo del bingo<small>Herramienta para el aula</small></span></a>' : '')+
         (etapa!=="3 años" ? '<a class="trim-enlace" href="#/calculo">'+svg("contenido")+'<span>Cálculo mental<small>'+(etapa.includes("años") ? "Uno más, sumas y parejas del 10" : "Calentamiento diario de 5 a 10 minutos")+'</small></span></a>' : '')+
@@ -252,9 +256,9 @@ const SLUG_DE = {"3 años":"3-anios", "4 años":"4-anios", "5 años":"5-anios", 
 const ETAPA_DE = Object.fromEntries(Object.entries(SLUG_DE).map(([e,s])=>[s,e]));
 /* Herramientas de cada curso (según la secuencia) */
 const HERR_CURSO = {
-  "3 años": ["regletas"],
-  "4 años": ["regletas", "calculo", "bombo"],
-  "5 años": ["minuto", "regletas", "marco", "muros", "partes", "geoplano", "calculo", "bombo"],
+  "3 años": ["escalera", "series", "mas", "donde", "regletas"],
+  "4 años": ["escalera", "series", "mas", "donde", "regletas", "calculo", "bombo"],
+  "5 años": ["minuto", "mas", "series", "escalera", "donde", "regletas", "marco", "muros", "partes", "geoplano", "calculo", "bombo"],
   "1.º":    ["minuto", "regletas", "calculo", "marco", "muros", "partes", "panel", "piramides", "reloj", "dinero", "geoplano", "calculadora", "bombo"],
   "2.º":    ["minuto", "escondido", "cien", "multiplicar", "regletas", "calculo", "panel", "partes", "piramides", "redondeo", "estimacion", "reloj", "dinero", "geoplano", "calculadora", "bombo"]};
 let claseSlug = null;

@@ -263,6 +263,24 @@ const HERR_CURSO = {
   "2.º":    ["minuto", "escondido", "cien", "multiplicar", "regletas", "calculo", "panel", "partes", "piramides", "redondeo", "estimacion", "reloj", "dinero", "geoplano", "calculadora", "bombo"]};
 let claseSlug = null;
 
+/* Portada: ver solo las herramientas de un curso (la elección se recuerda en el dispositivo).
+   Las fichas son compactas: la descripción sale al pasar el ratón */
+function iniciarFiltroHerr(){
+  const fichas = [...document.querySelectorAll("#herr .herr-ficha")], botones = [...document.querySelectorAll(".herr-filtro .chip")];
+  fichas.forEach(f=>{ const d = f.querySelector(".herr-txt > span"); if(d) f.title = d.textContent; });
+  const deCurso = curso => new Set(curso === "inf" ? ["3 años", "4 años", "5 años"].flatMap(e=> HERR_CURSO[e]) : HERR_CURSO[curso] || []);
+  const aplicar = curso => {
+    const ids = curso ? deCurso(curso) : null;
+    const orden = ids ? [...ids] : [];   // con un curso elegido, primero las más propias de ese curso
+    fichas.forEach(f=>{ const id = f.getAttribute("href").slice(2);
+      f.hidden = !!ids && !ids.has(id); f.style.order = ids ? orden.indexOf(id) : ""; });
+    botones.forEach(b=> b.setAttribute("aria-pressed", String(b.dataset.curso === curso)));
+  };
+  botones.forEach(b=> b.onclick = ()=>{ aplicar(b.dataset.curso); guardar("aula-herr-curso", b.dataset.curso); });
+  const guardado = leer("aula-herr-curso", "");
+  aplicar(botones.some(b=> b.dataset.curso === guardado) ? guardado : "");
+}
+
 async function obtenerRuta(){
   if(!RUTA){ try{ RUTA = await (await fetch("ruta.json", {cache:"no-cache"})).json(); }catch(e){ return null; } }
   return RUTA;

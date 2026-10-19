@@ -154,7 +154,9 @@ Su entrada del catálogo y su portada se quitan solas.
     cerrar el material.
   - **Compartir**: en cada tarjeta y en el lector (con la página actual). Enlace, WhatsApp, correo y
     código QR descargable para imprimir.
-  - **Herramientas para el aula**:
+  - **Herramientas para el aula**: en la portada, fichas compactas (dibujo y nombre; la descripción sale al
+    pasar el ratón) con botones *Todas · Infantil · 1.º · 2.º* para ver solo las de un curso, ordenadas como en
+    su ruta. El curso elegido se recuerda en el dispositivo.
     - *Regletas virtuales* (`#/regletas`): arrastrar, girar (doble toque o **G**), duplicar (**D**),
       quitar (papelera o **Supr**), regla numerada y tamaño ajustable. Las teclas 1–9 y 0 ponen regletas. La **placa de 100**
       (cuadrado 10 × 10, tecla **C**) permite construir números de tres cifras; un contador muestra el valor total del tablero.

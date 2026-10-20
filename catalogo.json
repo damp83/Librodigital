@@ -615,5 +615,77 @@
     "pags": 14,
     "peso": 84,
     "fecha": "2026-10-20"
+  },
+  {
+    "archivo": "Ficha_multinivel_Numero_5_1Primaria.pdf",
+    "titulo": "El número 5 y sus descomposiciones",
+    "etapas": ["1.º"],
+    "tipo": "Ficha",
+    "recurso": "El número 5 y sus descomposiciones",
+    "temas": ["Composición y descomposición", "Suma y resta", "Medida"],
+    "desc": "El número 5: muros de regletas, suma en árbol, monedas y descomposiciones",
+    "pags": 8,
+    "peso": 70,
+    "fecha": "2026-10-20"
+  },
+  {
+    "archivo": "Ficha_multinivel_Numero_6_1Primaria.pdf",
+    "titulo": "El número 6 y sus descomposiciones",
+    "etapas": ["1.º"],
+    "tipo": "Ficha",
+    "recurso": "El número 6 y sus descomposiciones",
+    "temas": ["Composición y descomposición", "Suma y resta"],
+    "desc": "El número 6: muros de regletas, parejas conmutativas, sumas dobles y el juego del dado",
+    "pags": 8,
+    "peso": 74,
+    "fecha": "2026-10-20"
+  },
+  {
+    "archivo": "Ficha_multinivel_Numero_7_1Primaria.pdf",
+    "titulo": "El número 7 y sus descomposiciones",
+    "etapas": ["1.º"],
+    "tipo": "Ficha",
+    "recurso": "El número 7 y sus descomposiciones",
+    "temas": ["Composición y descomposición"],
+    "desc": "El número 7: el juego de cambiar dos por una, muros, parejas conmutativas y la regleta secreta",
+    "pags": 9,
+    "peso": 76,
+    "fecha": "2026-10-20"
+  },
+  {
+    "archivo": "Numero_5.pdf",
+    "titulo": "El número 5 y sus construcciones",
+    "etapas": ["1.º"],
+    "tipo": "Presentación",
+    "recurso": "El número 5 y sus descomposiciones",
+    "temas": ["Composición y descomposición"],
+    "desc": "Composición y descomposición del número 5 con regletas Cuisenaire (1º Primaria)",
+    "pags": 15,
+    "peso": 52,
+    "fecha": "2026-10-20"
+  },
+  {
+    "archivo": "Numero_6.pdf",
+    "titulo": "El misterio del número 6",
+    "etapas": ["1.º"],
+    "tipo": "Presentación",
+    "recurso": "El número 6 y sus descomposiciones",
+    "temas": ["Composición y descomposición"],
+    "desc": "Composición y descomposición del número 6 con regletas Cuisenaire y policubos (1º Primaria)",
+    "pags": 14,
+    "peso": 53,
+    "fecha": "2026-10-20"
+  },
+  {
+    "archivo": "Numero_7.pdf",
+    "titulo": "El juego de los cambios: el número 7",
+    "etapas": ["1.º"],
+    "tipo": "Presentación",
+    "recurso": "El número 7 y sus descomposiciones",
+    "temas": ["Composición y descomposición"],
+    "desc": "Composición y descomposición del número 7 con regletas Cuisenaire (1º Primaria)",
+    "pags": 14,
+    "peso": 86,
+    "fecha": "2026-10-20"
   }
 ]

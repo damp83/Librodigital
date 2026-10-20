@@ -567,5 +567,53 @@
     "pags": 15,
     "peso": 63,
     "fecha": "2026-10-15"
+  },
+  {
+    "archivo": "Ficha_multinivel_Conmutativa_1Primaria.pdf",
+    "titulo": "La propiedad conmutativa de la suma",
+    "etapas": ["1.º"],
+    "tipo": "Ficha",
+    "recurso": "La propiedad conmutativa de la suma",
+    "temas": ["Suma y resta"],
+    "desc": "La propiedad conmutativa: cambiar el orden de los sumandos no cambia el total, con regletas y policubos",
+    "pags": 9,
+    "peso": 72,
+    "fecha": "2026-10-20"
+  },
+  {
+    "archivo": "Ficha_multinivel_hasta_el_4.pdf",
+    "titulo": "Construimos y rompemos números con regletas y policubos",
+    "etapas": ["1.º"],
+    "tipo": "Ficha",
+    "recurso": "Construimos y rompemos números con regletas y policubos",
+    "temas": ["Composición y descomposición"],
+    "desc": "Composición y descomposición de números con regletas Cuisenaire y policubos: muros, dobles y descomposiciones",
+    "pags": 9,
+    "peso": 72,
+    "fecha": "2026-10-20"
+  },
+  {
+    "archivo": "Hasta_el_4_1Primaria.pdf",
+    "titulo": "Jugando con los números: constructores con regletas y policubos",
+    "etapas": ["1.º"],
+    "tipo": "Presentación",
+    "recurso": "Construimos y rompemos números con regletas y policubos",
+    "temas": ["Composición y descomposición"],
+    "desc": "Composición y descomposición de números con regletas Cuisenaire y policubos (1º Primaria)",
+    "pags": 15,
+    "peso": 103,
+    "fecha": "2026-10-20"
+  },
+  {
+    "archivo": "Propiedad_Conmutativa.pdf",
+    "titulo": "El súper poder de la suma: la propiedad conmutativa",
+    "etapas": ["1.º"],
+    "tipo": "Presentación",
+    "recurso": "La propiedad conmutativa de la suma",
+    "temas": ["Suma y resta"],
+    "desc": "La propiedad conmutativa de la suma con regletas Cuisenaire y policubos (1º Primaria)",
+    "pags": 14,
+    "peso": 84,
+    "fecha": "2026-10-20"
   }
 ]

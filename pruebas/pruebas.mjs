@@ -121,13 +121,17 @@ await prueba("La biblioteca carga con todos los recursos, sin errores y accesibl
 
 /* ---------- Cada material se abre en el lector ---------- */
 await prueba("Todos los materiales se abren en el lector", ()=> conPagina({}, async p=>{
-  const fallan = [];
+  const fallan = [], estiradas = [];
   for(const m of catalogo){
     await p.goto(WEB+"#/leer/"+encodeURIComponent(m.archivo)+"/1");
     try{ await p.waitForSelector(".hoja canvas", {timeout:20000}); }
-    catch(e){ fallan.push(m.archivo); }
+    catch(e){ fallan.push(m.archivo); continue; }
+    // la página mide lo mismo que su dibujo: sin franja blanca debajo (las fichas en papel también usan .hoja)
+    const sobra = await p.$eval("#paginas .hoja", h=> Math.round(h.getBoundingClientRect().height - h.querySelector("canvas").getBoundingClientRect().height));
+    if(Math.abs(sobra) > 2) estiradas.push(m.archivo+" ("+sobra+" px)");
   }
   exigir(!fallan.length, "no se abren: "+fallan.join(", "));
+  exigir(!estiradas.length, "páginas con una franja blanca: "+estiradas.slice(0, 5).join(", "));
   return catalogo.length+" de "+catalogo.length;
 }));
 

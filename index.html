@@ -1343,10 +1343,10 @@ footer.pie .marca{margin-bottom:12px}
 .recortables p{font-size:10pt;margin:0 0 5mm;color:#444}
 .rc-fila{display:flex;gap:0;margin-bottom:2.5mm;height:10mm}
 /* Fichas en papel de las herramientas (Minuto de cálculo, pirámides): el estilo de las fichas multinivel del aula */
-.hoja{--azul:#1b5fd6;--tinta:#16202e;--gris:#5b687a;--linea:#c9d1dc;--suave:#eef3fb;
+#impresion .hoja{--azul:#1b5fd6;--tinta:#16202e;--gris:#5b687a;--linea:#c9d1dc;--suave:#eef3fb;
   height:266mm;display:flex;flex-direction:column;overflow:hidden;font-family:var(--font);color:var(--tinta);background:#fff;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
-.hoja + .hoja{break-before:page;page-break-before:always}
+#impresion .hoja + .hoja{break-before:page;page-break-before:always}
 .hj-regletas{display:flex;gap:1mm;height:2.6mm;margin-bottom:4mm}
 .hj-regletas i{border-radius:.6mm;box-shadow:inset 0 -.5mm 0 rgba(0,0,0,.15)}
 .hj-regletas i:first-child{outline:.2mm solid var(--linea);outline-offset:-.2mm}
@@ -1395,7 +1395,7 @@ footer.pie .marca{margin-bottom:12px}
 .hj-mini i{width:7mm;height:5mm;border:.3mm solid #5b6676;border-radius:1mm;display:grid;place-items:center;font:700 8pt var(--font-titulos);font-style:normal;background:#fff}
 .hj-mini i.dada{background:#dfe9fb;border-color:var(--azul)}
 /* colores fijos en papel (aunque la web esté en modo oscuro) */
-.hoja{--ink:#16202e;--ink-2:#3a495d;--muted:#5b687a;--surface:#fff;--surface-2:#f0f3f7;--accent:#1b5fd6;--line:#e1e6ed;--line-strong:#cbd3de}
+#impresion .hoja{--ink:#16202e;--ink-2:#3a495d;--muted:#5b687a;--surface:#fff;--surface-2:#f0f3f7;--accent:#1b5fd6;--line:#e1e6ed;--line-strong:#cbd3de}
 .hj-sec{font:700 12pt var(--font-titulos);margin:1mm 0 2.5mm}
 .hj-sec b{font-weight:800}
 .hj-caja{display:inline-block;min-width:13mm;height:7.5mm;padding:0 1.5mm;border:.35mm solid #7d8796;border-radius:1.8mm;background:#fff;vertical-align:middle;
@@ -1413,8 +1413,8 @@ footer.pie .marca{margin-bottom:12px}
 .hj-ccasillas{flex:1;display:grid;gap:1.5mm;min-height:0}
 .hj-ccasillas > span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1mm;border:.4mm solid #5b6676;border-radius:1.8mm}
 .hj-ccasillas b{font:700 20pt/1 var(--font-titulos)}
-.hoja .dn-pieza.moneda:not(.foto){--d:34px!important}
-.hoja .dn-pieza.moneda:not(.foto) b{font-size:10px}
+#impresion .hoja .dn-pieza.moneda:not(.foto){--d:34px!important}
+#impresion .hoja .dn-pieza.moneda:not(.foto) b{font-size:10px}
 .hj-cregletas{display:flex;gap:.6mm}
 .hj-cregletas i{height:2.4mm;border-radius:.4mm;box-shadow:inset 0 -.4mm 0 rgba(0,0,0,.15);outline:.2mm solid rgba(0,0,0,.25)}
 .hj-cnombre{font-size:8.5pt!important}
@@ -1458,9 +1458,9 @@ footer.pie .marca{margin-bottom:12px}
 .hj-dinero{position:relative;display:flex;flex-direction:column;gap:1.5mm;padding:2mm 3mm 2mm 9mm;border:.35mm solid var(--linea);border-radius:3mm;font-size:11pt}
 .hj-dinero p{margin:0}
 .hj-monton{display:flex;flex-wrap:wrap;align-items:center;gap:1.5mm}
-.hoja .dn-pieza.foto{--esc:.56}
-.hoja .dn-pieza.billete:not(.foto){width:72px;height:39px}
-.hoja .dn-pieza.billete:not(.foto) b{font-size:15px}
+#impresion .hoja .dn-pieza.foto{--esc:.56}
+#impresion .hoja .dn-pieza.billete:not(.foto){width:72px;height:39px}
+#impresion .hoja .dn-pieza.billete:not(.foto) b{font-size:15px}
 .hj-compra{font-size:10.5pt}
 .hj-vuelta{flex-direction:row;align-items:center;gap:3mm}
 .hj-vuelta > div:last-child{display:flex;flex-direction:column;gap:1.5mm}

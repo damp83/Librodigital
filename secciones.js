@@ -120,13 +120,14 @@ function lanzarImpresion(){
    «Para el docente»), recuadros para los datos, instrucciones, el contenido y el pie con la autoría */
 function hojaPapel(o){
   const regletas = REGLETA.slice(1).map((r, i)=> '<i style="flex:'+(i+1)+';background:'+r.c+'"></i>').join("");
-  return '<section class="hoja'+(o.docente ? " hj-docente" : "")+'"><header><div class="hj-regletas">'+regletas+'</div>'+
+  // apaisada: el contenido va girado dentro de la hoja vertical (se imprime en cualquier navegador; se gira el papel)
+  return '<section class="hoja'+(o.docente ? " hj-docente" : "")+(o.apaisada ? " hj-apaisada" : "")+'">'+(o.apaisada ? '<div class="hj-giro">' : '')+'<header><div class="hj-regletas">'+regletas+'</div>'+
       '<div class="hj-tit"><div><h1>'+o.titulo+'</h1><p>'+o.sub+'</p></div>'+(o.eti ? '<span class="hj-eti">'+o.eti+'</span>' : '')+'</div></header>'+
     (o.datos ? '<div class="hj-datos">'+o.datos.map(([etiqueta, valor, ancho])=> '<div style="flex:'+(ancho || 1)+'"><span>'+etiqueta+'</span><b>'+(valor || "")+'</b></div>').join("")+'</div>' : '<div style="height:5mm"></div>')+
     (o.instrucciones ? '<div class="hj-instr">'+o.instrucciones+'</div>' : '')+
     '<div class="hj-cuerpo">'+o.cuerpo+'</div>'+
     '<footer class="hj-pie"><span>© '+new Date().getFullYear()+' Diego Alberto Moya · Licencia CC BY-NC-SA 4.0 · Aula de Matemáticas Manipulativas</span>'+
-      '<span>Página '+o.pagina+' de '+o.paginas+'</span></footer></section>';
+      '<span>Página '+o.pagina+' de '+o.paginas+'</span></footer>'+(o.apaisada ? '</div>' : '')+'</section>';
 }
 
 function imprimirRecortables(){
@@ -258,9 +259,9 @@ const ETAPA_DE = Object.fromEntries(Object.entries(SLUG_DE).map(([e,s])=>[s,e]))
 const HERR_CURSO = {
   "3 años": ["escalera", "series", "mas", "donde", "regletas"],
   "4 años": ["escalera", "series", "mas", "donde", "regletas", "calculo", "bombo"],
-  "5 años": ["minuto", "mas", "series", "escalera", "donde", "regletas", "marco", "muros", "partes", "geoplano", "calculo", "bombo"],
-  "1.º":    ["minuto", "regletas", "calculo", "marco", "muros", "partes", "panel", "piramides", "reloj", "dinero", "geoplano", "calculadora", "bombo"],
-  "2.º":    ["minuto", "escondido", "cien", "multiplicar", "regletas", "calculo", "panel", "partes", "piramides", "redondeo", "estimacion", "reloj", "dinero", "geoplano", "calculadora", "bombo"]};
+  "5 años": ["minuto", "mas", "series", "escalera", "donde", "regletas", "aviones", "marco", "muros", "partes", "geoplano", "calculo", "bombo"],
+  "1.º":    ["minuto", "aviones", "regletas", "calculo", "marco", "muros", "partes", "panel", "piramides", "reloj", "dinero", "geoplano", "calculadora", "bombo"],
+  "2.º":    ["minuto", "aviones", "escondido", "cien", "multiplicar", "regletas", "calculo", "panel", "partes", "piramides", "redondeo", "estimacion", "reloj", "dinero", "geoplano", "calculadora", "bombo"]};
 let claseSlug = null;
 
 /* Portada: ver solo las herramientas de un curso (la elección se recuerda en el dispositivo).

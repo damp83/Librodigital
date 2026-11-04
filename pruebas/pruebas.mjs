@@ -60,7 +60,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","escalera","series","mas","donde","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","aviones","escalera","series","mas","donde","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -346,6 +346,31 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
     exigir(/¡Muy bien!/.test(await p.textContent("#muCuerpo")), "multiplicar ("+modo+"): no se termina el reto con el teclado");
     await accesibilidad(p);
   }
+  // Carrera de aviones: tirar, escribir la suma, repartir los dados entre dos aviones; la máquina juega sola; se gana
+  await p.evaluate(()=> localStorage.removeItem("aula-aviones"));
+  await p.goto(WEB+"#/aviones"); await p.waitForSelector("#vAviones:not([hidden]) .av-carril");
+  await p.selectOption("#avNivel", "n2"); await p.selectOption("#avRival", "dos");
+  await p.click("#avTirar");
+  const dadosAV = await p.evaluate(()=> AV.dados);
+  exigir(dadosAV.length === 2 && await p.isVisible("#avTeclado"), "aviones: con dos dados no se pide la suma");
+  for(const t of [...String(dadosAV[0] + dadosAV[1] + 1), "✓"]) await p.click('#avTeclado [data-t="'+t+'"]');
+  exigir(/no es/.test(await p.textContent("#avCuerpo")), "aviones: una suma mal no avisa");
+  for(const t of [...String(dadosAV[0] + dadosAV[1]), "✓"]) await p.click('#avTeclado [data-t="'+t+'"]');
+  await accesibilidad(p);
+  await p.click('.av-dado[data-i="0"]');
+  await p.click('.av-carril.activo[data-a="0"]'); await p.click('.av-carril.activo[data-a="2"]');
+  const trasAV = await p.evaluate(()=> ({pos: AV.pos[0], turno: AV.turno, reg: AV.registro[0].length}));
+  exigir(trasAV.pos[0] === dadosAV[0] && trasAV.pos[2] === dadosAV[1] && trasAV.turno === 1 && trasAV.reg === 1, "aviones: repartir los dados no mueve dos aviones "+JSON.stringify(trasAV));
+  const reparto = await p.evaluate(()=> [jugadaMaquinaAV([6, 2], [18, 5, 0], 20), jugadaMaquinaAV([5, 5, 4], [26, 28, 0], 30)]);
+  exigir(reparto[0][1] === 0 && reparto[0][0] !== 0, "aviones: la máquina no reparte bien 6 y 2 (el 2 lleva el avión del 18 a la meta) "+JSON.stringify(reparto));
+  await p.selectOption("#avRival", "maquina");
+  await p.evaluate(()=>{ AV.pos = [[20, 20, 18], [0, 0, 0]]; pintarAviones(); });
+  await p.evaluate(()=>{ AV.suma = false; tirarAV(); moverAV(2); });
+  exigir(await p.evaluate(()=> AV.fase === "fin" && AV.ganador === 0) && /Gana Piloto 1/.test(await p.textContent("#avCuerpo")), "aviones: llevar los 3 aviones a la meta no da la victoria");
+  await accesibilidad(p);
+  await p.click("#avOtra");
+  await p.evaluate(()=>{ AV.suma = false; tirarAV(); moverAV(0); if(AV.fase === "mover") moverAV(1); });
+  await p.waitForFunction(()=> AV.turno === 0 && AV.registro[1].length === 1, null, {timeout:8000});
   // Banco de las herramientas nuevas: cada mazo saca todos sus retos sin repetir antes de volver a barajar
   const mazosMal = await p.evaluate(()=>{
     const mazos = [];
@@ -488,7 +513,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "infantil.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "aviones.js", "infantil.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));
@@ -544,6 +569,7 @@ await prueba("Las fichas en papel caben en un A4 con todos los niveles, sin ejer
     for(const n of Object.keys(NIVELES_NE)) c.push([`escondido ${n} hasta 99`, `NE.nivel="${n}";NE.hasta=99;imprimirEscondido()`]);
     for(const n of Object.keys(NIVELES_RJ)) c.push([`reloj ${n}`, `RJ.nivel="${n}";imprimirReloj()`]);
     for(const n of Object.keys(MODOS)) c.push([`bingo ${n}`, `BO.modo="${n}";imprimirCartones()`]);
+    for(const n of Object.keys(NIVELES_AV)) c.push([`aviones ${n}`, `AV.nivel="${n}";imprimirAviones()`]);
     return c;
   });
   await p.emulateMedia({media:"print"});

@@ -249,7 +249,8 @@ Su entrada del catálogo y su portada se quitan solas.
     - *La serpiente de números* (`#/serpiente`, en `serpiente.js`): juego de la serpiente para las series
       numéricas. La serpiente lleva la serie escrita en el cuerpo y tiene que comerse el número que va después,
       sin equivocarse con los de al lado (7 o 9 en lugar de 8, saltarse uno…); con cada acierto crece, y con
-      10 números está completa. Series: de 1 en 1, de 2 en 2, de 5 en 5, de 10 en 10, de 3 en 3, de 100 en 100
+      10 números está completa. Las series salen de un banco sin repeticiones (cada nivel, entre 22 y 101 puntos de
+      salida distintos). Series: de 1 en 1 (hasta 30), de 2 en 2, de 5 en 5, de 10 en 10, de 3 en 3, de 100 en 100
       y hacia atrás (de 1, de 2 y de 10). Velocidad: paso a paso (una casilla por flecha, para la pizarra
       digital), despacio o normal; si choca con una pared o con su cuerpo solo se para. Flechas del teclado,
       botones, deslizar el dedo o tocar el tablero. «Decir el salto» muestra la regla y explica cada fallo

@@ -460,6 +460,7 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
     for(const nivel of Object.keys(NIVELES_RJ)) mazos.push(["rj-leer-"+nivel, listaRJ(nivel)], ["rj-intervalo-"+nivel, listaIntervalos(nivel)]);
     for(const nivel of Object.keys(NIVELES_DN)) mazos.push(["dn-pagar-"+nivel, preciosDN(nivel, NIVELES_DN[nivel].max)]);
     for(const m of Object.keys(NIVELES_PJ)) for(const nivel of Object.keys(NIVELES_PJ[m])) mazos.push(["pj-"+m+"-"+nivel, listaPJ(m, nivel)]);
+    for(const nivel of Object.keys(NIVELES_SP)) mazos.push(["sp-"+nivel, listaSP(nivel)]);
     for(const nivel of Object.keys(NIVELES_MX)) mazos.push(["mu-"+nivel, listaMX(nivel)], ["mu-dm-"+nivel, listaDoble(nivel)]);
     const fallos = [];
     for(const [clave, lista] of mazos){

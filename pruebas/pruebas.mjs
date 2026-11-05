@@ -60,7 +60,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","aviones","serpiente","escalera","series","mas","donde","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","aviones","serpiente","parejas","escalera","series","mas","donde","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -371,6 +371,27 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.click("#avOtra");
   await p.evaluate(()=>{ AV.suma = false; tirarAV(); moverAV(0); if(AV.fase === "mover") moverAV(1); });
   await p.waitForFunction(()=> AV.turno === 0 && AV.registro[1].length === 1, null, {timeout:8000});
+  // Las parejas del 10: una pareja mal avisa, la buena se junta y se suma lo que queda; completar el 10 en tres pasos
+  await p.evaluate(()=> localStorage.removeItem("aula-parejas"));
+  await p.goto(WEB+"#/parejas"); await p.waitForSelector("#vParejas:not([hidden]) .pj-num");
+  const listasPJ = await p.evaluate(()=> Object.keys(NIVELES_PJ).flatMap(m=> Object.keys(NIVELES_PJ[m]).map(n=> [m+" "+n, listaPJ(m, n)])).filter(([, l])=> !l.length || l.some(r=> r.nums ?
+    r.nums.filter((a, i)=> r.nums.some((b, j)=> j > i && a + b === 10)).length !== (r.nums.length === 5 ? 4 : 1) && r.nums.length !== 5 : r.a % 10 + r.b <= 10)).map(([k])=> k));
+  exigir(!listasPJ.length, "parejas: retos imposibles o con más de una pareja en "+listasPJ.join(", "));
+  await p.evaluate(()=>{ PJ.reto = {k:"x", nums:[7, 2, 3]}; PJ.elegidos = []; PJ.parejas = []; PJ.fase = "parejas"; PJ.aviso = ""; pintarParejas(); });
+  await p.click('.pj-num[data-i="0"]'); await p.click('.pj-num[data-i="1"]');
+  exigir(/no llega a 10/.test(await p.textContent("#pjCuerpo")) && await p.evaluate(()=> PJ.fase === "parejas"), "parejas: 7 + 2 no avisa de que no llega a 10");
+  await p.click('.pj-num[data-i="0"]'); await p.click('.pj-num[data-i="2"]');
+  exigir(await p.isVisible("#pjTeclado") && await p.evaluate(()=> PJ.fase === "escribir"), "parejas: 7 + 3 no pasa a sumar lo que queda");
+  await accesibilidad(p);
+  for(const t of ["1", "3", "✓"]) await p.click('#pjTeclado [data-t="'+t+'"]');
+  exigir(/no es/.test(await p.textContent("#pjCuerpo")), "parejas: una suma mal no avisa");
+  for(const t of ["1", "2", "✓"]) await p.click('#pjTeclado [data-t="'+t+'"]');
+  exigir(/Hay 12 € en la hucha/.test(await p.textContent("#pjCuerpo")), "parejas: no se termina la hucha");
+  await p.click('#vParejas .segmentos [data-modo="salto"]');
+  await p.evaluate(()=>{ PJ.reto = {k:"x", a:8, b:5}; PJ.paso = 0; PJ.fase = "escribir"; PJ.aviso = ""; pintarParejas(); });
+  for(const t of ["2", "✓", "3", "✓", "1", "3", "✓"]) await p.click('#pjTeclado [data-t="'+t+'"]');
+  exigir(/8 \+ 5 = 8 \+ 2 \+ 3 = 10 \+ 3 = 13/.test(await p.textContent("#pjCuerpo")), "parejas: completar el 10 no llega a 8 + 5 = 10 + 3 = 13");
+  await accesibilidad(p);
   // La serpiente de números: comerse el bueno la hace crecer, el malo no; las paredes la paran; se completa la serie
   await p.evaluate(()=> localStorage.removeItem("aula-serpiente"));
   await p.goto(WEB+"#/serpiente"); await p.waitForSelector("#vSerpiente:not([hidden]) .sp-cabeza");
@@ -413,6 +434,7 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
     for(const modo of ["cien", "arbol"]) for(const nivel of Object.keys(NIVELES_CI[modo])) mazos.push(["ci-"+modo+"-"+nivel, listaCI(modo, nivel)]);
     for(const nivel of Object.keys(NIVELES_RJ)) mazos.push(["rj-leer-"+nivel, listaRJ(nivel)], ["rj-intervalo-"+nivel, listaIntervalos(nivel)]);
     for(const nivel of Object.keys(NIVELES_DN)) mazos.push(["dn-pagar-"+nivel, preciosDN(nivel, NIVELES_DN[nivel].max)]);
+    for(const m of Object.keys(NIVELES_PJ)) for(const nivel of Object.keys(NIVELES_PJ[m])) mazos.push(["pj-"+m+"-"+nivel, listaPJ(m, nivel)]);
     for(const nivel of Object.keys(NIVELES_MX)) mazos.push(["mu-"+nivel, listaMX(nivel)], ["mu-dm-"+nivel, listaDoble(nivel)]);
     const fallos = [];
     for(const [clave, lista] of mazos){
@@ -549,7 +571,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "aviones.js", "serpiente.js", "infantil.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "aviones.js", "serpiente.js", "parejas.js", "infantil.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));
@@ -606,6 +628,7 @@ await prueba("Las fichas en papel caben en un A4 con todos los niveles, sin ejer
     for(const n of Object.keys(NIVELES_RJ)) c.push([`reloj ${n}`, `RJ.nivel="${n}";imprimirReloj()`]);
     for(const n of Object.keys(MODOS)) c.push([`bingo ${n}`, `BO.modo="${n}";imprimirCartones()`]);
     for(const n of Object.keys(NIVELES_AV)) c.push([`aviones ${n}`, `AV.nivel="${n}";imprimirAviones()`]);
+    for(const m of Object.keys(NIVELES_PJ)) for(const n of Object.keys(NIVELES_PJ[m])) c.push([`parejas ${m} ${n}`, `PJ.modo="${m}";PJ.nivel.${m}="${n}";imprimirParejas()`]);
     for(const n of Object.keys(NIVELES_SP)) c.push([`serpiente ${n}`, `SP.nivel="${n}";imprimirSerpiente()`]);
     return c;
   });

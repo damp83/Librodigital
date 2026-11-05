@@ -916,6 +916,73 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
   .av-mandos{position:static;order:-1}
   .av-registro{display:none}
 }
+/* Las parejas del 10: la hucha con sus números y la mesa de regletas (la naranja es el 10) */
+.pj-huchas{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:clamp(12px,2.5vw,32px);align-items:center;width:100%;max-width:1100px}
+.pj-hucha{position:relative;aspect-ratio:200 / 170;width:100%}
+.pj-cerdo{position:absolute;inset:0;width:100%;height:100%}
+.pj-cerdo .pj-cuerpo,.pj-cerdo .pj-moneda{fill:#fde3ec;stroke:#1c2330;stroke-width:3;stroke-linejoin:round}
+.pj-cerdo .pj-moneda{fill:#f6d365}
+.pj-cerdo .pj-raja{fill:none;stroke:#1c2330;stroke-width:3;stroke-linecap:round}
+.pj-cerdo .pj-ojo{fill:#1c2330}
+.pj-num{position:absolute;transform:translate(-50%,-50%);min-width:clamp(48px,7vh,64px);height:clamp(48px,7vh,64px);padding:0 8px;border-radius:16px;border:3px solid transparent;
+  background:#fff;color:#1c2330;font:700 clamp(26px,4.2vh,38px) var(--font-titulos);cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.15)}
+.pj-num:hover{border-color:#7d8796}
+.pj-num.elegido{border-color:var(--accent);background:var(--brand-soft);color:var(--accent)}
+.pj-num.mal{animation:spPuaj .45s ease-in-out;border-color:#e3261f}
+.pj-num.junto{cursor:default;color:#fff;background:#f57c22;border-color:#c25a0c}
+.pj-num.junto.p1{background:#2c77c4;border-color:#1d5592}
+.pj-num[disabled]:not(.junto){cursor:default}
+.pj-mesa{container-type:inline-size;display:flex;flex-direction:column;gap:6px;width:100%;min-width:0}
+.pj-mesa.sin{display:none}
+.pj-fila{display:grid;grid-template-columns:110px minmax(0,1fr);align-items:center;gap:8px;min-height:34px}
+.pj-eti{font:600 15px var(--font-titulos);color:var(--ink-2);text-align:right}
+.pj-tren{display:flex;align-items:center;min-width:0}
+.pj-reg{--u:min(30px,(100cqw - 120px) / var(--total,20));flex:none;width:calc(var(--n) * var(--u));height:30px;display:grid;place-items:center;border-radius:5px;
+  font:700 15px var(--font-titulos);box-shadow:inset 0 0 0 1px rgba(0,0,0,.25),inset 0 -3px 0 rgba(0,0,0,.12);
+  background-image:repeating-linear-gradient(90deg,transparent 0 calc(var(--u) - 1px),rgba(0,0,0,.16) calc(var(--u) - 1px) var(--u)) !important}
+.pj-reg + .pj-reg{margin-left:1px}
+.pj-reg.blanca{box-shadow:inset 0 0 0 1.5px #8a94a3}
+.pj-reg.molde{background:transparent !important;color:#a34a08;box-shadow:inset 0 0 0 2.5px #f57c22;border-radius:5px}
+.pj-reg.hueco{background:transparent !important;color:var(--aviso);box-shadow:inset 0 0 0 2.5px var(--aviso);border-radius:5px;background-image:none !important;animation:pjLate 1.2s ease-in-out infinite}
+.pj-reg.entra{animation:pjEntra .5s ease-out}
+.pj-reg.fuera{opacity:.35}
+.pj-roto{display:flex;gap:6px}
+.pj-nada{color:var(--muted);font-size:15px}
+.pj-fila.diez .pj-eti{color:#a34a08}
+.pj-fila.total .pj-eti{color:var(--ok);font-weight:700}
+.pj-fila.pareja .pj-tren{animation:pjEntra .5s ease-out}
+@keyframes pjEntra{0%{transform:translateY(-14px);opacity:.3}100%{transform:none;opacity:1}}
+@keyframes pjLate{50%{opacity:.45}}
+.pj-suma{margin:0;font:700 clamp(34px,6vh,56px) var(--font-titulos)}
+.pj-pasos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;width:100%;max-width:760px}
+.pj-pasos li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px;padding:8px 14px;border-radius:12px;background:var(--surface-2);font-size:clamp(16px,2.2vh,20px);text-align:left}
+.pj-pasos li.ahora{background:var(--brand-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+.pj-pasos li.luego{opacity:.55}
+.pj-pasos li b{font:700 clamp(20px,3vh,28px) var(--font-titulos);white-space:nowrap}
+.pj-pasos li > span b{font:inherit;font-weight:700}
+.ap-explica.pj-vacio{visibility:hidden;min-height:1.5em}
+@media (max-width:760px){
+  .pj-huchas{grid-template-columns:minmax(0,1fr)}
+  .pj-hucha{max-width:280px;justify-self:center}
+  .pj-fila{grid-template-columns:minmax(0,1fr);gap:2px}
+  .pj-eti{text-align:left;font-size:13px}
+  .pj-reg{--u:min(30px,100cqw / var(--total,20));height:24px;font-size:12px}
+}
+/* Ficha en papel de las parejas del 10: 12 huchas o 12 sumas */
+.hj-pjs{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr);gap:3mm;height:100%}
+.hj-pj{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1mm;border:.35mm solid var(--linea);border-radius:3mm;padding:1.5mm;min-height:0}
+.hj-pj > .hj-n{position:absolute;left:2mm;top:2mm}
+.hj-pj-hucha{position:relative;width:40mm;aspect-ratio:200 / 170}
+.hj-pj-hucha .pj-cerdo .pj-cuerpo,.hj-pj-hucha .pj-cerdo .pj-moneda{fill:#fff}
+.hj-pj-hucha b{position:absolute;transform:translate(-50%,-50%);font:700 15pt var(--font-titulos)}
+.hj-pj p{margin:0;font:700 12pt var(--font-titulos);text-align:center}
+.hj-pj small{font:400 8.5pt var(--font);color:var(--azul)}
+.hj-pjsalto{list-style:none;margin:0;padding:0;display:grid;grid-template-rows:repeat(12,1fr);height:100%;counter-reset:pj}
+.hj-pjsalto li{display:flex;align-items:center;gap:2mm;padding:0 3mm;border-radius:2mm;font:600 13pt var(--font-titulos);white-space:nowrap;counter-increment:pj}
+.hj-pjsalto li:nth-child(odd){background:#f6f8fb}
+.hj-pjsalto li > b{min-width:17mm}
+.hj-pjsalto .hj-n::before{content:counter(pj)}
+.hj-pjsalto .hj-caja{min-width:11mm;height:7mm;line-height:6.5mm}
 /* La serpiente de números: tablero de 12 × 8, la serpiente lleva la serie escrita y se come el número que va después */
 .sp-juego{width:100%;max-width:1400px;display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,300px);gap:clamp(12px,2vw,28px);align-items:start}
 .sp-tablero{container-type:inline-size;justify-self:center;width:min(100%,calc((100dvh - 190px) * 1.5));aspect-ratio:var(--cols) / var(--filas);display:grid;
@@ -1780,6 +1847,10 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
           <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g fill="none" stroke="#c9d1dc" stroke-width="2"><rect x="6" y="20" width="70" height="14"/><rect x="6" y="40" width="70" height="14"/></g><rect x="6" y="20" width="35" height="14" fill="#cfe0ff"/><rect x="6" y="40" width="21" height="14" fill="#ffd9bf"/><rect x="78" y="18" width="10" height="38" fill="#1c2330"/><path d="M78 18h5v5h-5zM83 23h5v5h-5zM78 28h5v5h-5zM83 33h5v5h-5zM78 38h5v5h-5zM83 43h5v5h-5zM78 48h5v5h-5z" fill="#fff"/><path transform="translate(30 19) scale(.66)" fill="#1b5fd6" d="M22 12c0-.8-.7-1.3-1.5-1.3H15.2L10.6 3.5H8.4l2.3 7.2H5.9L4.1 8.3H2.6l1.1 3.7-1.1 3.7h1.5l1.8-2.4h4.8l-2.3 7.2h2.2l4.6-7.2h5.3c.8 0 1.5-.5 1.5-1.3z"/><path transform="translate(16 39) scale(.66)" fill="#f57c22" d="M22 12c0-.8-.7-1.3-1.5-1.3H15.2L10.6 3.5H8.4l2.3 7.2H5.9L4.1 8.3H2.6l1.1 3.7-1.1 3.7h1.5l1.8-2.4h4.8l-2.3 7.2h2.2l4.6-7.2h5.3c.8 0 1.5-.5 1.5-1.3z"/><rect x="24" y="62" width="24" height="24" rx="5" fill="#fff" stroke="#1c2330" stroke-width="2.5"/><circle cx="31" cy="69" r="2.6" fill="#1c2330"/><circle cx="41" cy="79" r="2.6" fill="#1c2330"/><rect x="54" y="62" width="24" height="24" rx="5" fill="#fff" stroke="#1c2330" stroke-width="2.5"/><circle cx="60" cy="68" r="2.6" fill="#1c2330"/><circle cx="66" cy="74" r="2.6" fill="#1c2330"/><circle cx="72" cy="80" r="2.6" fill="#1c2330"/></svg></span>
           <span class="herr-txt"><b>Carrera de aviones</b><span>Juego de dados para dos pilotos o contra la máquina: sumar los dados o repartirlos entre tus 3 aviones. Uno, dos o tres dados.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
         </a>
+        <a class="herr-ficha" href="#/parejas">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g font-family="sans-serif" font-weight="700" text-anchor="middle"><rect x="8" y="22" width="49" height="16" rx="3" fill="#ffffff" stroke="#c25a0c" stroke-width="2.5" stroke-dasharray="5 3"/><rect x="8" y="44" width="49" height="16" rx="3" fill="#f2c200"/><rect x="57" y="44" width="10" height="16" rx="3" fill="#7cc84a" opacity=".5"/><rect x="8" y="66" width="70" height="16" rx="3" fill="#f57c22"/><text x="43" y="78" font-size="12" fill="#1c1204">10</text><text x="33" y="56" font-size="11" fill="#2a2000">7</text><circle cx="80" cy="28" r="13" fill="#fde3ec" stroke="#1c2330" stroke-width="2"/><text x="80" y="33" font-size="13" fill="#1c2330">€</text><text x="85" y="58" font-size="14" fill="#2c8537">+3</text></g></svg></span>
+          <span class="herr-txt"><b>Las parejas del 10</b><span>Formar el 10 juntando cantidades y sumar lo que queda: las huchas (7, 3 y 2) y completa el 10 (8 + 5 = 10 + 3), con regletas.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
         <a class="herr-ficha" href="#/serpiente">
           <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g font-family="sans-serif" font-weight="700" font-size="12" text-anchor="middle" fill="#fff"><rect x="6" y="56" width="20" height="20" rx="7" fill="#2e7d32"/><text x="16" y="70">2</text><rect x="26" y="56" width="20" height="20" rx="7" fill="#1f6f3a"/><text x="36" y="70">4</text><rect x="46" y="56" width="20" height="20" rx="7" fill="#2e7d32"/><text x="56" y="70">6</text><rect x="46" y="34" width="20" height="22" rx="8" fill="#14532d"/><text x="56" y="49">8</text><circle cx="51" cy="38" r="2.4" fill="#fff"/><circle cx="61" cy="38" r="2.4" fill="#fff"/><path d="M56 34v-6m0 0l-3-3m3 3l3-3" stroke="#c62828" stroke-width="2" fill="none"/><circle cx="82" cy="24" r="11" fill="#c62828"/><text x="82" y="28">10</text><circle cx="84" cy="62" r="10" fill="#c62828"/><text x="84" y="66">9</text></g></svg></span>
           <span class="herr-txt"><b>La serpiente de números</b><span>Juego de la serpiente para las series: cómete el número que va después (de 2 en 2, de 5 en 5, de 10 en 10, hacia atrás…) y la serpiente crece.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
@@ -2271,6 +2342,17 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
     <div class="reg-acc"><button class="icbtn" id="avImprimir" data-icon="imprimir" aria-label="Imprimir el tablero" title="Imprimir el tablero"></button><button class="icbtn" id="avPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="av-juego" id="avCuerpo"></div><div class="pi-teclado" id="avTeclado" role="group" aria-label="Escribir la suma" hidden></div></div>
+</div>
+
+<div class="vista" id="vParejas" hidden role="dialog" aria-modal="true" aria-labelledby="vPjTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vPjTit">Las parejas del 10</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Juego"><button data-modo="huchas" aria-pressed="false">Las huchas</button><button data-modo="salto" aria-pressed="false">Completa el 10</button></div>
+    <label class="b-select"><span>Nivel</span><select id="pjNivel"></select></label>
+    <span class="pi-ayudas" role="group" aria-label="Ayudas"><button class="chip" id="pjRegletas" aria-pressed="true">Regletas</button></span>
+    <div class="reg-acc"><button class="icbtn" id="pjImprimir" data-icon="imprimir" aria-label="Imprimir la ficha" title="Imprimir la ficha"></button><button class="icbtn" id="pjPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona" id="pjCuerpo"></div><div class="pi-teclado" id="pjTeclado" role="group" aria-label="Escribir un número" hidden></div></div>
 </div>
 
 <div class="vista" id="vSerpiente" hidden role="dialog" aria-modal="true" aria-labelledby="vSpTit">
@@ -3285,13 +3367,13 @@ function panelNotas(c){
 let rutaPrevia = location.hash;
 function ruta(){
   // herramientas, secciones y modo aula viven en herramientas.js, secciones.js y aula.js: si alguno no ha cargado, se avisa
-  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|escalera|series|mas|donde|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
+  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|parejas|escalera|series|mas|donde|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
   // modo aula: la tableta recuerda su clase y vuelve a ella en lugar de ir a la biblioteca
   const cl = location.hash.match(/^#\/aula\/([\w-]+)\/?$/);
   if(cl){ cerrarLector(); abrirClase(cl[1]); rutaPrevia = location.hash; return; }
   const claseGuardada = leer("aula-clase", null);
   if(claseGuardada && (location.hash==="" || location.hash==="#/" || location.hash==="#")){ location.replace("#/aula/"+claseGuardada); return; }
-  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|escalera|series|mas|donde|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
+  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|parejas|escalera|series|mas|donde|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   if(typeof cerrarHerramienta==="function") cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
@@ -3358,7 +3440,7 @@ if("serviceWorker" in navigator && (location.protocol==="https:" || location.hos
    Entonces las fichas de las herramientas no hacen nada. Si pasa, se borran las copias guardadas del código
    (los PDF guardados se conservan) y se recarga una vez; si aun así falta algo, se avisa en pantalla. */
 const PIEZAS = ["abrirHerramienta", "cerrarHerramienta", "iniciarRegletas", "iniciarBombo", "iniciarRuta", "iniciarFamilias",
-                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "iniciarEscondido", "iniciarCien", "iniciarReloj", "iniciarDinero", "iniciarMultiplicar", "iniciarAviones", "iniciarSerpiente", "iniciarEscalera", "iniciarSeries", "iniciarMas", "iniciarDonde", "delMazo"];
+                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "iniciarEscondido", "iniciarCien", "iniciarReloj", "iniciarDinero", "iniciarMultiplicar", "iniciarAviones", "iniciarSerpiente", "iniciarParejas", "iniciarEscalera", "iniciarSeries", "iniciarMas", "iniciarDonde", "delMazo"];
 function codigoIncompleto(){ return PIEZAS.filter(n=> typeof window[n] !== "function"); }
 function avisarCodigo(){
   const a = $("avisoCodigo"); if(!a.hidden) return;
@@ -3418,6 +3500,7 @@ listo.then(repararCodigo).then(seguir=> seguir ? fetch("catalogo.json", {cache:"
 <script src="multiplicar.js"></script>
 <script src="aviones.js"></script>
 <script src="serpiente.js"></script>
+<script src="parejas.js"></script>
 <script src="infantil.js"></script>
 </body>
 </html>

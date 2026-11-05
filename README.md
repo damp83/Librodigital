@@ -238,8 +238,13 @@ Su entrada del catálogo y su portada se quitan solas.
       *Las huchas* (como la ficha «Buscar parejas del 10 y algo más»): se tocan los dos números que forman 10,
       sus regletas se juntan junto a la naranja, y se suma lo que queda (7, 2 y 3 → 10 + 2 = 12 €); si la
       pareja no suma 10, dice cuánto falta o si se pasa. Niveles: tres números hasta 9, con un número mayor
-      que 10 (4, 6 y 18 → 10 + 18) y cinco números con dos parejas. *Completa el 10* (descomponer): 8 + 5 →
-      ¿cuánto le falta al 8 para 10? → el 5 se rompe en 2 y 3 → 10 + 3 = 13; con decenas, 28 + 5 → 30 + 3.
+      que 10 (4, 6 y 18 → 10 + 18), cinco números con dos parejas y, con números hasta 1000, completa la
+      decena (27 + 3 = 30), parejas del 100 (60 + 40, 35 + 65), completa la centena (270 + 30 = 300) y parejas
+      del 1000 (300 + 700). Con números grandes, las regletas se agrupan como el material base 10: barra
+      naranja = 10 y placa de 10 naranjas = 100. *Completa el 10* (descomponer): 8 + 5 →
+      ¿cuánto le falta al 8 para 10? → el 5 se rompe en 2 y 3 → 10 + 3 = 13; con decenas, 28 + 5 → 30 + 3;
+      hasta 100 (67 + 8), completa la centena (270 + 50 → 300 + 20), hasta 1000 (395 + 8 → 400 + 3) y
+      completa la centena con dos cifras (365 + 47 → 365 + 35 + 12 → 400 + 12).
       Fichas en papel: 12 huchas o 12 sumas, con soluciones.
     - *La serpiente de números* (`#/serpiente`, en `serpiente.js`): juego de la serpiente para las series
       numéricas. La serpiente lleva la serie escrita en el cuerpo y tiene que comerse el número que va después,

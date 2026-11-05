@@ -927,6 +927,7 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
 .pj-num{position:absolute;transform:translate(-50%,-50%);min-width:clamp(48px,7vh,64px);height:clamp(48px,7vh,64px);padding:0 8px;border-radius:16px;border:3px solid transparent;
   background:#fff;color:#1c2330;font:700 clamp(26px,4.2vh,38px) var(--font-titulos);cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.15)}
 .pj-num:hover{border-color:#7d8796}
+.pj-hucha.grande .pj-num{font-size:clamp(20px,3.2vh,30px);padding:0 6px}
 .pj-num.elegido{border-color:var(--accent);background:var(--brand-soft);color:var(--accent)}
 .pj-num.mal{animation:spPuaj .45s ease-in-out;border-color:#e3261f}
 .pj-num.junto{cursor:default;color:#fff;background:#f57c22;border-color:#c25a0c}
@@ -947,6 +948,20 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
 .pj-reg.entra{animation:pjEntra .5s ease-out}
 .pj-reg.fuera{opacity:.35}
 .pj-roto{display:flex;gap:6px}
+/* Con números grandes: placas de 100, barras naranjas de 10 y una regleta para las unidades, de pie */
+.pj-mesa.bloques{--c:min(9px,(100cqw - 120px) / var(--w,20))}
+.pj-mesa.bloques .pj-fila{min-height:calc(var(--c) * 10 + 4px)}
+.pj-bloques{display:inline-flex;align-items:flex-end;gap:calc(var(--c) * .5);margin-right:calc(var(--c) * .5)}
+.pj-placa,.pj-barra,.pj-uni{flex:none;border-radius:2px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}
+.pj-placa{width:calc(var(--c) * 10);height:calc(var(--c) * 10);background:#f57c22;
+  background-image:repeating-linear-gradient(90deg,transparent 0 calc(var(--c) - 1px),rgba(0,0,0,.22) calc(var(--c) - 1px) var(--c))}
+.pj-barra{width:var(--c);height:calc(var(--c) * 10);background:#f57c22;
+  background-image:repeating-linear-gradient(0deg,transparent 0 calc(var(--c) - 1px),rgba(0,0,0,.18) calc(var(--c) - 1px) var(--c))}
+.pj-uni{width:var(--c);height:calc(var(--c) * var(--n));background-image:repeating-linear-gradient(0deg,transparent 0 calc(var(--c) - 1px),rgba(0,0,0,.2) calc(var(--c) - 1px) var(--c))}
+.pj-bloques.molde > span,.pj-bloques.hueco > span{background:transparent !important;box-shadow:none;outline:2px dashed #f57c22;outline-offset:-2px}
+.pj-bloques.hueco > span{outline-color:var(--aviso);animation:pjLate 1.2s ease-in-out infinite}
+.pj-bloques.entra{animation:pjEntra .5s ease-out}
+.pj-bloques.fuera{opacity:.35}
 .pj-nada{color:var(--muted);font-size:15px}
 .pj-fila.diez .pj-eti{color:#a34a08}
 .pj-fila.total .pj-eti{color:var(--ok);font-weight:700}
@@ -957,7 +972,7 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
 .pj-pasos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;width:100%;max-width:760px}
 .pj-pasos li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px;padding:8px 14px;border-radius:12px;background:var(--surface-2);font-size:clamp(16px,2.2vh,20px);text-align:left}
 .pj-pasos li.ahora{background:var(--brand-soft);box-shadow:inset 0 0 0 2px var(--accent)}
-.pj-pasos li.luego{opacity:.55}
+.pj-pasos li.luego{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line);color:var(--muted)}
 .pj-pasos li b{font:700 clamp(20px,3vh,28px) var(--font-titulos);white-space:nowrap}
 .pj-pasos li > span b{font:inherit;font-weight:700}
 .ap-explica.pj-vacio{visibility:hidden;min-height:1.5em}
@@ -967,6 +982,7 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
   .pj-fila{grid-template-columns:minmax(0,1fr);gap:2px}
   .pj-eti{text-align:left;font-size:13px}
   .pj-reg{--u:min(30px,100cqw / var(--total,20));height:24px;font-size:12px}
+  .pj-mesa.bloques{--c:min(9px,100cqw / var(--w,20))}
 }
 /* Ficha en papel de las parejas del 10: 12 huchas o 12 sumas */
 .hj-pjs{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr);gap:3mm;height:100%}
@@ -975,6 +991,7 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
 .hj-pj-hucha{position:relative;width:40mm;aspect-ratio:200 / 170}
 .hj-pj-hucha .pj-cerdo .pj-cuerpo,.hj-pj-hucha .pj-cerdo .pj-moneda{fill:#fff}
 .hj-pj-hucha b{position:absolute;transform:translate(-50%,-50%);font:700 15pt var(--font-titulos)}
+.hj-pj-hucha.grande b{font-size:11.5pt;background:#fff;padding:0 .4mm;line-height:1.1}
 .hj-pj p{margin:0;font:700 12pt var(--font-titulos);text-align:center}
 .hj-pj small{font:400 8.5pt var(--font);color:var(--azul)}
 .hj-pjsalto{list-style:none;margin:0;padding:0;display:grid;grid-template-rows:repeat(12,1fr);height:100%;counter-reset:pj}

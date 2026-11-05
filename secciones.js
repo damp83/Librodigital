@@ -259,9 +259,9 @@ const ETAPA_DE = Object.fromEntries(Object.entries(SLUG_DE).map(([e,s])=>[s,e]))
 const HERR_CURSO = {
   "3 años": ["escalera", "series", "mas", "donde", "regletas"],
   "4 años": ["escalera", "series", "mas", "donde", "regletas", "calculo", "bombo"],
-  "5 años": ["minuto", "mas", "series", "escalera", "donde", "regletas", "aviones", "marco", "muros", "partes", "geoplano", "calculo", "bombo"],
-  "1.º":    ["minuto", "aviones", "regletas", "calculo", "marco", "muros", "partes", "panel", "piramides", "reloj", "dinero", "geoplano", "calculadora", "bombo"],
-  "2.º":    ["minuto", "aviones", "escondido", "cien", "multiplicar", "regletas", "calculo", "panel", "partes", "piramides", "redondeo", "estimacion", "reloj", "dinero", "geoplano", "calculadora", "bombo"]};
+  "5 años": ["minuto", "mas", "series", "escalera", "donde", "regletas", "aviones", "serpiente", "marco", "muros", "partes", "geoplano", "calculo", "bombo"],
+  "1.º":    ["minuto", "parejas", "aviones", "serpiente", "regletas", "calculo", "marco", "muros", "partes", "panel", "piramides", "reloj", "dinero", "geoplano", "calculadora", "bombo"],
+  "2.º":    ["minuto", "parejas", "aviones", "serpiente", "escondido", "cien", "multiplicar", "regletas", "calculo", "panel", "partes", "piramides", "redondeo", "estimacion", "reloj", "dinero", "geoplano", "calculadora", "bombo"]};
 let claseSlug = null;
 
 /* Portada: ver solo las herramientas de un curso (la elección se recuerda en el dispositivo).

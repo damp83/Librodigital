@@ -374,8 +374,23 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   // Las parejas del 10: una pareja mal avisa, la buena se junta y se suma lo que queda; completar el 10 en tres pasos
   await p.evaluate(()=> localStorage.removeItem("aula-parejas"));
   await p.goto(WEB+"#/parejas"); await p.waitForSelector("#vParejas:not([hidden]) .pj-num");
-  const listasPJ = await p.evaluate(()=> Object.keys(NIVELES_PJ).flatMap(m=> Object.keys(NIVELES_PJ[m]).map(n=> [m+" "+n, listaPJ(m, n)])).filter(([, l])=> !l.length || l.some(r=> r.nums ?
-    r.nums.filter((a, i)=> r.nums.some((b, j)=> j > i && a + b === 10)).length !== (r.nums.length === 5 ? 4 : 1) && r.nums.length !== 5 : r.a % 10 + r.b <= 10)).map(([k])=> k));
+  const listasPJ = await p.evaluate(()=>{
+    const mal = [];
+    for(const m of Object.keys(NIVELES_PJ)) for(const n of Object.keys(NIVELES_PJ[m])){
+      const d = NIVELES_PJ[m][n], l = listaPJ(m, n);
+      if(!l.length){ mal.push(m+" "+n+": vacío"); continue; }
+      for(const r of l){
+        if(r.nums){
+          const pares = r.nums.flatMap((a, i)=> r.nums.slice(i + 1).map(b=> parejaPJ(a, b, d))).filter(Boolean).length;
+          if((r.nums.length === 3 && pares !== 1) || r.nums.some(x=> x <= 0 || x > 1000)){ mal.push(m+" "+n+": "+r.nums.join(",")); break; }
+        }else{
+          const p = pasosPJ(Object.assign({base:d.base}, r));
+          if(p[0].r <= 0 || p[1].r <= 0 || r.a + r.b > 1000 || p[2].r !== r.a + r.b){ mal.push(m+" "+n+": "+r.a+"+"+r.b); break; }
+        }
+      }
+    }
+    return mal;
+  });
   exigir(!listasPJ.length, "parejas: retos imposibles o con más de una pareja en "+listasPJ.join(", "));
   await p.evaluate(()=>{ PJ.reto = {k:"x", nums:[7, 2, 3]}; PJ.elegidos = []; PJ.parejas = []; PJ.fase = "parejas"; PJ.aviso = ""; pintarParejas(); });
   await p.click('.pj-num[data-i="0"]'); await p.click('.pj-num[data-i="1"]');
@@ -392,6 +407,16 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   for(const t of ["2", "✓", "3", "✓", "1", "3", "✓"]) await p.click('#pjTeclado [data-t="'+t+'"]');
   exigir(/8 \+ 5 = 8 \+ 2 \+ 3 = 10 \+ 3 = 13/.test(await p.textContent("#pjCuerpo")), "parejas: completar el 10 no llega a 8 + 5 = 10 + 3 = 13");
   await accesibilidad(p);
+  for(const [m, n] of [["huchas", "n6"], ["salto", "n7"]]){   // con números grandes, las piezas de 100 y de 10
+    await p.click('#vParejas .segmentos [data-modo="'+m+'"]'); await p.selectOption("#pjNivel", n);
+    if(m === "huchas") await p.click('.pj-num[data-i="0"]');
+    exigir(await p.locator("#pjCuerpo .pj-placa").count() > 0, "parejas: con números grandes no salen las placas de 100 ("+m+" "+n+")");
+    await accesibilidad(p);
+  }
+  await p.evaluate(()=>{ PJ.modo = "huchas"; PJ.nivel.huchas = "n6"; nuevoRetoPJ(); PJ.reto.nums = [270, 30, 145]; PJ.elegidos = []; PJ.parejas = []; pintarParejas(); });
+  await p.click('.pj-num[data-i="0"]'); await p.click('.pj-num[data-i="1"]');
+  for(const t of ["4", "4", "5", "✓"]) await p.click('#pjTeclado [data-t="'+t+'"]');
+  exigir(/Hay 445 € en la hucha/.test(await p.textContent("#pjCuerpo")), "parejas: 270 + 30 + 145 no da 445");
   // La serpiente de números: comerse el bueno la hace crecer, el malo no; las paredes la paran; se completa la serie
   await p.evaluate(()=> localStorage.removeItem("aula-serpiente"));
   await p.goto(WEB+"#/serpiente"); await p.waitForSelector("#vSerpiente:not([hidden]) .sp-cabeza");

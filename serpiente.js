@@ -19,15 +19,19 @@ let serpienteLista = false;
 const guardarSP = () => guardar("aula-serpiente", {nivel:SP.nivel, velocidad:SP.velocidad, salto:SP.salto});
 const COLS_SP = 12, FILAS_SP = 8, LARGO_SP = 10;
 const NIVELES_SP = {
-  n1: {txt:"De 1 en 1 (hasta 20)", paso:1, ini:()=> azar(0, 10)},
-  n2: {txt:"De 2 en 2", paso:2, ini:()=> azar(0, 10)},
-  n3: {txt:"De 5 en 5", paso:5, ini:()=> 5 * azar(0, 6)},
-  n4: {txt:"De 10 en 10", paso:10, ini:()=> azar(0, 30)},
-  n5: {txt:"De 3 en 3", paso:3, ini:()=> azar(0, 9)},
-  n6: {txt:"Hacia atrás de 1 en 1", paso:-1, ini:()=> azar(12, 30)},
-  n7: {txt:"Hacia atrás de 2 en 2", paso:-2, ini:()=> azar(20, 40)},
-  n8: {txt:"Hacia atrás de 10 en 10", paso:-10, ini:()=> azar(90, 99)},
-  n9: {txt:"De 100 en 100", paso:100, ini:()=> 100 * azar(0, 2) + (azar(0, 1) ? 0 : 10 * azar(1, 9))}};
+  n1: {txt:"De 1 en 1 (hasta 30)", paso:1, desde:0, hasta:21},
+  n2: {txt:"De 2 en 2", paso:2, desde:0, hasta:30},
+  n3: {txt:"De 5 en 5", paso:5, desde:0, hasta:40},
+  n4: {txt:"De 10 en 10", paso:10, desde:0, hasta:59},
+  n5: {txt:"De 3 en 3", paso:3, desde:0, hasta:30},
+  n6: {txt:"Hacia atrás de 1 en 1", paso:-1, desde:10, hasta:40},
+  n7: {txt:"Hacia atrás de 2 en 2", paso:-2, desde:18, hasta:60},
+  n8: {txt:"Hacia atrás de 10 en 10", paso:-10, desde:90, hasta:150},
+  n9: {txt:"De 100 en 100", paso:100, desde:0, hasta:100}};
+/* Todas las series de un nivel (una por cada número de salida): el banco las saca sin repetir */
+const listaSP = nivel => { const n = NIVELES_SP[nivel], l = [];
+  for(let a = n.desde; a <= n.hasta; a++) l.push({k:"sp"+a, a});
+  return l; };
 const VELOCIDADES_SP = {paso:{txt:"Paso a paso", ms:0}, despacio:{txt:"Despacio", ms:850}, normal:{txt:"Normal", ms:520}};
 const DIRS_SP = {arriba:{x:0, y:-1}, abajo:{x:0, y:1}, izquierda:{x:-1, y:0}, derecha:{x:1, y:0}};
 const nivelSP = () => NIVELES_SP[SP.nivel] || NIVELES_SP.n2;
@@ -37,8 +41,8 @@ const siguienteSP = () => SP.serie[SP.cuerpo.length - 1] + nivelSP().paso;   // 
 const cabezaSP = () => SP.cuerpo[0];
 
 /* La serie entera de una partida: LARGO_SP números con el salto del nivel (sin bajar de 0) */
-function serieSP(n = nivelSP()){
-  const a = n.ini();
+function serieSP(nivel = NIVELES_SP[SP.nivel] ? SP.nivel : "n2"){
+  const n = NIVELES_SP[nivel], a = delMazo("sp-"+nivel, listaSP(nivel)).a;
   return Array.from({length:LARGO_SP}, (_, i)=> a + i * n.paso);
 }
 /* Los números trampa: el de al lado (7 o 9 en lugar de 8), saltarse uno (10), darse la vuelta… */
@@ -251,7 +255,7 @@ const CABEZA_SP = '<svg viewBox="0 0 40 30" aria-hidden="true"><path d="M2 15C2 
 function imprimirSerpiente(){
   const n = nivelSP();
   const serpientes = Array.from({length:6}, ()=>{
-    const serie = serieSP(n), dadas = new Set([0, 1]);
+    const serie = serieSP(), dadas = new Set([0, 1]);
     // números que se dan: los dos primeros y algunos más (a veces solo al final, para contar hacia atrás desde ahí)
     const extra = n.paso === 1 || n.paso === 2 ? 3 : 2;
     while(dadas.size < 2 + extra) dadas.add(azar(3, LARGO_SP - 1));

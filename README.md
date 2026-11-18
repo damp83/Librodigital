@@ -144,8 +144,8 @@ Su entrada del catálogo y su portada se quitan solas.
     dibujar las agujas y 2 intervalos), *Sumas que pasan de 100* (6 de «Busco el 100» con la placa o 6
     superárboles), *El número escondido* (6 casos con los pasos del detective) y *El dinero* (4 montones para
     contar y 4 compras para la vuelta, con las fotos o los dibujos; 500 € se pagan con 200 + 200 + 100), *La
-    serpiente de números* (6 series para completar y descubrir la regla) y *Las parejas del 10* (12 huchas
-    o 12 sumas para completar el 10). Se
+    serpiente de números* (6 series para completar y descubrir la regla), *Las parejas del 10* (12 huchas
+    o 12 sumas para completar el 10) y *El litro* (6 «¿cuánta agua hay?» y 6 jarras para colorear). Se
     imprimen en A4 con márgenes de 12 mm y la hoja deja unos milímetros de holgura, para que no se corte nada
     aunque la impresora no llegue al borde. Las pruebas generan la ficha de **cada nivel** e imprimen el PDF:
     ningún ejercicio puede salirse ni quedar cortado, y cada hoja tiene que ocupar exactamente una página.
@@ -233,6 +233,13 @@ Su entrada del catálogo y su portada se quitan solas.
     - *Carrera de aviones* (`#/aviones`, en `aviones.js`): juego de dados para dos pilotos o contra la máquina,
       con 3 aviones cada uno; se suman los dados o se reparten entre los aviones. Niveles: un dado (carriles de
       10), dos dados (20) y tres dados (30). Tablero en papel apaisado con el registro de tiradas.
+    - *El litro* (`#/litros`, en `litros.js`): litro, medio litro y cuarto de litro con jarras medidoras de
+      1 l (marcas de ¼, ½ y ¾) y envases que se vacían en ellas: botella de 1 l, botella de ½ l y vaso de ¼ l.
+      *Explora* (echar envases y ver cuánto hay: «1 litro = 4 cuartos de litro = 2 medios litros»), *¿Cuánto
+      hay?* (varios envases llenos y cuatro respuestas en palabras; niveles: litros y medios, con cuartos hasta
+      2 l, todo mezclado hasta 3 l) y *Llena la jarra* (echar justo lo que se pide, avisa si falta o sobra;
+      niveles: con 1 l y ½ l, también con ¼ l, y con un solo tipo de envase). Retos del banco sin repeticiones.
+      Ficha en papel: 6 «¿cuánta agua hay?» y 6 jarras para colorear, con soluciones.
     - *Las parejas del 10* (`#/parejas`, en `parejas.js`): formar el 10 juntando cantidades y sumar después
       las unidades sueltas, con las regletas como ayuda visual (la naranja es el 10; botón «Regletas»).
       *Las huchas* (como la ficha «Buscar parejas del 10 y algo más»): se tocan los dos números que forman 10,
@@ -249,7 +256,8 @@ Su entrada del catálogo y su portada se quitan solas.
     - *La serpiente de números* (`#/serpiente`, en `serpiente.js`): juego de la serpiente para las series
       numéricas. La serpiente lleva la serie escrita en el cuerpo y tiene que comerse el número que va después,
       sin equivocarse con los de al lado (7 o 9 en lugar de 8, saltarse uno…); con cada acierto crece, y con
-      10 números está completa. Series: de 1 en 1, de 2 en 2, de 5 en 5, de 10 en 10, de 3 en 3, de 100 en 100
+      10 números está completa. Las series salen de un banco sin repeticiones (cada nivel, entre 22 y 101 puntos de
+      salida distintos). Series: de 1 en 1 (hasta 30), de 2 en 2, de 5 en 5, de 10 en 10, de 3 en 3, de 100 en 100
       y hacia atrás (de 1, de 2 y de 10). Velocidad: paso a paso (una casilla por flecha, para la pizarra
       digital), despacio o normal; si choca con una pared o con su cuerpo solo se para. Flechas del teclado,
       botones, deslizar el dedo o tocar el tablero. «Decir el salto» muestra la regla y explica cada fallo

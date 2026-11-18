@@ -916,6 +916,47 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
   .av-mandos{position:static;order:-1}
   .av-registro{display:none}
 }
+/* El litro: envases (botella de 1 l, de ½ l y vaso de ¼ l) y jarras medidoras de 1 l con marcas */
+.lt-envase{width:clamp(44px,6.5vh,72px);height:auto;display:block}
+.lt-borde{stroke:#1c2330;stroke-width:2.2;stroke-linejoin:round}
+.lt-agua{fill:#5fb2e8}
+.lt-vacio{fill:#fff}
+.lt-tapon{fill:#2c77c4;stroke:#1c2330;stroke-width:1.5}
+.lt-eti{font:700 13px var(--font-titulos);text-anchor:middle;fill:#0b2740}
+.lt-jarra{width:clamp(90px,15vh,150px);height:auto;display:block}
+.lt-cristal{fill:#f3f8fc}
+.lt-marca{stroke:#1c2330;stroke-width:2}
+.lt-num{font:700 11px var(--font-titulos);fill:#1c2330}
+.lt-asa{fill:none;stroke:#1c2330;stroke-width:3;stroke-linecap:round}
+.lt-jarra .lt-agua{transition:y .35s ease-out,height .35s ease-out}
+.lt-jarras{display:flex;gap:clamp(6px,1.5vw,18px);justify-content:center;align-items:flex-end;flex-wrap:wrap}
+.lt-mesa{display:flex;gap:clamp(16px,4vw,48px);align-items:flex-end;justify-content:center;flex-wrap:wrap}
+.lt-botones{display:flex;gap:10px;align-items:flex-end}
+.lt-boton{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 10px 6px;border-radius:16px;border:2px solid var(--line-strong);background:var(--surface);cursor:pointer;color:var(--ink);font:700 16px var(--font-titulos)}
+.lt-boton:hover{border-color:var(--accent);transform:translateY(-2px)}
+.lt-fila{display:flex;gap:clamp(4px,1vw,12px);align-items:flex-end;justify-content:center;flex-wrap:wrap;padding:10px 18px;border-bottom:4px solid #c9b48a;border-radius:4px}
+.lt-fila .lt-envase{width:clamp(52px,8vh,86px)}
+.lt-total{margin:0;font-size:clamp(17px,2.4vh,22px)}
+.lt-total b{color:#1d6fa5}
+.lt-regla{margin:0;padding:6px 14px;border-radius:12px;background:#e6f3fc;color:#0b2740;font-size:clamp(15px,2vh,19px)}
+.lt-regla b{font-family:var(--font-titulos)}
+.ap-explica.lt-vacio-msg{visibility:hidden;min-height:1.5em}
+@media (max-width:600px){.lt-botones{width:100%;justify-content:center}.lt-jarra{width:min(28vw,110px)}}
+/* Ficha en papel del litro */
+.hj-lt{display:flex;flex-direction:column;height:100%}
+.hj-lt-cuanto{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3mm;margin-bottom:4mm}
+.hj-lt-caja{position:relative;border:.35mm solid var(--linea);border-radius:3mm;padding:2mm 2mm 1.5mm 8mm;display:flex;flex-direction:column;gap:1.5mm}
+.hj-lt-caja > .hj-n{position:absolute;left:2mm;top:2mm}
+.hj-lt-envases{display:flex;align-items:flex-end;justify-content:center;gap:1mm;height:24mm;min-width:0}
+.hj-lt-envases .lt-envase{flex:0 1 10.3mm;min-width:0;width:10.3mm;height:auto}
+.hj-lt .lt-agua{fill:#cfe7f8}
+.hj-lt-linea{margin:0;min-height:6mm;border-bottom:.35mm solid #7d8796;text-align:center;font:600 10.5pt var(--font-titulos);color:var(--azul)}
+.hj-lt-jarras{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:2mm 8mm;align-items:center}
+.hj-lt-jarra{display:flex;flex-direction:column;align-items:center}
+.hj-lt-jarra .lt-jarra{width:auto;height:36mm}
+.hj-lt-jarra .lt-agua{fill:#9fd0f2}
+.hj-lt-jarra p{margin:1mm 0 0;text-align:center;font-size:9pt;line-height:1.25}
+.hj-lt-jarra p b{font:700 12pt var(--font-titulos)}
 /* Las parejas del 10: la hucha con sus números y la mesa de regletas (la naranja es el 10) */
 .pj-huchas{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:clamp(12px,2.5vw,32px);align-items:center;width:100%;max-width:1100px}
 .pj-hucha{position:relative;aspect-ratio:200 / 170;width:100%}
@@ -1864,6 +1905,10 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
           <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g fill="none" stroke="#c9d1dc" stroke-width="2"><rect x="6" y="20" width="70" height="14"/><rect x="6" y="40" width="70" height="14"/></g><rect x="6" y="20" width="35" height="14" fill="#cfe0ff"/><rect x="6" y="40" width="21" height="14" fill="#ffd9bf"/><rect x="78" y="18" width="10" height="38" fill="#1c2330"/><path d="M78 18h5v5h-5zM83 23h5v5h-5zM78 28h5v5h-5zM83 33h5v5h-5zM78 38h5v5h-5zM83 43h5v5h-5zM78 48h5v5h-5z" fill="#fff"/><path transform="translate(30 19) scale(.66)" fill="#1b5fd6" d="M22 12c0-.8-.7-1.3-1.5-1.3H15.2L10.6 3.5H8.4l2.3 7.2H5.9L4.1 8.3H2.6l1.1 3.7-1.1 3.7h1.5l1.8-2.4h4.8l-2.3 7.2h2.2l4.6-7.2h5.3c.8 0 1.5-.5 1.5-1.3z"/><path transform="translate(16 39) scale(.66)" fill="#f57c22" d="M22 12c0-.8-.7-1.3-1.5-1.3H15.2L10.6 3.5H8.4l2.3 7.2H5.9L4.1 8.3H2.6l1.1 3.7-1.1 3.7h1.5l1.8-2.4h4.8l-2.3 7.2h2.2l4.6-7.2h5.3c.8 0 1.5-.5 1.5-1.3z"/><rect x="24" y="62" width="24" height="24" rx="5" fill="#fff" stroke="#1c2330" stroke-width="2.5"/><circle cx="31" cy="69" r="2.6" fill="#1c2330"/><circle cx="41" cy="79" r="2.6" fill="#1c2330"/><rect x="54" y="62" width="24" height="24" rx="5" fill="#fff" stroke="#1c2330" stroke-width="2.5"/><circle cx="60" cy="68" r="2.6" fill="#1c2330"/><circle cx="66" cy="74" r="2.6" fill="#1c2330"/><circle cx="72" cy="80" r="2.6" fill="#1c2330"/></svg></span>
           <span class="herr-txt"><b>Carrera de aviones</b><span>Juego de dados para dos pilotos o contra la máquina: sumar los dados o repartirlos entre tus 3 aviones. Uno, dos o tres dados.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
         </a>
+        <a class="herr-ficha" href="#/litros">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g stroke="#1c2330" stroke-width="2.2" stroke-linejoin="round"><path d="M16 14h12v8c0 3 8 5 8 11v57H8V33c0-6 8-8 8-11z" fill="#5fb2e8"/><path d="M45 44h8v6c0 2 6 4 6 8v32H39V58c0-4 6-6 6-8z" fill="#5fb2e8"/><path d="M64 70h20l-2 20H66z" fill="#5fb2e8"/></g><g font-family="sans-serif" font-weight="700" font-size="9" text-anchor="middle" fill="#0b2740"><text x="22" y="64">1 l</text><text x="49" y="76">½ l</text><text x="74" y="84">¼ l</text></g><rect x="12" y="10" width="8" height="5" rx="1.5" fill="#2c77c4"/><rect x="45" y="40" width="8" height="5" rx="1.5" fill="#2c77c4"/></svg></span>
+          <span class="herr-txt"><b>El litro</b><span>Litro, medio litro y cuarto de litro: echa agua en jarras medidoras, ¿cuánto hay? y llena la jarra con justo lo que se pide.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
         <a class="herr-ficha" href="#/parejas">
           <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g font-family="sans-serif" font-weight="700" text-anchor="middle"><rect x="8" y="22" width="49" height="16" rx="3" fill="#ffffff" stroke="#c25a0c" stroke-width="2.5" stroke-dasharray="5 3"/><rect x="8" y="44" width="49" height="16" rx="3" fill="#f2c200"/><rect x="57" y="44" width="10" height="16" rx="3" fill="#7cc84a" opacity=".5"/><rect x="8" y="66" width="70" height="16" rx="3" fill="#f57c22"/><text x="43" y="78" font-size="12" fill="#1c1204">10</text><text x="33" y="56" font-size="11" fill="#2a2000">7</text><circle cx="80" cy="28" r="13" fill="#fde3ec" stroke="#1c2330" stroke-width="2"/><text x="80" y="33" font-size="13" fill="#1c2330">€</text><text x="85" y="58" font-size="14" fill="#2c8537">+3</text></g></svg></span>
           <span class="herr-txt"><b>Las parejas del 10</b><span>Formar el 10 juntando cantidades y sumar lo que queda: las huchas (7, 3 y 2) y completa el 10 (8 + 5 = 10 + 3), con regletas.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
@@ -2359,6 +2404,16 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
     <div class="reg-acc"><button class="icbtn" id="avImprimir" data-icon="imprimir" aria-label="Imprimir el tablero" title="Imprimir el tablero"></button><button class="icbtn" id="avPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="av-juego" id="avCuerpo"></div><div class="pi-teclado" id="avTeclado" role="group" aria-label="Escribir la suma" hidden></div></div>
+</div>
+
+<div class="vista" id="vLitros" hidden role="dialog" aria-modal="true" aria-labelledby="vLtTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vLtTit">El litro</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <div class="segmentos" role="group" aria-label="Juego"><button data-modo="explora" aria-pressed="false">Explora</button><button data-modo="cuanto" aria-pressed="false">¿Cuánto hay?</button><button data-modo="llenar" aria-pressed="false">Llena la jarra</button></div>
+    <label class="b-select" id="ltNivelEti"><span>Nivel</span><select id="ltNivel"></select></label>
+    <div class="reg-acc"><button class="icbtn" id="ltImprimir" data-icon="imprimir" aria-label="Imprimir la ficha" title="Imprimir la ficha"></button><button class="icbtn" id="ltPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona" id="ltCuerpo"></div></div>
 </div>
 
 <div class="vista" id="vParejas" hidden role="dialog" aria-modal="true" aria-labelledby="vPjTit">
@@ -3384,13 +3439,13 @@ function panelNotas(c){
 let rutaPrevia = location.hash;
 function ruta(){
   // herramientas, secciones y modo aula viven en herramientas.js, secciones.js y aula.js: si alguno no ha cargado, se avisa
-  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|parejas|escalera|series|mas|donde|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
+  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|parejas|litros|escalera|series|mas|donde|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
   // modo aula: la tableta recuerda su clase y vuelve a ella en lugar de ir a la biblioteca
   const cl = location.hash.match(/^#\/aula\/([\w-]+)\/?$/);
   if(cl){ cerrarLector(); abrirClase(cl[1]); rutaPrevia = location.hash; return; }
   const claseGuardada = leer("aula-clase", null);
   if(claseGuardada && (location.hash==="" || location.hash==="#/" || location.hash==="#")){ location.replace("#/aula/"+claseGuardada); return; }
-  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|parejas|escalera|series|mas|donde|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
+  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|parejas|litros|escalera|series|mas|donde|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   if(typeof cerrarHerramienta==="function") cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
@@ -3457,7 +3512,7 @@ if("serviceWorker" in navigator && (location.protocol==="https:" || location.hos
    Entonces las fichas de las herramientas no hacen nada. Si pasa, se borran las copias guardadas del código
    (los PDF guardados se conservan) y se recarga una vez; si aun así falta algo, se avisa en pantalla. */
 const PIEZAS = ["abrirHerramienta", "cerrarHerramienta", "iniciarRegletas", "iniciarBombo", "iniciarRuta", "iniciarFamilias",
-                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "iniciarEscondido", "iniciarCien", "iniciarReloj", "iniciarDinero", "iniciarMultiplicar", "iniciarAviones", "iniciarSerpiente", "iniciarParejas", "iniciarEscalera", "iniciarSeries", "iniciarMas", "iniciarDonde", "delMazo"];
+                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "iniciarEscondido", "iniciarCien", "iniciarReloj", "iniciarDinero", "iniciarMultiplicar", "iniciarAviones", "iniciarSerpiente", "iniciarParejas", "iniciarLitros", "iniciarEscalera", "iniciarSeries", "iniciarMas", "iniciarDonde", "delMazo"];
 function codigoIncompleto(){ return PIEZAS.filter(n=> typeof window[n] !== "function"); }
 function avisarCodigo(){
   const a = $("avisoCodigo"); if(!a.hidden) return;
@@ -3518,6 +3573,7 @@ listo.then(repararCodigo).then(seguir=> seguir ? fetch("catalogo.json", {cache:"
 <script src="aviones.js"></script>
 <script src="serpiente.js"></script>
 <script src="parejas.js"></script>
+<script src="litros.js"></script>
 <script src="infantil.js"></script>
 </body>
 </html>

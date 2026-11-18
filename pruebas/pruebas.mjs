@@ -60,7 +60,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","aviones","serpiente","parejas","escalera","series","mas","donde","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","aviones","serpiente","parejas","litros","escalera","series","mas","donde","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -417,6 +417,33 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.click('.pj-num[data-i="0"]'); await p.click('.pj-num[data-i="1"]');
   for(const t of ["4", "4", "5", "✓"]) await p.click('#pjTeclado [data-t="'+t+'"]');
   exigir(/Hay 445 € en la hucha/.test(await p.textContent("#pjCuerpo")), "parejas: 270 + 30 + 145 no da 445");
+  // El litro: explorar (2 medios = 1 litro), ¿cuánto hay? con opciones y llenar la jarra justo
+  await p.evaluate(()=> localStorage.removeItem("aula-litros"));
+  await p.goto(WEB+"#/litros"); await p.waitForSelector("#vLitros:not([hidden]) .ap-opcion");
+  const textosLT = await p.evaluate(()=> [1, 2, 3, 4, 5, 6, 7, 8, 10].map(textoLT).join("|"));
+  exigir(textosLT === "un cuarto de litro|medio litro|tres cuartos de litro|1 litro|1 litro y cuarto|1 litro y medio|1 litro y tres cuartos|2 litros|2 litros y medio", "litros: cantidades mal escritas: "+textosLT);
+  const opcionesMalLT = await p.evaluate(()=>{ const mal = [];
+    for(const n of Object.keys(NIVELES_LT.cuanto)) for(const r of listaLT("cuanto", n)){ const o = opcionesLT(r), q = totalLT(r.envases);
+      if(o.filter(x=> x === q).length !== 1 || new Set(o).size !== o.length || o.length < 3 || o.some(x=> x <= 0)){ mal.push(n+" "+r.k+": "+o); break; } }
+    return mal; });
+  exigir(!opcionesMalLT.length, "litros: opciones mal hechas: "+opcionesMalLT.join("; "));
+  await p.evaluate(()=>{ LT.reto = {k:"x", envases:["l1", "l2", "l2"]}; LT.reto.opciones = [8, 6, 4, 12]; LT.hecho = false; LT.malas = []; LT.aviso = ""; pintarLitros(); });
+  await p.click('.ap-opcion[data-q="6"]');
+  exigir(/no es/.test(await p.textContent("#ltCuerpo")) && await p.isDisabled('.ap-opcion[data-q="6"]'), "litros: una respuesta mal no avisa");
+  await p.click('.ap-opcion[data-q="8"]');
+  exigir(/¡Sí!.*2 litros.*dos medios litros hacen 1 litro/.test(await p.textContent("#ltCuerpo")), "litros: 1 l + ½ l + ½ l no da 2 litros");
+  await accesibilidad(p);
+  await p.click('#vLitros .segmentos [data-modo="llenar"]'); await p.selectOption("#ltNivel", "n2");
+  await p.evaluate(()=>{ LT.reto = {k:"x", q:5}; LT.echado = []; LT.hecho = false; LT.aviso = ""; pintarLitros(); });
+  await p.click('.lt-boton[data-k="l1"]'); await p.click('.lt-boton[data-k="l2"]'); await p.click("#ltComprobar");
+  exigir(/Te has pasado/.test(await p.textContent("#ltCuerpo")), "litros: pasarse no avisa");
+  await p.click("#ltQuitar"); await p.click('.lt-boton[data-k="l4"]'); await p.click("#ltComprobar");
+  exigir(await p.evaluate(()=> LT.hecho) && /Justo 1 litro y cuarto/.test(await p.textContent("#ltCuerpo")), "litros: 1 l + ¼ l no llena 1 litro y cuarto");
+  await accesibilidad(p);
+  await p.click('#vLitros .segmentos [data-modo="explora"]');
+  await p.click('.lt-boton[data-k="l2"]'); await p.click('.lt-boton[data-k="l2"]');
+  exigir(/Hay 1 litro.*= 4 cuartos de litro = 2 medios litros/.test(await p.textContent("#ltCuerpo")), "litros: dos medios litros no hacen 1 litro al explorar");
+  await accesibilidad(p);
   // La serpiente de números: comerse el bueno la hace crecer, el malo no; las paredes la paran; se completa la serie
   await p.evaluate(()=> localStorage.removeItem("aula-serpiente"));
   await p.goto(WEB+"#/serpiente"); await p.waitForSelector("#vSerpiente:not([hidden]) .sp-cabeza");
@@ -461,6 +488,7 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
     for(const nivel of Object.keys(NIVELES_DN)) mazos.push(["dn-pagar-"+nivel, preciosDN(nivel, NIVELES_DN[nivel].max)]);
     for(const m of Object.keys(NIVELES_PJ)) for(const nivel of Object.keys(NIVELES_PJ[m])) mazos.push(["pj-"+m+"-"+nivel, listaPJ(m, nivel)]);
     for(const nivel of Object.keys(NIVELES_SP)) mazos.push(["sp-"+nivel, listaSP(nivel)]);
+    for(const m of ["cuanto", "llenar"]) for(const nivel of Object.keys(NIVELES_LT[m])) mazos.push(["lt-"+m+"-"+nivel, listaLT(m, nivel)]);
     for(const nivel of Object.keys(NIVELES_MX)) mazos.push(["mu-"+nivel, listaMX(nivel)], ["mu-dm-"+nivel, listaDoble(nivel)]);
     const fallos = [];
     for(const [clave, lista] of mazos){
@@ -597,7 +625,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "aviones.js", "serpiente.js", "parejas.js", "infantil.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "aviones.js", "serpiente.js", "parejas.js", "litros.js", "infantil.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));
@@ -655,6 +683,7 @@ await prueba("Las fichas en papel caben en un A4 con todos los niveles, sin ejer
     for(const n of Object.keys(MODOS)) c.push([`bingo ${n}`, `BO.modo="${n}";imprimirCartones()`]);
     for(const n of Object.keys(NIVELES_AV)) c.push([`aviones ${n}`, `AV.nivel="${n}";imprimirAviones()`]);
     for(const m of Object.keys(NIVELES_PJ)) for(const n of Object.keys(NIVELES_PJ[m])) c.push([`parejas ${m} ${n}`, `PJ.modo="${m}";PJ.nivel.${m}="${n}";imprimirParejas()`]);
+    for(const n of Object.keys(NIVELES_LT.cuanto)) c.push([`litros ${n}`, `LT.nivel.cuanto="${n}";imprimirLitros()`]);
     for(const n of Object.keys(NIVELES_SP)) c.push([`serpiente ${n}`, `SP.nivel="${n}";imprimirSerpiente()`]);
     return c;
   });

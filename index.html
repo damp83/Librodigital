@@ -957,8 +957,34 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
 .rd-cubo.nueva{background:#ffe0c7;box-shadow:inset 0 0 0 1.5px #c25a0c}
 .rd-piezas.llegan .nueva{animation:rdLlega .6s ease-out}
 @keyframes rdLlega{0%{transform:translateY(-30px) scale(.6);opacity:0}100%{transform:none;opacity:1}}
-.rd-piezas i.fuera{opacity:.3;position:relative}
-.rd-piezas i.fuera::after{content:"";position:absolute;inset:-2px;background:linear-gradient(45deg,transparent 44%,#b3261e 44% 56%,transparent 56%)}
+.rd-toca{padding:0;border:0;cursor:pointer;font:inherit;display:block}
+.rd-toca:hover,.rd-toca:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.rd-piezas.toca .rd-cubo{width:24px;height:24px}
+.rd-piezas.toca.cubos{grid-template-columns:repeat(5,24px);gap:5px}
+.rd-piezas.toca .rd-barra{width:18px}
+.rd-piezas.toca{gap:6px}
+.rd-piezas.toca .rd-toca{animation:rdInvita 1.4s ease-in-out infinite}
+@keyframes rdInvita{50%{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 45%,transparent),inset 0 0 0 1px rgba(0,0,0,.3)}}
+.rd-llevas{color:var(--muted);font-weight:600}
+.rd-libre{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;padding:12px 16px;border-radius:14px;background:var(--surface);border:2px solid var(--accent);font:700 28px var(--font-titulos)}
+.rd-libre > p{flex-basis:100%;margin:0;font:600 15px var(--font);color:var(--ink-2);text-align:center}
+.rd-libre input{width:4.2ch;padding:4px 8px;border-radius:10px;border:2.5px solid var(--line-strong);font:700 28px var(--font-titulos);text-align:center;background:var(--surface);color:var(--ink)}
+.rd-libre input:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+.rd-libre .rd-libre-aviso{flex-basis:100%;margin:0;color:#b3261e;font:600 15px var(--font);text-align:center}
+.rd-piezas .fuera{opacity:.3;position:relative}
+.rd-piezas .fuera::after{content:"";position:absolute;inset:-2px;background:linear-gradient(45deg,transparent 44%,#b3261e 44% 56%,transparent 56%)}
+/* la misma resta en vertical, con los tachados del cuaderno */
+.rd-vertical{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 18px;border-radius:14px;background:var(--surface);border:2px solid var(--line)}
+.rd-vertical > p{margin:0;font:600 14px var(--font-titulos);color:var(--muted)}
+.rd-v{display:flex;flex-direction:column;align-items:flex-end;font:700 clamp(30px,5vh,44px)/1 var(--font-titulos);font-variant-numeric:tabular-nums}
+.rd-v-fila{display:flex;align-items:flex-end}
+.rd-v-c{position:relative;display:inline-block;width:1.15em;text-align:center}
+.rd-v-c s{color:var(--muted);text-decoration-color:#b3261e;text-decoration-thickness:3px}
+.rd-v-c i{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font:700 .5em var(--font-titulos);font-style:normal;color:#b3261e;white-space:nowrap}
+.rd-v-fila:first-child{margin-top:.55em}
+.rd-v-signo{margin-right:.15em;color:#b3261e}
+.rd-v-res{border-top:3px solid var(--ink);color:var(--ok);padding-top:4px;margin-top:4px}
+.rd-v-nota{margin:0;font-size:15px;color:var(--ink-2)}
 @media (max-width:700px){
   .rd-cuenta{gap:6px;font-size:18px}
   .rd-izq{gap:8px 4px}
@@ -2482,7 +2508,8 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
   <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vRdTit">La resta descompuesta</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
   <div class="reg-barra">
     <label class="b-select"><span>Nivel</span><select id="rsNivel"></select></label>
-    <span class="pi-ayudas" role="group" aria-label="Ayudas"><button class="chip" id="rsMaterial" aria-pressed="true">Material</button></span>
+    <span class="pi-ayudas" role="group" aria-label="Ayudas"><button class="chip" id="rsMaterial" aria-pressed="true">Material</button><button class="chip" id="rsDescomponer" aria-pressed="true">Escribir la descomposición</button></span>
+    <button class="bt" id="rsLibre" aria-pressed="false">✏️ Escribir una resta</button>
     <div class="reg-acc"><button class="icbtn" id="rsImprimir" data-icon="imprimir" aria-label="Imprimir la ficha" title="Imprimir la ficha"></button><button class="icbtn" id="rsPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="ap-zona" id="rsCuerpo"></div><div class="pi-teclado" id="rsTeclado" role="group" aria-label="Escribir un número" hidden></div></div>

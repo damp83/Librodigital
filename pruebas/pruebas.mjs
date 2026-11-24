@@ -459,11 +459,29 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.click('[data-d="si"]');
   exigir(/¡Sí llega!|¿llega\?/.test(await p.textContent("#rsCuerpo")) && await p.evaluate(()=> pasoRS().t === "decide"), "resta: decir que 2 − 7 se puede no avisa");
   await p.click('[data-d="no"]');
+  exigir(await p.locator(".rd-toca.rd-barra").count() === 5 && !(await p.isVisible("#rsTeclado")), "resta: no se pide tocar una barra para romperla");
+  await p.click(".rd-toca.rd-barra >> nth=0");
   exigir(await p.locator(".rd-cubo.nueva").count() === 10 && await p.locator(".rd-barra").count() === 4, "resta: al romper la decena no llegan 10 cubitos a las unidades");
   await accesibilidad(p);
-  for(const v of [40, 12, 5, 20, 25]) await teclearRS(v);
+  for(const v of [40, 12]) await teclearRS(v);
+  exigir(await p.locator(".rd-toca.rd-cubo").count() === 12, "resta: no se pide tocar los cubitos que se quitan");
+  for(let k=0; k<7; k++) await p.click(".rd-toca.rd-cubo >> nth=0");
+  exigir(await p.locator(".rd-cubo.fuera").count() === 7 && await p.isVisible("#rsTeclado"), "resta: quitar 7 cubitos no los tacha");
+  await teclearRS(5);
+  for(let k=0; k<2; k++) await p.click(".rd-toca.rd-barra >> nth=0");
+  for(const v of [20, 25]) await teclearRS(v);
   exigir(/52 − 27 = 25!.*25 \+ 27 = 52/.test(await p.textContent("#rsCuerpo")), "resta: 52 − 27 no termina en 25");
+  exigir(/el 5 pasa a 4 y el 2 pasa a 12/.test(await p.textContent(".rd-vertical")), "resta: la cuenta en vertical no enseña los tachados");
   await accesibilidad(p);
+  // modo libre (la resta que escribe la maestra) y sin escribir la descomposición
+  await p.click("#rsLibre"); await p.fill("#rsLibreA", "27"); await p.fill("#rsLibreB", "52"); await p.click('#rsLibreForm [type="submit"]');
+  exigir(/mayor que el segundo/.test(await p.textContent("#rsCuerpo")), "resta libre: no avisa si el primero es menor");
+  await accesibilidad(p);
+  await p.fill("#rsLibreA", "403"); await p.fill("#rsLibreB", "158"); await p.click('#rsLibreForm [type="submit"]');
+  exigir(await p.evaluate(()=> RS.plan.a === 403 && RS.plan.b === 158 && RS.reto.libre), "resta libre: no empieza la resta escrita");
+  await p.click("#rsDescomponer");
+  exigir(await p.evaluate(()=> pasoRS().t === "decide" && RS.hechas[0] === 400), "resta: sin escribir la descomposición no se empieza en «¿se puede quitar?»");
+  await p.click("#rsDescomponer");
   // La serpiente de números: comerse el bueno la hace crecer, el malo no; las paredes la paran; se completa la serie
   await p.evaluate(()=> localStorage.removeItem("aula-serpiente"));
   await p.goto(WEB+"#/serpiente"); await p.waitForSelector("#vSerpiente:not([hidden]) .sp-cabeza");

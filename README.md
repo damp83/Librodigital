@@ -237,9 +237,12 @@ Su entrada del catálogo y su portada se quitan solas.
     - *La resta descompuesta* (`#/resta`, en `resta.js`): la resta con el formato del aula: se descomponen
       los dos números (52 = 50 + 2, − 27 = 20 + 7), después de la doble raya se transforma el minuendo si no
       llega (40 + 12: se rompe una decena), se resta cada orden (20 + 5) y se junta (25). Antes de romper pregunta
-      «¿puedes quitar 7 a 2?». Debajo, el material base 10 (placas, barras y cubitos) enseña el traspaso: la
-      barra se convierte en 10 cubitos (o la placa en 10 barras), lo que llega se ve en otro color y al restar se
-      tachan las piezas. Niveles: sin llevada, con llevada, tres cifras con una y con dos llevadas, y con ceros
+      «¿puedes quitar 7 a 2?». Debajo, el material base 10 (placas, barras y cubitos) enseña el traspaso: el
+      alumno toca la barra que rompe y la ve convertirse en 10 cubitos (o la placa en 10 barras), lo que llega se ve
+      en otro color, y al restar toca una a una las piezas que quita. Al terminar, la misma resta aparece en
+      vertical, como en el cuaderno, con los tachados (el 5 pasa a 4 y el 2 a 12). *Escribir una resta*: la maestra escribe
+      cualquier resta (hasta 999, la del libro o la de la pizarra) y la herramienta la guía igual. *Escribir la
+      descomposición* (apagado): la descomposición sale hecha y se empieza en «¿se puede quitar?». Niveles: sin llevada, con llevada, tres cifras con una y con dos llevadas, y con ceros
       (300 − 127: primero se rompe una centena y luego una decena). Ficha en papel con el mismo formato.
     - *El litro* (`#/litros`, en `litros.js`): litro, medio litro y cuarto de litro con jarras medidoras de
       1 l (marcas de ¼, ½ y ¾) y envases que se vacían en ellas: botella de 1 l, botella de ½ l y vaso de ¼ l.

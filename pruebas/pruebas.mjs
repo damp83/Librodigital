@@ -19,7 +19,7 @@ const catalogo = leerJSON("catalogo.json"), ruta = leerJSON("ruta.json"), reto =
 const resultados = [];
 async function prueba(nombre, fn){
   try{ const detalle = await fn(); resultados.push({nombre, ok:true, detalle: detalle || ""}); console.log("✓ "+nombre+(detalle ? " — "+detalle : "")); }
-  catch(e){ resultados.push({nombre, ok:false, detalle: e.message}); console.log("✗ "+nombre+" — "+e.message); }
+  catch(e){ resultados.push({nombre, ok:false, detalle: e.message}); console.log("✗ "+nombre+" — "+e.message); if(process.env.PILA) console.log(e.stack); }
 }
 const exigir = (cond, msg) => { if(!cond) throw new Error(msg); };
 
@@ -60,7 +60,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","aviones","serpiente","parejas","litros","escalera","series","mas","donde","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","aviones","serpiente","parejas","litros","resta","escalera","series","mas","donde","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -444,6 +444,26 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.click('.lt-boton[data-k="l2"]'); await p.click('.lt-boton[data-k="l2"]');
   exigir(/Hay 1 litro.*= 4 cuartos de litro = 2 medios litros/.test(await p.textContent("#ltCuerpo")), "litros: dos medios litros no hacen 1 litro al explorar");
   await accesibilidad(p);
+  // La resta descompuesta: 52 − 27 con el formato 50 + 2 ‖ 40 + 12 → 20 + 5 → 25; con ceros, dos roturas
+  await p.evaluate(()=> localStorage.removeItem("aula-resta"));
+  await p.goto(WEB+"#/resta"); await p.waitForSelector("#vResta:not([hidden]) .rd-caja");
+  const listasRS = await p.evaluate(()=> Object.keys(NIVELES_RS).map(n=> [n, listaRS(n)]).filter(([, l])=> l.length < 20 || l.some(r=> r.b >= r.a)).map(([n, l])=> n+" ("+l.length+")"));
+  exigir(!listasRS.length, "resta: niveles con pocos retos o mal hechos: "+listasRS.join(", "));
+  const plan300 = await p.evaluate(()=>{ const p = planRS(300, 127); return [p.fin.join("+"), p.res.join("+"), p.eventos.length].join(" "); });
+  exigir(plan300 === "200+90+10 100+70+3 2", "resta: 300 − 127 no se descompone como 200 + 90 + 10 → 100 + 70 + 3: "+plan300);
+  await p.evaluate(()=>{ RS.reto = {k:"x", a:52, b:27}; RS.plan = planRS(52, 27); RS.paso = 0; RS.escrito = ""; RS.aviso = ""; RS.fallos = 0; pintarResta(); });
+  const teclearRS = async v=>{ for(const t of [...String(v), "✓"]) await p.click('#rsTeclado [data-t="'+t+'"]'); };
+  await teclearRS(5);
+  exigir(/5 no es/.test(await p.textContent("#rsCuerpo")), "resta: escribir 5 en lugar de 50 no avisa");
+  for(const v of [50, 2, 20, 7]) await teclearRS(v);
+  await p.click('[data-d="si"]');
+  exigir(/¡Sí llega!|¿llega\?/.test(await p.textContent("#rsCuerpo")) && await p.evaluate(()=> pasoRS().t === "decide"), "resta: decir que 2 − 7 se puede no avisa");
+  await p.click('[data-d="no"]');
+  exigir(await p.locator(".rd-cubo.nueva").count() === 10 && await p.locator(".rd-barra").count() === 4, "resta: al romper la decena no llegan 10 cubitos a las unidades");
+  await accesibilidad(p);
+  for(const v of [40, 12, 5, 20, 25]) await teclearRS(v);
+  exigir(/52 − 27 = 25!.*25 \+ 27 = 52/.test(await p.textContent("#rsCuerpo")), "resta: 52 − 27 no termina en 25");
+  await accesibilidad(p);
   // La serpiente de números: comerse el bueno la hace crecer, el malo no; las paredes la paran; se completa la serie
   await p.evaluate(()=> localStorage.removeItem("aula-serpiente"));
   await p.goto(WEB+"#/serpiente"); await p.waitForSelector("#vSerpiente:not([hidden]) .sp-cabeza");
@@ -489,6 +509,7 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
     for(const m of Object.keys(NIVELES_PJ)) for(const nivel of Object.keys(NIVELES_PJ[m])) mazos.push(["pj-"+m+"-"+nivel, listaPJ(m, nivel)]);
     for(const nivel of Object.keys(NIVELES_SP)) mazos.push(["sp-"+nivel, listaSP(nivel)]);
     for(const m of ["cuanto", "llenar"]) for(const nivel of Object.keys(NIVELES_LT[m])) mazos.push(["lt-"+m+"-"+nivel, listaLT(m, nivel)]);
+    for(const nivel of Object.keys(NIVELES_RS)) mazos.push(["rd-"+nivel, listaRS(nivel)]);
     for(const nivel of Object.keys(NIVELES_MX)) mazos.push(["mu-"+nivel, listaMX(nivel)], ["mu-dm-"+nivel, listaDoble(nivel)]);
     const fallos = [];
     for(const [clave, lista] of mazos){
@@ -625,7 +646,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "aviones.js", "serpiente.js", "parejas.js", "litros.js", "infantil.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "aviones.js", "serpiente.js", "parejas.js", "litros.js", "resta.js", "infantil.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));
@@ -684,6 +705,7 @@ await prueba("Las fichas en papel caben en un A4 con todos los niveles, sin ejer
     for(const n of Object.keys(NIVELES_AV)) c.push([`aviones ${n}`, `AV.nivel="${n}";imprimirAviones()`]);
     for(const m of Object.keys(NIVELES_PJ)) for(const n of Object.keys(NIVELES_PJ[m])) c.push([`parejas ${m} ${n}`, `PJ.modo="${m}";PJ.nivel.${m}="${n}";imprimirParejas()`]);
     for(const n of Object.keys(NIVELES_LT.cuanto)) c.push([`litros ${n}`, `LT.nivel.cuanto="${n}";imprimirLitros()`]);
+    for(const n of Object.keys(NIVELES_RS)) c.push([`resta ${n}`, `RS.nivel="${n}";imprimirResta()`]);
     for(const n of Object.keys(NIVELES_SP)) c.push([`serpiente ${n}`, `SP.nivel="${n}";imprimirSerpiente()`]);
     return c;
   });

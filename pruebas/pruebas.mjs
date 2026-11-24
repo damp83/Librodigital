@@ -789,6 +789,7 @@ await prueba("Las fichas en papel caben en un A4 con todos los niveles, sin ejer
     for(const n of Object.keys(NIVELES_LT.cuanto)) c.push([`litros ${n}`, `LT.nivel.cuanto="${n}";imprimirLitros()`]);
     for(const n of Object.keys(NIVELES_RS)) c.push([`resta ${n}`, `RS.nivel="${n}";imprimirResta()`]);
     c.push(["problemas (la estación)", "imprimirProblemas()"]);
+    for(const n of Object.keys(NIVELES_PB)) c.push([`problemas 2 por cara ${n}`, `PB.nivel="${n}";imprimirDosPorCaraPB()`]);
     for(const n of Object.keys(NIVELES_SP)) c.push([`serpiente ${n}`, `SP.nivel="${n}";imprimirSerpiente()`]);
     return c;
   });

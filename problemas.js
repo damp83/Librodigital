@@ -15,11 +15,11 @@
    delMazo, barajar, apTeclado, pintarIconos, pantallaCompleta, hojaPapel, lanzarImpresion…).
    ===================================================================== */
 
-const PB = Object.assign({nivel:"semilla", forma:"tradicional"}, leer("aula-problemas", {}),
+const PB = Object.assign({nivel:"semilla", forma:"tradicional", papel:"estacion"}, leer("aula-problemas", {}),
   {reto:null, calc:{}, paso:1, herr:"datos", marcados:[], rodeada:false, corte:null, cajas:{}, chip:null, op:null, escrito:"", frases:null,
    aviso:"", tono:"", fallos:0, bien:0, ejemplo:false});
 let problemasLista = false;
-const guardarPB = () => guardar("aula-problemas", {nivel:PB.nivel, forma:PB.forma});
+const guardarPB = () => guardar("aula-problemas", {nivel:PB.nivel, forma:PB.forma, papel:PB.papel});
 const NIVELES_PB = {
   semilla:{txt:"● Semilla · problemas directos, sin llevar", marca:"● Semilla"},
   brote:{txt:"●● Brote · problemas directos, con llevadas", marca:"●● Brote"},
@@ -325,6 +325,8 @@ function iniciarProblemas(){
     $("pbNivel").innerHTML = Object.entries(NIVELES_PB).map(([k, v])=> '<option value="'+k+'">'+v.txt+'</option>').join("");
     $("pbNivel").onchange = e=>{ PB.nivel = e.target.value; guardarPB(); nuevoProblemaPB(); };
     $("pbImprimir").onclick = imprimirProblemas;
+    $("pbPapel").value = PB.papel === "dos" ? "dos" : "estacion";
+    $("pbPapel").onchange = e=>{ PB.papel = e.target.value; guardarPB(); };
     $("pbOtro").onclick = nuevoProblemaPB;
     apTeclado("pbTeclado", teclaPB);
     if(document.fullscreenEnabled) $("pbPantalla").onclick = ()=> pantallaCompleta("vProblemas"); else $("pbPantalla").hidden = true;
@@ -449,15 +451,32 @@ function tecladoProblemas(e){
 }
 
 /* ---------- Imprimir la estación: checklist, una ficha por nivel y el solucionario ---------- */
+/* El diagrama en papel: con nombres (Semilla), con huecos para los nombres (Brote) o en blanco (Árbol) */
+function diagPapelPB(r, nivel){
+  const tp = plantillaPB(r), caja = '<span class="hj-pb-hueco"></span>';
+  if(nivel === "semilla") return '<div class="hj-pb-barra"><span>'+tp.total+'</span>'+caja+'</div><div class="hj-pb-partes"><div class="hj-pb-barra"><span>'+tp.p1+'</span>'+caja+'</div><div class="hj-pb-barra"><span>'+tp.p2+'</span>'+caja+'</div></div>';
+  if(nivel === "arbol") return '<div class="hj-pb-barra blanco"><span class="gris">total</span></div><div class="hj-pb-barra blanco"><span class="gris">parte + parte (traza tú la línea que las separa)</span></div>';
+  return '<div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div><div class="hj-pb-partes"><div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div><div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div></div>';
+}
+const retoPapelPB = (r, nivel) => r.juntar ? plantillaPB(r).reto[0] : nivel === "arbol" ? "Inventa un problema de sumar que se resuelva con este mismo diagrama." : "Inventa otra pregunta con los mismos datos y respóndela.";
+const bloomPapelPB = l => l.map(b=> '<span class="hj-pb-bloom">'+b+'</span>').join("");
+/* Media ficha (para imprimir dos por cara): lo mismo que la ficha entera, más apretado */
+function mediaFichaPB(r, nivel){
+  const texto = textoPB(r, t=> t.tipo === "dato" ? '<b>'+t.txt+'</b>' : t.txt), bl = bloomPapelPB;
+  return '<div class="hj-pbm">'+
+    '<div class="hj-pbm-cab"><b>Resuelvo problemas</b><span class="hj-pbm-nivel">'+NIVELES_PB[nivel].marca+'</span><span class="hj-pbm-dato">Nombre: <i></i></span><span class="hj-pbm-dato corto">Fecha: <i></i></span></div>'+
+    '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["RECORDAR", "COMPRENDER"])+' 1 y 2. Lee. Subraya los datos y rodea la pregunta.</p><p class="hj-pbm-texto">'+texto+'</p></div>'+
+    '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["ANALIZAR"])+' 3 y 4. Escribe cada número en su sitio y pon <b>?</b> en lo que no sabes.</p><div class="hj-pb-diag hj-pbm-diag">'+diagPapelPB(r, nivel)+'</div></div>'+
+    '<div class="hj-pbm-tres"><div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 5. ¿Qué hago?</p><p class="hj-pb-ops"><span>+ sumo</span><span>− resto</span></p></div>'+
+      '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 6. Calculo.</p><table class="hj-pb-du"><tr><th>D</th><th>U</th></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr class="res"><td></td><td></td></tr></table></div>'+
+      '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["EVALUAR"])+' 8. Compruebo.</p><p class="hj-pb-si">SÍ &nbsp; NO</p><p class="hj-pb-si">Así: <span class="hj-pb-linea corta"></span></p></div></div>'+
+    '<div class="hj-pbm-dos"><div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 7. La solución con una frase.</p><span class="hj-pb-linea"></span></div>'+
+      '<div class="hj-pb-caja pb-reto"><p class="hj-pb-tit">'+bl(["CREAR"])+' ★ '+(r.juntar ? retoPapelPB(r, nivel) : nivel === "arbol" ? "Inventa un problema de sumar con este diagrama." : "Inventa otra pregunta con estos datos.")+'</p><span class="hj-pb-linea"></span></div></div>'+
+    '<div class="hj-pb-mini hj-pbm-mini">'+["Leo", "Subrayo", "Diagrama", "Datos", "Operación", "Calculo", "Solución", "Compruebo"].map((t, i)=> '<span><i></i>'+(i + 1)+'. '+t+'</span>').join("")+'</div></div>';
+}
 function fichaPapelPB(r, nivel, pagina, paginas){
   const tp = plantillaPB(r), texto = textoPB(r, t=> t.tipo === "dato" ? '<b>'+t.txt+'</b>' : t.txt);
-  const bl = l => l.map(b=> '<span class="hj-pb-bloom">'+b+'</span>').join("");
-  const caja = '<span class="hj-pb-hueco"></span>';
-  let diag;
-  if(nivel === "semilla") diag = '<div class="hj-pb-barra"><span>'+tp.total+'</span>'+caja+'</div><div class="hj-pb-partes"><div class="hj-pb-barra"><span>'+tp.p1+'</span>'+caja+'</div><div class="hj-pb-barra"><span>'+tp.p2+'</span>'+caja+'</div></div>';
-  else if(nivel === "arbol") diag = '<div class="hj-pb-barra blanco"><span class="gris">total</span></div><div class="hj-pb-barra blanco"><span class="gris">parte + parte (traza tú la línea que las separa)</span></div>';
-  else diag = '<div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div><div class="hj-pb-partes"><div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div><div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div></div>';
-  const reto = r.juntar ? tp.reto[0] : nivel === "arbol" ? "Inventa un problema de sumar que se resuelva con este mismo diagrama." : "Inventa otra pregunta con los mismos datos y respóndela.";
+  const bl = bloomPapelPB, diag = diagPapelPB(r, nivel), reto = retoPapelPB(r, nivel);
   const lineas = n => Array(n).fill('<span class="hj-pb-linea"></span>').join("");
   const mini = '<div class="hj-pb-mini">'+PASOS_PB.slice(1).map((s, i)=> '<span><i></i>'+(i + 1)+'. '+s.txt+'</span>').join("")+'</div>';
   return hojaPapel({titulo:"Resuelvo problemas", sub:"Sigue los 8 pasos de la checklist.", eti:NIVELES_PB[nivel].marca, pagina, paginas, datos:[["Nombre", "", 3], ["Fecha", "", 1]],
@@ -480,7 +499,18 @@ function solucionPB(r, nivel){
     '<li>Solución: '+tp.sol.replace("#", x)+'</li>'+
     '<li>Comprobación: '+(r.juntar ? x+" − "+r.b+" = "+r.a : r.a+" + "+x+" = "+r.t)+' ✓ · Reto: '+(r.juntar ? r.t+" + "+tp.reto[1]+" = "+(r.t + tp.reto[1]) : nivel === "arbol" ? "ej. «"+tp.p1+": "+r.a+"; "+tp.p2+": "+x+". ¿Cuántos son en total?»" : "respuesta libre")+'.</li></ul></div>';
 }
+/* Dos fichas por cara: 4 fichas del nivel elegido en dos caras (para imprimir a doble cara) y el solucionario */
+function imprimirDosPorCaraPB(){
+  const n = nivelPB(), lista = listaPB(n), retos = Array.from({length:4}, ()=> Object.assign({}, delMazo("pb-"+n, lista)));
+  const cara = (i, pagina) => hojaPapel({titulo:"Resuelvo problemas", sub:"Sigue los 8 pasos de la checklist. Dos fichas por cara: recorta por la línea.", eti:NIVELES_PB[n].marca, pagina, paginas:3,
+    cuerpo:'<div class="hj-pbm-hoja">'+mediaFichaPB(retos[i], n)+'<div class="hj-pbm-corte" aria-hidden="true">✂</div>'+mediaFichaPB(retos[i + 1], n)+'</div>'});
+  $("impresion").innerHTML = (cara(0, 1)+cara(2, 2)).replace(/<section class="hoja/g, '<section class="hoja hj-compacta')+
+    hojaPapel({titulo:"Solucionario", sub:"Las cuatro fichas, en orden.", eti:"Para el docente", pagina:3, paginas:3, docente:true,
+      cuerpo:retos.map((r, i)=> solucionPB(r, n).replace('<p class="hj-pb-sol-tit">', '<p class="hj-pb-sol-tit">Ficha '+(i + 1)+' · ')).join("")});
+  lanzarImpresion();
+}
 function imprimirProblemas(){
+  if(PB.papel === "dos") return imprimirDosPorCaraPB();
   const niveles = ["semilla", "brote", "arbol"], retos = niveles.map(n=> Object.assign({}, delMazo("pb-"+n, listaPB(n))));
   const paginas = 5;
   const check = '<div class="hj-pb-check">'+PASOS_PB.slice(1).map((s, i)=> '<div><i></i><span><b>'+(i + 1)+'. '+s.txt+'</b><br>'+s.sub+'</span></div>').join("")+'</div>'+

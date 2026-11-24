@@ -12,7 +12,7 @@
    ===================================================================== */
 
 const RS = Object.assign({nivel:"n2", material:true}, leer("aula-resta", {}),
-  {reto:null, plan:null, paso:0, escrito:"", aviso:"", tono:"", fallos:0, bien:0, hechas:{}});
+  {reto:null, plan:null, paso:0, escrito:"", aviso:"", tono:"", fallos:0, bien:0, hechas:{}, quitados:{}});
 let restaLista = false;
 const guardarRS = () => guardar("aula-resta", {nivel:RS.nivel, material:RS.material});
 const NIVELES_RS = {
@@ -31,7 +31,8 @@ function planRS(a, b){
   const romper = (de, a2)=>{
     const antes = [cur[de], cur[a2]];
     cur[de] -= pesos[de]; cur[a2] += pesos[de];
-    eventos.push({de, a:a2, tras:pasos.length - 1});   // se rompe en cuanto se termina el paso anterior
+    pasos.push({t:"romper", de, a:a2});   // el alumno toca la pieza que se rompe
+    eventos.push({de, a:a2, tras:pasos.length - 1});
     pasos.push({t:"caja", zona:"t", i:de, r:cur[de], antes:antes[0], de, a:a2});
     pasos.push({t:"caja", zona:"t", i:a2, r:cur[a2], antes:antes[1], de, a:a2});
   };
@@ -44,7 +45,10 @@ function planRS(a, b){
     }
   }
   const res = cur.map((v, k)=> v - db[k]);
-  for(let i = nd - 1; i >= 0; i--) pasos.push({t:"caja", zona:"r", i, r:res[i]});
+  for(let i = nd - 1; i >= 0; i--){
+    if(db[i]) pasos.push({t:"quitar", i, n:db[i] / pesos[i]});   // tocar las piezas que se quitan
+    pasos.push({t:"caja", zona:"r", i, r:res[i]});
+  }
   pasos.push({t:"final", r:a - b});
   return {a, b, nd, pesos, da, db, fin:cur, res, pasos, eventos, roturas:eventos.length};
 }
@@ -69,10 +73,39 @@ function listaRS(nivel){
 }
 function nuevoRetoRS(){
   const r = delMazo("rd-"+nivelRS(), listaRS(nivelRS()));
-  Object.assign(RS, {reto:r, plan:planRS(r.a, r.b), paso:0, escrito:"", aviso:"", tono:"", fallos:0, hechas:{}});
+  Object.assign(RS, {reto:r, plan:planRS(r.a, r.b), paso:0, escrito:"", aviso:"", tono:"", fallos:0, hechas:{}, quitados:{}});
   pintarResta();
 }
 const pasoRS = () => RS.plan.pasos[RS.paso];
+const piezaRS = (peso, plural) => ({100:["placa", "placas"], 10:["barra", "barras"], 1:["cubito", "cubitos"]})[peso][plural ? 1 : 0];
+/* Tocar una pieza del material: romperla (pasa al orden de la derecha) o quitarla al restar */
+function tocarPiezaRS(col, k){
+  const s = pasoRS(), p = RS.plan;
+  if(!s) return;
+  if(s.t === "romper" && col === s.de){
+    RS.paso++; RS.tono = "aviso";
+    RS.aviso = "¡Crac! 1 "+NOMBRES_RS[p.pesos[s.de]][0]+" = 10 "+NOMBRES_RS[p.pesos[s.a]][1]+". Pasan a las "+NOMBRES_RS[p.pesos[s.a]][1]+": escribe cómo queda el "+p.a+".";
+  }else if(s.t === "quitar" && col === s.i){
+    const l = RS.quitados[col] = RS.quitados[col] || [];
+    if(l.includes(k)) return;
+    l.push(k); RS.aviso = ""; RS.tono = "";
+    if(l.length >= s.n){
+      RS.paso++; RS.tono = "bien";
+      RS.aviso = "Has quitado "+s.n+" "+nombreRS(p.pesos[col], s.n)+". ¿Cuánto queda?";
+    }
+  }else return;
+  pintarResta();
+  const siguiente = pasoRS();
+  ($("rsCuerpo").querySelector(".rd-toca:not(.fuera)") || (siguiente && siguiente.t !== "decide" ? $("rsTeclado").querySelector("button") : $("rsCuerpo").querySelector("[data-d]")))?.focus();
+}
+/* Sin el material a la vista, romper y quitar se hacen solos */
+function sinMaterialRS(){
+  let s;
+  while(!RS.material && (s = pasoRS()) && (s.t === "romper" || s.t === "quitar")){
+    if(s.t === "quitar") RS.quitados[s.i] = Array.from({length:s.n}, (_, k)=> k);
+    RS.paso++;
+  }
+}
 const nombreRS = (p, n) => NOMBRES_RS[p][n === 1 ? 0 : 1];
 
 /* El estado del material: piezas de cada orden (y cuántas han llegado al romper) tras los pasos ya hechos */
@@ -89,7 +122,7 @@ function materialRS(){
 /* ---------- Responder ---------- */
 function teclaRS(t){
   const s = pasoRS();
-  if(!s || s.t === "decide") return;
+  if(!s || s.t === "decide" || s.t === "romper" || s.t === "quitar") return;
   if(t === "⌫"){ RS.escrito = RS.escrito.slice(0, -1); }
   else if(t !== "✓"){ if(RS.escrito.length < 4) RS.escrito += t; }
   else if(RS.escrito){
@@ -124,8 +157,7 @@ function decidirRS(dice){
     RS.paso++; RS.tono = s.puede ? "bien" : "aviso";
     RS.aviso = s.puede ? "¡Sí se puede! "+s.hay+" − "+s.quita+": no hace falta romper nada." :
       "No llega: "+s.hay+" es menos que "+s.quita+". Hay que romper una "+NOMBRES_RS[RS.plan.pesos[s.i - 1]][0]+
-      (RS.plan.fin[s.i - 1] !== undefined && RS.plan.da[s.i - 1] === 0 ? " (y como no hay, antes una "+NOMBRES_RS[RS.plan.pesos[s.i - 2]][0]+")" : "")+
-      ": mira el material. Escribe cómo queda el "+RS.plan.a+".";
+      (RS.plan.da[s.i - 1] === 0 && RS.plan.pesos[s.i - 2] ? ", pero no hay: primero se rompe una "+NOMBRES_RS[RS.plan.pesos[s.i - 2]][0] : "")+".";
   }else{
     RS.fallos++; RS.tono = "mal";
     RS.aviso = s.puede ? "Mira bien: hay "+s.hay+" y quitas "+s.quita+". ¡Sí llega!" : "Hay "+s.hay+" y hay que quitar "+s.quita+": ¿llega? Cuenta las "+nom+" del material.";
@@ -178,6 +210,7 @@ function cajaRS(zona, i){
 }
 function filaRS(zona){ return '<span class="rd-fila">'+RS.plan.pesos.map((_, i)=> cajaRS(zona, i)).join('<span class="rd-mas">+</span>')+'</span>'; }
 function pintarResta(){
+  sinMaterialRS();
   const c = $("rsCuerpo"), p = RS.plan, s = pasoRS(), fin = !s;
   $("rsNivel").value = nivelRS();
   $("rsMaterial").setAttribute("aria-pressed", RS.material);
@@ -196,16 +229,22 @@ function pintarResta(){
       '<div class="ap-opciones"><button class="ap-opcion texto" data-d="si">Sí, se puede</button><button class="ap-opcion texto" data-d="no">No, hay que romper</button></div>';
   }else if(s) h += '<p class="rd-que">'+queRS(s)+'</p>';
   h += '<p class="ap-explica '+(RS.aviso ? RS.tono : "rd-sin")+'" role="status">'+RS.aviso+'</p>';
-  if(fin) h += '<div class="pt-acciones"><button class="bt azul" id="rsOtra">Otra resta</button></div>';
+  if(fin) h += verticalRS()+'<div class="pt-acciones"><button class="bt azul" id="rsOtra">Otra resta</button></div>';
   if(RS.material) h += materialHTML();
   c.innerHTML = h;
-  $("rsTeclado").hidden = !s || s.t === "decide";
+  $("rsTeclado").hidden = !s || s.t !== "caja" && s.t !== "final";
+  c.querySelectorAll(".rd-toca").forEach(b=> b.onclick = ()=> tocarPiezaRS(+b.dataset.col, +b.dataset.k));
   c.querySelectorAll("[data-d]").forEach(b=> b.onclick = ()=> decidirRS(b.dataset.d === "si"));
   $("rsOtra")?.addEventListener("click", nuevoRetoRS);
 }
 const mayusRS = t => t[0].toUpperCase()+t.slice(1);
 function queRS(s){
   const p = RS.plan;
+  if(s.t === "romper") return "🔨 <b>Toca una "+piezaRS(p.pesos[s.de])+"</b> de las "+NOMBRES_RS[p.pesos[s.de]][1]+" para romperla en 10 "+NOMBRES_RS[p.pesos[s.a]][1]+".";
+  if(s.t === "quitar"){
+    const ya = (RS.quitados[s.i] || []).length;
+    return "Quita <b>"+s.n+" "+nombreRS(p.pesos[s.i], s.n)+"</b>: toca "+s.n+" "+piezaRS(p.pesos[s.i], s.n !== 1)+" <span class=\"rd-llevas\">("+ya+" de "+s.n+")</span>";
+  }
   if(s.t === "final") return "Junta lo que ha quedado: <b>"+p.res.join(" + ")+"</b>";
   if(s.zona === "a") return "Descompón el <b>"+p.a+"</b>: ¿cuánto valen sus "+NOMBRES_RS[p.pesos[s.i]][1]+"?";
   if(s.zona === "b") return "Descompón el <b>"+p.b+"</b>: ¿cuánto valen sus "+NOMBRES_RS[p.pesos[s.i]][1]+"?";
@@ -217,13 +256,33 @@ function queRS(s){
 function materialHTML(){
   const p = RS.plan, m = materialRS(), s = pasoRS();
   const pieza = {100:"rd-placa", 10:"rd-barra", 1:"rd-cubo"};
-  const quitando = i => p.pasos.findIndex(x=> x.zona === "r" && x.i === i) <= RS.paso;
-  return '<div class="rd-mat" role="img" aria-label="Material: '+p.pesos.map((w, i)=> m.cuenta[i]+" "+nombreRS(w, m.cuenta[i])).join(", ")+'">'+p.pesos.map((w, i)=>{
-    const n = m.cuenta[i], nuevas = Math.max(0, m.nuevas[i]), fuera = quitando(i) ? p.db[i] / w : 0;
-    const piezas = Array.from({length:n}, (_, k)=> '<i class="'+pieza[w]+(k >= n - nuevas ? " nueva" : "")+(k >= n - fuera ? " fuera" : "")+'"></i>').join("");
+  return '<div class="rd-mat" role="group" aria-label="Material: '+p.pesos.map((w, i)=> m.cuenta[i]+" "+nombreRS(w, m.cuenta[i])).join(", ")+'">'+p.pesos.map((w, i)=>{
+    const n = m.cuenta[i], nuevas = Math.max(0, m.nuevas[i]), quitadas = RS.quitados[i] || [];
+    const toca = s && ((s.t === "romper" && s.de === i) || (s.t === "quitar" && s.i === i));
+    const piezas = Array.from({length:n}, (_, k)=>{
+      const clase = pieza[w]+(k >= n - nuevas ? " nueva" : "")+(quitadas.includes(k) ? " fuera" : "");
+      return toca && !quitadas.includes(k) ? '<button class="rd-toca '+clase+'" data-col="'+i+'" data-k="'+k+'" aria-label="'+(s.t === "romper" ? "Romper esta "+piezaRS(w) : "Quitar este "+(w === 1 ? "cubito" : "trozo")+": "+piezaRS(w))+'"></button>' : '<i class="'+clase+'"></i>';
+    }).join("");
     const recien = p.eventos.some(e=> e.a === i && e.tras === RS.paso - 1) || (s?.zona === "t" && s.i === i);
-    return '<div class="rd-col'+(s?.i === i && s.t !== "final" ? " activa" : "")+'"><p>'+mayusRS(NOMBRES_RS[w][1])+' <b>'+n+'</b></p><div class="rd-piezas'+(w === 1 ? " cubos" : "")+(recien ? " llegan" : "")+'">'+piezas+'</div></div>';
+    return '<div class="rd-col'+(toca || (s?.i === i && s.t !== "final") ? " activa" : "")+'"><p>'+mayusRS(NOMBRES_RS[w][1])+' <b>'+n+'</b></p><div class="rd-piezas'+(w === 1 ? " cubos" : "")+(toca ? " toca" : "")+(recien ? " llegan" : "")+'">'+piezas+'</div></div>';
   }).join("")+'</div>';
+}
+/* La misma resta en vertical, como en el cuaderno: las cifras que cambian al romper quedan tachadas */
+function verticalRS(){
+  const p = RS.plan, cifra = (v, i)=> v / p.pesos[i];
+  const res = String(p.a - p.b).padStart(p.nd, " ");
+  const cambios = [];
+  const arriba = p.pesos.map((_, i)=>{
+    const d = cifra(p.da[i], i), f = cifra(p.fin[i], i);
+    if(d === f) return '<span class="rd-v-c">'+d+'</span>';
+    cambios.push("el "+d+" pasa a "+f);
+    return '<span class="rd-v-c"><i>'+f+'</i><s>'+d+'</s></span>';
+  }).join("");
+  const abajo = p.pesos.map((_, i)=> '<span class="rd-v-c">'+(p.b >= p.pesos[i] || i === p.nd - 1 ? cifra(p.db[i], i) : "")+'</span>').join("");
+  return '<div class="rd-vertical"><p>En el cuaderno, en vertical:</p><div class="rd-v" aria-label="'+p.a+' menos '+p.b+' en vertical: '+(cambios.length ? cambios.join(", ")+"; " : "")+'resultado '+(p.a - p.b)+'">'+
+    '<div class="rd-v-fila">'+arriba+'</div><div class="rd-v-fila rd-v-menos"><span class="rd-v-signo">−</span>'+abajo+'</div>'+
+    '<div class="rd-v-fila rd-v-res">'+[...res].map(c=> '<span class="rd-v-c">'+c.trim()+'</span>').join("")+'</div></div>'+
+    (cambios.length ? '<p class="rd-v-nota">Lo tachado es lo que has roto: '+cambios.join(" y ")+'.</p>' : '<p class="rd-v-nota">No ha hecho falta romper nada.</p>')+'</div>';
 }
 function tecladoResta(e){
   if(/^(select|input)$/i.test(e.target.tagName) || e.ctrlKey || e.metaKey || e.altKey) return;

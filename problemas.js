@@ -527,7 +527,7 @@ function imprimirDosPorCaraPB(){
     cuerpo:'<div class="hj-pbm-hoja">'+mediaFichaPB(retos[i], n)+'<div class="hj-pbm-corte" aria-hidden="true">✂</div>'+mediaFichaPB(retos[i + 1], n)+'</div>'});
   $("impresion").innerHTML = (cara(0, 1)+cara(2, 2)).replace(/<section class="hoja/g, '<section class="hoja hj-compacta')+
     hojaPapel({titulo:"Solucionario", sub:"Las cuatro fichas, en orden.", eti:"Para el docente", pagina:3, paginas:3, docente:true,
-      cuerpo:retos.map((r, i)=> solucionPB(r, n).replace('<p class="hj-pb-sol-tit">', '<p class="hj-pb-sol-tit">Ficha '+(i + 1)+' · ')).join("")});
+      cuerpo:'<div class="hj-compacta-sol">'+retos.map((r, i)=> solucionPB(r, n).replace('<p class="hj-pb-sol-tit">', '<p class="hj-pb-sol-tit">Ficha '+(i + 1)+' · ')).join("")+'</div>'});
   lanzarImpresion();
 }
 function imprimirProblemas(){

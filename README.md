@@ -248,7 +248,9 @@ Su entrada del catálogo y su portada se quitan solas.
       (42 contextos con números distintos, la mitad de sumar y la mitad de restar) que no se repiten.
       Al imprimir se elige el papel: *la estación* (la checklist, una ficha de cada nivel con el formato de la
       estación y el solucionario) o *2 fichas por cara* (4 fichas del nivel elegido en media hoja cada una, con línea
-      de corte, para imprimir a doble cara, y su solucionario).
+      de corte, para imprimir a doble cara, y su solucionario). Y el *cálculo* de la ficha: *tradicional* (D U, con una fila
+      para lo que te llevas o rompes) o *por descomposición* (27 = 20 + 7… y, si hay que romper una decena,
+      52 = 50 + 2 ‖ 40 + 12); el solucionario lo escribe de la forma elegida.
     - *La resta descompuesta* (`#/resta`, en `resta.js`): la resta con el formato del aula: se descomponen
       los dos números (52 = 50 + 2, − 27 = 20 + 7), después de la doble raya se transforma el minuendo si no
       llega (40 + 12: se rompe una decena), se resta cada orden (20 + 5) y se junta (25). Antes de romper pregunta

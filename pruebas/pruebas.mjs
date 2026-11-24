@@ -538,7 +538,7 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   for(const t of [...String(rPB.t + deltaPB), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
   exigir(await p.evaluate(()=> PB.paso === 10) && /Problema resuelto/.test(await p.textContent("#pbCuerpo")), "problemas: no se llega al final del problema");
   await accesibilidad(p);
-  await p.evaluate(()=>{ PB.nivel = "arbol"; nuevoProblemaPB(); PB.reto = listaPB("arbol").find(r=> !r.juntar && r.a % 10 > r.t % 10); PB.paso = 3; pintarProblemas(); });
+  await p.evaluate(()=>{ PB.nivel = "arbol"; nuevoProblemaPB(); PB.reto = listaPB("arbol").find(r=> !r.juntar && r.a % 10 > r.t % 10); PB.forma = "tradicional"; PB.paso = 3; pintarProblemas(); });
   await p.click("#pbCortar");
   exigir(await p.evaluate(()=> PB.paso === 4 && PB.corte !== null), "problemas: en el Árbol no se traza la división");
   await p.evaluate(()=>{ PB.paso = 6; PB.calc = {}; pintarProblemas(); });
@@ -547,6 +547,15 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   for(const t of [String(xA % 10), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
   exigir(/Has roto una decena/.test(await p.textContent("#pbCuerpo")) && await p.locator(".pb-du s").count() === 2, "problemas: la resta llevando no enseña la decena rota");
   await accesibilidad(p);
+  // la resta por descomposición: 52 = 50 + 2 ‖ 40 + 12 → d 40 − 20, u 12 − 7 → 20 + 5 = 25
+  await p.click('[data-forma="partes"]');
+  exigir(await p.locator(".pb-du.resta .pb-rompe").count() === 1, "problemas: la resta por descomposición no enseña la rotura ‖");
+  const [mA, sA] = tA, dA = mA - mA % 10 - 10, uA = mA % 10 + 10;
+  for(const v of [dA, uA, dA - (sA - sA % 10), uA - sA % 10, xA]) for(const t of [...String(v), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  exigir(await p.evaluate(()=> PB.paso === 7), "problemas: la resta por descomposición no termina");
+  await p.evaluate(()=>{ PB.paso = 6; PB.calc = {}; pintarProblemas(); });
+  await accesibilidad(p);
+  await p.click('[data-forma="tradicional"]');
   await p.click("#pbResta"); await p.waitForSelector("#vResta:not([hidden]) .rd-caja");
   exigir(await p.evaluate(t=> RS.plan.a === t[0] && RS.plan.b === t[1], tA), "problemas: el botón no lleva la resta a La resta descompuesta");
   // La serpiente de números: comerse el bueno la hace crecer, el malo no; las paredes la paran; se completa la serie

@@ -335,9 +335,20 @@ function operacionPB(op){
 }
 const cuentaPB = r => r.juntar ? [r.a, r.b, "+"] : [r.t, r.a, "−"];
 /* El cálculo, casilla a casilla. Tradicional: primero las unidades (con la llevada) y luego las decenas.
-   Por partes (solo sumas): decenas con decenas (20 + 10 = 30), unidades con unidades (7 + 8 = 15) y se juntan. */
+   Por partes (descomposición): decenas con decenas (20 + 10 = 30), unidades con unidades (7 + 8 = 15) y se juntan.
+   En la resta, si no llegan las unidades, primero se rompe una decena: 52 = 50 + 2 ‖ 40 + 12 → 20 + 5 → 25. */
+const rompePB = r => !r.juntar && r.t % 10 < r.a % 10;
 function casillasPB(r){
   const [m, s] = cuentaPB(r), mu = m % 10, su = s % 10, md = m - mu, sd = s - su, x = incognitaPB(r);
+  if(!r.juntar && PB.forma === "partes"){
+    const rompe = rompePB(r), d1 = rompe ? md - 10 : md, u1 = rompe ? mu + 10 : mu;
+    return (rompe ? [
+      {id:"rd", r:d1, pista:mu+" − "+su+" no se puede: rompe una decena. "+md+" − 10 = ?"},
+      {id:"ru", r:u1, pista:"La decena rota pasa a las unidades: "+mu+" + 10 = ?", bien:"¡Bien! "+m+" = "+d1+" + "+u1+": sigue siendo "+m+"."}] : []).concat([
+      {id:"pd", r:d1 - sd, pista:"Resta las decenas: "+d1+" − "+sd+" = ?"},
+      {id:"pu", r:u1 - su, pista:"Resta las unidades: "+u1+" − "+su+" = ?"},
+      {id:"pt", r:x, pista:"Junta lo que queda: "+(d1 - sd)+" + "+(u1 - su)+" = ?"}]);
+  }
   if(r.juntar && PB.forma === "partes") return [
     {id:"pd", r:md + sd, pista:"Suma las decenas: "+md+" + "+sd+" = ?"},
     {id:"pu", r:mu + su, pista:"Suma las unidades: "+mu+" + "+su+" = ?"},
@@ -444,9 +455,20 @@ function pintarProblemas(){
   }else if(p === 6){
     const [m, s2, signo] = cuentaPB(r), act = casillaPB(), campo = id=> PB.calc[id] !== undefined ? '<span class="pb-hecho">'+PB.calc[id]+'</span>' :
       act && act.id === id ? '<span class="ap-campo activo'+(PB.tono === "mal" ? " mal" : "")+'">'+(PB.escrito || "?")+'</span>' : '';
-    if(r.juntar) h += '<div class="segmentos pb-formas" role="group" aria-label="Forma de calcular"><button data-forma="tradicional" aria-pressed="'+(PB.forma !== "partes")+'">Tradicional (D U)</button><button data-forma="partes" aria-pressed="'+(PB.forma === "partes")+'">Por partes (d + u)</button></div>';
+    h += '<div class="segmentos pb-formas" role="group" aria-label="Forma de calcular"><button data-forma="tradicional" aria-pressed="'+(PB.forma !== "partes")+'">Tradicional (D U)</button><button data-forma="partes" aria-pressed="'+(PB.forma === "partes")+'">'+(r.juntar ? "Por partes (d + u)" : "Descomposición (d − d, u − u)")+'</button></div>';
     h += '<div class="pb-calculo">';
-    if(r.juntar && PB.forma === "partes"){
+    if(!r.juntar && PB.forma === "partes"){
+      // 52 = 50 + 2 ‖ 40 + 12 / − 27 = 20 + 7 / d 40 − 20 / u 12 − 7 / 20 + 5 = 25
+      const mu = m % 10, su = s2 % 10, md = m - mu, sd = s2 - su, rompe = rompePB(r), hechoR = !rompe || PB.calc.ru !== undefined;
+      const d1 = rompe ? (PB.calc.rd !== undefined ? PB.calc.rd : "?") : md, u1 = rompe ? (PB.calc.ru !== undefined ? PB.calc.ru : "?") : mu;
+      h += '<table class="pb-du partes resta" aria-label="'+m+" menos "+s2+' por descomposición"><tbody>'+
+        '<tr><td></td><td class="pb-num">'+m+'</td><td class="pb-desc">= '+(rompe && PB.calc.rd !== undefined ? '<s>'+md+'</s>' : md)+' + '+(rompe && PB.calc.ru !== undefined ? '<s>'+mu+'</s>' : mu)+
+          (rompe ? ' <span class="pb-rompe">‖ '+(campo("rd") || '<span class="pb-hueco"></span>')+' + '+(campo("ru") || '<span class="pb-hueco"></span>')+'</span>' : '')+'</td></tr>'+
+        '<tr><td class="pb-signo">−</td><td class="pb-num">'+s2+'</td><td class="pb-desc">= '+sd+' + '+su+'</td></tr>'+
+        '<tr class="pb-linea"><td class="pb-letra">d</td><td>'+campo("pd")+'</td><td class="pb-ayuda">'+(hechoR ? d1+' − '+sd : '')+'</td></tr>'+
+        '<tr><td class="pb-letra">u <span class="pb-signo">+</span></td><td>'+campo("pu")+'</td><td class="pb-ayuda">'+(hechoR ? u1+' − '+su : '')+'</td></tr>'+
+        '<tr class="pb-linea pb-total"><td></td><td>'+campo("pt")+'</td><td></td></tr></tbody></table>';
+    }else if(r.juntar && PB.forma === "partes"){
       const mu = m % 10, su = s2 % 10;
       h += '<table class="pb-du partes" aria-label="'+m+" más "+s2+' por partes"><tbody>'+
         '<tr><td></td><td class="pb-num">'+m+'</td><td></td></tr><tr><td class="pb-signo">+</td><td class="pb-num">'+s2+'</td><td></td></tr>'+
@@ -463,7 +485,8 @@ function pintarProblemas(){
         '<tr class="pb-res"><td></td><td>'+campo("d")+'</td><td>'+campo("u")+'</td></tr></tbody></table>';
     }
     h += (!r.juntar && r.a % 10 > r.t % 10 ? '<button class="bt" id="pbResta">➖ Hacerla con La resta descompuesta</button>' : '')+'</div>';
-    if(act) h += '<p class="pb-cuenta">'+({u:"Empieza por las <b>unidades</b>.", d:"Ahora las <b>decenas</b>.", pd:"Suma las <b>decenas</b> (d).", pu:"Suma las <b>unidades</b> (u).", pt:"<b>Junta</b> las dos sumas."})[act.id]+'</p>';
+    if(act) h += '<p class="pb-cuenta">'+({u:"Empieza por las <b>unidades</b>.", d:"Ahora las <b>decenas</b>.", pd:(r.juntar ? "Suma" : "Resta")+" las <b>decenas</b> (d).", pu:(r.juntar ? "Suma" : "Resta")+" las <b>unidades</b> (u).", pt:"<b>Junta</b> "+(r.juntar ? "las dos sumas." : "lo que queda."),
+      rd:"<b>"+r.t % 10+" − "+r.a % 10+"</b> no se puede: <b>rompe una decena</b>. ¿Cuántas quedan en las decenas?", ru:"La decena rota pasa a las <b>unidades</b>: ¿cuántas hay ahora?"})[act.id]+'</p>';
   }else if(p === 7){
     h += '<p>¿Qué frase responde a la pregunta <b>«'+trozos.find(t=> t.tipo === "pregunta").txt+'»</b>?</p><div class="pb-frases">'+PB.frases.map((f, i)=> '<button class="ap-opcion texto pb-frase" data-fr="'+i+'">'+f.txt+'</button>').join("")+'</div>';
   }else if(p === 8){

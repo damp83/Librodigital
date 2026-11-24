@@ -240,7 +240,7 @@ Su entrada del catálogo y su portada se quitan solas.
       diagrama de barras, colocar los datos y la ? (avisa si un dato no va ahí), ¿sumo o resto? (¿falta el total?
       → sumo; ¿falta una parte? → resto), calcular casilla a casilla en la tabla D U (primero las unidades, con la
       llevada o la decena rota a la vista; la resta llevando se puede hacer con *La resta descompuesta*) o, en las sumas,
-      por partes como en el aula (d: 20 + 10 = 30, u: 7 + 8 = 15, 30 + 15 = 45), elegir la frase que responde a la pregunta, comprobar con la operación contraria y el reto
+      por partes como en el aula (d: 20 + 10 = 30, u: 7 + 8 = 15, 30 + 15 = 45; en la resta, por descomposición rompiendo la decena: 52 = 50 + 2 ‖ 40 + 12 → d 40 − 20, u 12 − 7 → 20 + 5 = 25), elegir la frase que responde a la pregunta, comprobar con la operación contraria y el reto
       CREAR. En todos los niveles hay problemas de sumar y de restar; lo que sube es la dificultad: ● Semilla
       (problemas directos sin llevar, diagrama con nombres), ●● Brote (directos con llevadas; el alumno decide dónde
       va cada dato) y ●●● Árbol (problemas que despistan: «perdió 15 y le quedan 27, ¿cuántas tenía?» se suma; «le

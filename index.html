@@ -916,6 +916,74 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
   .av-mandos{position:static;order:-1}
   .av-registro{display:none}
 }
+/* La resta descompuesta: 52 = 50 + 2 ‖ 40 + 12, y el material base 10 que se rompe */
+.rd-cuenta{display:flex;align-items:flex-start;gap:clamp(10px,2vw,26px);font:700 clamp(22px,3.6vh,36px)/1 var(--font-titulos)}
+.rd-izq{display:grid;grid-template-columns:auto auto auto;align-items:center;gap:10px}
+.rd-izq > .rd-num{text-align:right}
+.rd-izq .rd-fila,.rd-der .rd-fila{display:flex;align-items:center}
+.rd-menos{color:#b3261e}
+.rd-ig{color:var(--muted)}
+.rd-mas{margin:0 4px;color:var(--ink-2)}
+.rd-doble{align-self:stretch;width:9px;border-left:3px solid var(--ink);border-right:3px solid var(--ink);margin:2px 0 40px}
+.rd-der{display:grid;gap:10px;justify-items:start}
+.rd-der.apagada{opacity:.35}
+.rd-raya{width:100%;height:0;border-top:3px solid var(--ink)}
+.rd-junta{justify-self:center;margin-top:2px}
+.rd-caja{position:relative;display:inline-grid;place-items:center;min-width:2.2ch;height:1.6em;padding:0 .25em;border-radius:10px;border:2.5px solid var(--line-strong);background:var(--surface);color:var(--ink)}
+.rd-caja.vacia{border-style:dashed;color:transparent}
+.rd-caja.hecha{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.rd-caja.copia{border-color:var(--line-strong);color:var(--ink-2);background:var(--surface-2)}
+.rd-caja.cambiada{border-color:#c25a0c;color:#8a3d05;background:#fff1e6}
+.rd-caja.activa{border-color:var(--accent);color:var(--accent);background:var(--brand-soft);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.rd-caja.activa.mal{border-color:#e3261f;color:#b3140f;background:#fde2e1}
+.rd-caja s{position:absolute;top:-.95em;left:50%;transform:translateX(-50%);font-size:.55em;color:#b3261e;text-decoration-thickness:2px;white-space:nowrap}
+.rd-caja.grande{min-width:3ch;border-width:3px}
+.rd-que{margin:0;font-size:clamp(17px,2.4vh,22px)}
+.ap-explica.rd-sin{visibility:hidden;min-height:1.5em}
+.rd-mat{display:flex;gap:0;border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--surface);max-width:100%}
+.rd-col{padding:8px 10px;min-width:120px;border-right:2px solid var(--ink)}
+.rd-col:last-child{border-right:0}
+.rd-col.activa{background:var(--brand-soft)}
+.rd-col p{margin:0 0 6px;font:600 14px var(--font-titulos);color:var(--ink-2);text-align:center}
+.rd-col p b{color:var(--ink);font-size:17px}
+.rd-piezas{display:flex;flex-wrap:wrap;gap:3px;align-items:flex-end;justify-content:center;max-width:260px}
+.rd-piezas.cubos{display:grid;grid-template-columns:repeat(5,14px);gap:3px}
+.rd-placa{width:60px;height:60px;border-radius:3px;background:#f57c22;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
+  background-image:repeating-linear-gradient(90deg,transparent 0 5px,rgba(0,0,0,.2) 5px 6px),repeating-linear-gradient(0deg,transparent 0 5px,rgba(0,0,0,.2) 5px 6px)}
+.rd-barra{width:11px;height:60px;border-radius:3px;background:#f57c22;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);
+  background-image:repeating-linear-gradient(0deg,transparent 0 5px,rgba(0,0,0,.2) 5px 6px)}
+.rd-cubo{width:14px;height:14px;border-radius:3px;background:#fff;box-shadow:inset 0 0 0 1.5px #6b7686}
+.rd-barra.nueva{background-color:#ffb877}
+.rd-cubo.nueva{background:#ffe0c7;box-shadow:inset 0 0 0 1.5px #c25a0c}
+.rd-piezas.llegan .nueva{animation:rdLlega .6s ease-out}
+@keyframes rdLlega{0%{transform:translateY(-30px) scale(.6);opacity:0}100%{transform:none;opacity:1}}
+.rd-piezas i.fuera{opacity:.3;position:relative}
+.rd-piezas i.fuera::after{content:"";position:absolute;inset:-2px;background:linear-gradient(45deg,transparent 44%,#b3261e 44% 56%,transparent 56%)}
+@media (max-width:700px){
+  .rd-cuenta{gap:6px;font-size:18px}
+  .rd-izq{gap:8px 4px}
+  .rd-mas{margin:0 1px}
+  .rd-doble{width:6px;border-width:2px}
+  .rd-col{min-width:0;padding:6px}
+  .rd-placa{width:44px;height:44px}
+}
+/* Ficha en papel de la resta descompuesta */
+.hj-rds{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:repeat(4,1fr);gap:3mm 5mm;height:100%}
+.hj-rds.tres{grid-template-columns:1fr;grid-template-rows:repeat(5,1fr)}
+.hj-rd{position:relative;display:flex;align-items:center;justify-content:center;border:.35mm solid var(--linea);border-radius:3mm;padding:2mm 1.5mm 2mm 7mm;min-height:0;min-width:0}
+.hj-rd > .hj-n{position:absolute;left:2mm;top:2mm}
+.hj-rd-cuenta{display:flex;align-items:flex-start;gap:2mm;font:700 12pt var(--font-titulos);white-space:nowrap}
+.hj-rd-izq{display:grid;grid-template-columns:auto auto auto;align-items:center;gap:2mm 1.5mm}
+.hj-rd-izq b{text-align:right}
+.hj-rd-doble{align-self:stretch;width:1.6mm;border-left:.5mm solid #1c2330;border-right:.5mm solid #1c2330;margin-bottom:12mm}
+.hj-rd-der{display:flex;flex-direction:column;gap:2mm;align-items:flex-start}
+.hj-rd-der .hj-rd-raya{align-self:stretch;border-top:.5mm solid #1c2330}
+.hj-rd-res{align-self:center}
+.hj-rd .hj-caja{width:auto;min-width:10.5mm;height:7.5mm;line-height:7mm;font-size:11pt;margin:0;padding:0 .8mm}
+.hj-rd-izq > span,.hj-rd-der > span{display:flex;align-items:center;gap:.8mm}
+.hj-rds.tres .hj-rd .hj-caja{min-width:12mm}
+.hj-rds.tres .hj-rd-doble{margin-bottom:0}
+.hj-rd-flecha{margin:0 1.5mm;font-size:13pt}
 /* El litro: envases (botella de 1 l, de ½ l y vaso de ¼ l) y jarras medidoras de 1 l con marcas */
 .lt-envase{width:clamp(44px,6.5vh,72px);height:auto;display:block}
 .lt-borde{stroke:#1c2330;stroke-width:2.2;stroke-linejoin:round}
@@ -1905,6 +1973,10 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
           <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g fill="none" stroke="#c9d1dc" stroke-width="2"><rect x="6" y="20" width="70" height="14"/><rect x="6" y="40" width="70" height="14"/></g><rect x="6" y="20" width="35" height="14" fill="#cfe0ff"/><rect x="6" y="40" width="21" height="14" fill="#ffd9bf"/><rect x="78" y="18" width="10" height="38" fill="#1c2330"/><path d="M78 18h5v5h-5zM83 23h5v5h-5zM78 28h5v5h-5zM83 33h5v5h-5zM78 38h5v5h-5zM83 43h5v5h-5zM78 48h5v5h-5z" fill="#fff"/><path transform="translate(30 19) scale(.66)" fill="#1b5fd6" d="M22 12c0-.8-.7-1.3-1.5-1.3H15.2L10.6 3.5H8.4l2.3 7.2H5.9L4.1 8.3H2.6l1.1 3.7-1.1 3.7h1.5l1.8-2.4h4.8l-2.3 7.2h2.2l4.6-7.2h5.3c.8 0 1.5-.5 1.5-1.3z"/><path transform="translate(16 39) scale(.66)" fill="#f57c22" d="M22 12c0-.8-.7-1.3-1.5-1.3H15.2L10.6 3.5H8.4l2.3 7.2H5.9L4.1 8.3H2.6l1.1 3.7-1.1 3.7h1.5l1.8-2.4h4.8l-2.3 7.2h2.2l4.6-7.2h5.3c.8 0 1.5-.5 1.5-1.3z"/><rect x="24" y="62" width="24" height="24" rx="5" fill="#fff" stroke="#1c2330" stroke-width="2.5"/><circle cx="31" cy="69" r="2.6" fill="#1c2330"/><circle cx="41" cy="79" r="2.6" fill="#1c2330"/><rect x="54" y="62" width="24" height="24" rx="5" fill="#fff" stroke="#1c2330" stroke-width="2.5"/><circle cx="60" cy="68" r="2.6" fill="#1c2330"/><circle cx="66" cy="74" r="2.6" fill="#1c2330"/><circle cx="72" cy="80" r="2.6" fill="#1c2330"/></svg></span>
           <span class="herr-txt"><b>Carrera de aviones</b><span>Juego de dados para dos pilotos o contra la máquina: sumar los dados o repartirlos entre tus 3 aviones. Uno, dos o tres dados.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
         </a>
+        <a class="herr-ficha" href="#/resta">
+          <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g font-family="sans-serif" font-weight="700" font-size="11" fill="#1c2330"><text x="4" y="22">52=50+2</text><text x="4" y="42" fill="#b3261e">−27=20+7</text><text x="60" y="22" fill="#8a3d05">40+12</text></g><path d="M55 12v34M58 12v34" stroke="#1c2330" stroke-width="1.6"/><rect x="10" y="56" width="7" height="36" rx="1.5" fill="#f57c22"/><rect x="19" y="56" width="7" height="36" rx="1.5" fill="#f57c22"/><rect x="28" y="56" width="7" height="36" rx="1.5" fill="#f57c22"/><rect x="37" y="56" width="7" height="36" rx="1.5" fill="#f57c22" opacity=".35" stroke="#b3261e" stroke-dasharray="3 2"/><path d="M48 70h10m-4-4l4 4-4 4" stroke="#b3261e" stroke-width="2" fill="none"/><g fill="#ffe0c7" stroke="#c25a0c" stroke-width="1.2"><rect x="62" y="60" width="8" height="8" rx="1.5"/><rect x="72" y="60" width="8" height="8" rx="1.5"/><rect x="82" y="60" width="8" height="8" rx="1.5"/><rect x="62" y="70" width="8" height="8" rx="1.5"/><rect x="72" y="70" width="8" height="8" rx="1.5"/><rect x="82" y="70" width="8" height="8" rx="1.5"/></g><g fill="#fff" stroke="#6b7686" stroke-width="1.2"><rect x="62" y="80" width="8" height="8" rx="1.5"/><rect x="72" y="80" width="8" height="8" rx="1.5"/></g></svg></span>
+          <span class="herr-txt"><b>La resta descompuesta</b><span>Restar descomponiendo: 52 = 50 + 2 ‖ 40 + 12. Romper una decena (o una centena) y ver con el material cómo pasa a las unidades.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
         <a class="herr-ficha" href="#/litros">
           <span class="herr-ilus herr-geo" aria-hidden="true"><svg viewBox="0 0 100 100"><g stroke="#1c2330" stroke-width="2.2" stroke-linejoin="round"><path d="M16 14h12v8c0 3 8 5 8 11v57H8V33c0-6 8-8 8-11z" fill="#5fb2e8"/><path d="M45 44h8v6c0 2 6 4 6 8v32H39V58c0-4 6-6 6-8z" fill="#5fb2e8"/><path d="M64 70h20l-2 20H66z" fill="#5fb2e8"/></g><g font-family="sans-serif" font-weight="700" font-size="9" text-anchor="middle" fill="#0b2740"><text x="22" y="64">1 l</text><text x="49" y="76">½ l</text><text x="74" y="84">¼ l</text></g><rect x="12" y="10" width="8" height="5" rx="1.5" fill="#2c77c4"/><rect x="45" y="40" width="8" height="5" rx="1.5" fill="#2c77c4"/></svg></span>
           <span class="herr-txt"><b>El litro</b><span>Litro, medio litro y cuarto de litro: echa agua en jarras medidoras, ¿cuánto hay? y llena la jarra con justo lo que se pide.</span></span><svg class="ic herr-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
@@ -2404,6 +2476,16 @@ button.av-carril:hover .av-pista,button.av-carril:focus-visible .av-pista{outlin
     <div class="reg-acc"><button class="icbtn" id="avImprimir" data-icon="imprimir" aria-label="Imprimir el tablero" title="Imprimir el tablero"></button><button class="icbtn" id="avPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="av-juego" id="avCuerpo"></div><div class="pi-teclado" id="avTeclado" role="group" aria-label="Escribir la suma" hidden></div></div>
+</div>
+
+<div class="vista" id="vResta" hidden role="dialog" aria-modal="true" aria-labelledby="vRdTit">
+  <header class="v-cab"><span class="l-marca" aria-hidden="true"><i style="width:30%;background:var(--r2)"></i><i style="width:55%;background:var(--r5)"></i><i style="width:78%;background:var(--r6)"></i><i style="width:100%;background:var(--r9)"></i></span><h1 id="vRdTit">La resta descompuesta</h1><button class="ibtn v-cerrar" data-icon="x" aria-label="Cerrar y volver a la biblioteca"></button></header>
+  <div class="reg-barra">
+    <label class="b-select"><span>Nivel</span><select id="rsNivel"></select></label>
+    <span class="pi-ayudas" role="group" aria-label="Ayudas"><button class="chip" id="rsMaterial" aria-pressed="true">Material</button></span>
+    <div class="reg-acc"><button class="icbtn" id="rsImprimir" data-icon="imprimir" aria-label="Imprimir la ficha" title="Imprimir la ficha"></button><button class="icbtn" id="rsPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+  </div>
+  <div class="ap-cuerpo"><div class="ap-zona" id="rsCuerpo"></div><div class="pi-teclado" id="rsTeclado" role="group" aria-label="Escribir un número" hidden></div></div>
 </div>
 
 <div class="vista" id="vLitros" hidden role="dialog" aria-modal="true" aria-labelledby="vLtTit">
@@ -3439,13 +3521,13 @@ function panelNotas(c){
 let rutaPrevia = location.hash;
 function ruta(){
   // herramientas, secciones y modo aula viven en herramientas.js, secciones.js y aula.js: si alguno no ha cargado, se avisa
-  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|parejas|litros|escalera|series|mas|donde|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
+  if(/^#\/(aula|regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|parejas|litros|resta|escalera|series|mas|donde|ruta|familias)\b/.test(location.hash) && codigoIncompleto().length){ avisarCodigo(); return; }
   // modo aula: la tableta recuerda su clase y vuelve a ella en lugar de ir a la biblioteca
   const cl = location.hash.match(/^#\/aula\/([\w-]+)\/?$/);
   if(cl){ cerrarLector(); abrirClase(cl[1]); rutaPrevia = location.hash; return; }
   const claseGuardada = leer("aula-clase", null);
   if(claseGuardada && (location.hash==="" || location.hash==="#/" || location.hash==="#")){ location.replace("#/aula/"+claseGuardada); return; }
-  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|parejas|litros|escalera|series|mas|donde|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
+  const h = location.hash.match(/^#\/(regletas|bombo|calculo|panel|partes|marco|muros|geoplano|calculadora|piramides|redondeo|estimacion|minuto|escondido|cien|reloj|dinero|multiplicar|aviones|serpiente|parejas|litros|resta|escalera|series|mas|donde|ruta|familias)\/?$/);   // herramientas y secciones (herramientas.js, secciones.js)
   if(h){ cerrarLector(); abrirHerramienta(h[1]); rutaPrevia = location.hash; return; }
   if(typeof cerrarHerramienta==="function") cerrarHerramienta();
   const m = location.hash.match(/^#\/leer\/([^/]+)(?:\/(\d+))?/);
@@ -3512,7 +3594,7 @@ if("serviceWorker" in navigator && (location.protocol==="https:" || location.hos
    Entonces las fichas de las herramientas no hacen nada. Si pasa, se borran las copias guardadas del código
    (los PDF guardados se conservan) y se recarga una vez; si aun así falta algo, se avisa en pantalla. */
 const PIEZAS = ["abrirHerramienta", "cerrarHerramienta", "iniciarRegletas", "iniciarBombo", "iniciarRuta", "iniciarFamilias",
-                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "iniciarEscondido", "iniciarCien", "iniciarReloj", "iniciarDinero", "iniciarMultiplicar", "iniciarAviones", "iniciarSerpiente", "iniciarParejas", "iniciarLitros", "iniciarEscalera", "iniciarSeries", "iniciarMas", "iniciarDonde", "delMazo"];
+                "cargarReto", "abrirClase", "iniciarCalculo", "iniciarPanel", "iniciarPartes", "iniciarMarco", "iniciarMuros", "iniciarGeoplano", "iniciarCalculadora", "iniciarPiramides", "iniciarRedondeo", "iniciarEstimacion", "iniciarMinuto", "iniciarEscondido", "iniciarCien", "iniciarReloj", "iniciarDinero", "iniciarMultiplicar", "iniciarAviones", "iniciarSerpiente", "iniciarParejas", "iniciarLitros", "iniciarResta", "iniciarEscalera", "iniciarSeries", "iniciarMas", "iniciarDonde", "delMazo"];
 function codigoIncompleto(){ return PIEZAS.filter(n=> typeof window[n] !== "function"); }
 function avisarCodigo(){
   const a = $("avisoCodigo"); if(!a.hidden) return;
@@ -3574,6 +3656,7 @@ listo.then(repararCodigo).then(seguir=> seguir ? fetch("catalogo.json", {cache:"
 <script src="serpiente.js"></script>
 <script src="parejas.js"></script>
 <script src="litros.js"></script>
+<script src="resta.js"></script>
 <script src="infantil.js"></script>
 </body>
 </html>

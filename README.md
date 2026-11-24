@@ -145,7 +145,8 @@ Su entrada del catálogo y su portada se quitan solas.
     superárboles), *El número escondido* (6 casos con los pasos del detective) y *El dinero* (4 montones para
     contar y 4 compras para la vuelta, con las fotos o los dibujos; 500 € se pagan con 200 + 200 + 100), *La
     serpiente de números* (6 series para completar y descubrir la regla), *Las parejas del 10* (12 huchas
-    o 12 sumas para completar el 10) y *El litro* (6 «¿cuánta agua hay?» y 6 jarras para colorear). Se
+    o 12 sumas para completar el 10), *El litro* (6 «¿cuánta agua hay?» y 6 jarras para colorear) y *La resta
+    descompuesta* (8 restas de dos cifras o 5 de tres, con el formato 50 + 2 ‖ 40 + 12). Se
     imprimen en A4 con márgenes de 12 mm y la hoja deja unos milímetros de holgura, para que no se corte nada
     aunque la impresora no llegue al borde. Las pruebas generan la ficha de **cada nivel** e imprimen el PDF:
     ningún ejercicio puede salirse ni quedar cortado, y cada hoja tiene que ocupar exactamente una página.
@@ -233,6 +234,13 @@ Su entrada del catálogo y su portada se quitan solas.
     - *Carrera de aviones* (`#/aviones`, en `aviones.js`): juego de dados para dos pilotos o contra la máquina,
       con 3 aviones cada uno; se suman los dados o se reparten entre los aviones. Niveles: un dado (carriles de
       10), dos dados (20) y tres dados (30). Tablero en papel apaisado con el registro de tiradas.
+    - *La resta descompuesta* (`#/resta`, en `resta.js`): la resta con el formato del aula: se descomponen
+      los dos números (52 = 50 + 2, − 27 = 20 + 7), después de la doble raya se transforma el minuendo si no
+      llega (40 + 12: se rompe una decena), se resta cada orden (20 + 5) y se junta (25). Antes de romper pregunta
+      «¿puedes quitar 7 a 2?». Debajo, el material base 10 (placas, barras y cubitos) enseña el traspaso: la
+      barra se convierte en 10 cubitos (o la placa en 10 barras), lo que llega se ve en otro color y al restar se
+      tachan las piezas. Niveles: sin llevada, con llevada, tres cifras con una y con dos llevadas, y con ceros
+      (300 − 127: primero se rompe una centena y luego una decena). Ficha en papel con el mismo formato.
     - *El litro* (`#/litros`, en `litros.js`): litro, medio litro y cuarto de litro con jarras medidoras de
       1 l (marcas de ¼, ½ y ¾) y envases que se vacían en ellas: botella de 1 l, botella de ½ l y vaso de ¼ l.
       *Explora* (echar envases y ver cuánto hay: «1 litro = 4 cuartos de litro = 2 medios litros»), *¿Cuánto

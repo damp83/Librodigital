@@ -1008,7 +1008,7 @@ button.pb-caja{cursor:pointer}
 .hj-pb-bloom{display:inline-block;padding:.2mm 2mm;border:.3mm solid #1c2330;border-radius:3mm;font:700 6.5pt var(--font);letter-spacing:.04em}
 .hj-pb-texto{margin:0;font-size:12.5pt;line-height:1.55}
 .hj-pb-diag{display:flex;flex-direction:column;gap:1.8mm;width:140mm;margin:0 auto}
-.hj-pb-barra{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8mm;height:12.5mm;border:.6mm solid #1c2330;border-radius:2mm;
+.hj-pb-barra{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8mm;height:11mm;border:.6mm solid #1c2330;border-radius:2mm;
   background:repeating-linear-gradient(90deg,transparent 0 5.5mm,#d5dbe3 5.5mm 5.8mm)}
 .hj-pb-barra > span:first-child{font-size:9.5pt}
 .hj-pb-barra .gris{color:#8a94a3}
@@ -1033,6 +1033,22 @@ button.pb-caja{cursor:pointer}
 .hj-pb-check b{font:700 12pt var(--font-titulos)}
 .hj-pb-check i{flex:none;width:6mm;height:6mm;border:.4mm solid #1c2330;border-radius:1.2mm}
 .hj-pb-regla{margin:2.5mm 0 0;text-align:center;font-size:11pt}
+/* El hueco para calcular en papel (tradicional o por descomposición) */
+.hj-pb-dos{grid-template-columns:1fr 2.2fr !important}
+.hj-pb-ops.vertical{flex-direction:column;align-items:center;gap:3mm}
+.hj-pb-calc{display:flex;flex-direction:column;align-items:center}
+.hj-pb-calc > .hj-pb-tit{align-self:flex-start}
+.hj-pb-calc .hj-pb-du td{width:12mm;height:7mm}
+.hj-pb-calc .hj-pb-du td:first-child{width:6mm;border:0}
+.hj-pb-calc .hj-pb-du tr.lleva td{height:5mm;border-style:dashed}
+.hj-pb-calc .hj-pb-du tr.lleva td:first-child{border:0}
+.hj-pb-calc .hj-pb-du th{font-size:9pt}
+.hj-pb-desc{display:flex;align-items:flex-start;gap:3mm;font:700 12pt var(--font-titulos)}
+.hj-pb-desc .hj-pb-hueco{width:12mm;height:7.5mm}
+.hj-pb-desc-izq,.hj-pb-desc-der{display:flex;flex-direction:column;gap:2mm;align-items:flex-start}
+.hj-pb-desc-doble{align-self:stretch;width:1.6mm;border-left:.5mm solid #1c2330;border-right:.5mm solid #1c2330;margin-bottom:9.5mm}
+.hj-pb-desc-raya{align-self:stretch;border-top:.5mm solid #1c2330}
+.hj-pb-desc-nota{margin:1.5mm 0 0;font-size:8pt;color:var(--gris)}
 /* Dos fichas por cara: cada una en media hoja */
 .hj-compacta .hj-regletas{margin-bottom:2mm;height:2mm}
 .hj-compacta .hj-tit h1{font-size:14pt}
@@ -1042,8 +1058,8 @@ button.pb-caja{cursor:pointer}
 .hj-pbm-corte{position:relative;height:5mm;display:flex;align-items:center;justify-content:center;font-size:11pt;color:#5b6676}
 .hj-pbm-corte::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:.35mm dashed #8a94a3}
 .hj-pbm-corte{background:transparent}
-.hj-pbm{display:flex;flex-direction:column;gap:1.3mm;min-height:0}
-.hj-pbm .hj-pb-caja{padding:1.2mm 3mm}
+.hj-pbm{display:flex;flex-direction:column;gap:1mm;min-height:0}
+.hj-pbm .hj-pb-caja{padding:.9mm 3mm}
 .hj-pbm .hj-pb-tit{margin:0 0 .8mm;font-size:9pt}
 .hj-pbm .hj-pb-bloom{font-size:5.5pt;padding:0 1.5mm}
 .hj-pbm-cab{display:flex;align-items:baseline;gap:3mm;font-size:9pt}
@@ -1052,11 +1068,20 @@ button.pb-caja{cursor:pointer}
 .hj-pbm-dato{flex:3;display:flex;gap:1.5mm;align-items:baseline}
 .hj-pbm-dato.corto{flex:1.4}
 .hj-pbm-dato i{flex:1;border-bottom:.3mm solid #8a94a3;height:3.5mm}
-.hj-pbm-texto{margin:0;font-size:10.5pt;line-height:1.4}
+.hj-pbm-texto{margin:0;font-size:10.5pt;line-height:1.35}
 .hj-pbm-diag{width:120mm;gap:1mm}
-.hj-pbm-diag .hj-pb-barra{height:7.5mm;flex-direction:row;gap:2mm}
-.hj-pbm-diag .hj-pb-hueco{height:5mm;width:13mm}
-.hj-pbm-tres{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:1.3mm}
+.hj-pbm-diag .hj-pb-barra{height:6.5mm;flex-direction:row;gap:2mm}
+.hj-pbm-diag .hj-pb-hueco{height:4.6mm;width:13mm}
+.hj-pbm-calc{display:grid;grid-template-columns:1fr 2fr;gap:1.3mm}
+.hj-pbm-col{display:flex;flex-direction:column;gap:1.3mm}
+.hj-pbm-col .hj-pb-caja{flex:1}
+.hj-pbm .hj-pb-calc .hj-pb-du td{width:10mm;height:4.2mm}
+.hj-pbm .hj-pb-calc .hj-pb-du tr.lleva td{height:3.5mm}
+.hj-pbm .hj-pb-desc{font-size:10.5pt;gap:2mm}
+.hj-pbm .hj-pb-desc .hj-pb-hueco{width:10.5mm;height:4.8mm}
+.hj-pbm .hj-pb-desc-izq,.hj-pbm .hj-pb-desc-der{gap:1.2mm}
+.hj-pbm .hj-pb-desc-doble{margin-bottom:7mm}
+.hj-pbm .hj-pb-desc-nota{display:none}
 .hj-pbm .hj-pb-ops{margin:1.5mm 0}
 .hj-pbm .hj-pb-ops span{font-size:11pt}
 .hj-pbm .hj-pb-du td{height:3.6mm;width:8mm}
@@ -2669,6 +2694,7 @@ button.pb-caja{cursor:pointer}
     <label class="b-select"><span>Nivel</span><select id="pbNivel"></select></label>
     <button class="bt" id="pbOtro">Otro problema</button>
     <label class="b-select"><span>Papel</span><select id="pbPapel"><option value="estacion">La estación (checklist, 3 fichas y solucionario)</option><option value="dos">2 fichas por cara (este nivel)</option></select></label>
+    <label class="b-select"><span>Cálculo</span><select id="pbCalcPapel"><option value="tradicional">Tradicional (D U)</option><option value="descomposicion">Por descomposición</option></select></label>
     <div class="reg-acc"><button class="icbtn" id="pbImprimir" data-icon="imprimir" aria-label="Imprimir" title="Imprimir"></button><button class="icbtn" id="pbPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="pb-juego" id="pbCuerpo"></div><div class="pi-teclado" id="pbTeclado" role="group" aria-label="Escribir un número" hidden></div></div>

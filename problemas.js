@@ -13,11 +13,11 @@
    delMazo, barajar, apTeclado, pintarIconos, pantallaCompleta, hojaPapel, lanzarImpresion…).
    ===================================================================== */
 
-const PB = Object.assign({nivel:"semilla"}, leer("aula-problemas", {}),
-  {reto:null, paso:1, herr:"datos", marcados:[], rodeada:false, corte:null, cajas:{}, chip:null, op:null, escrito:"", frases:null,
+const PB = Object.assign({nivel:"semilla", forma:"tradicional"}, leer("aula-problemas", {}),
+  {reto:null, calc:{}, paso:1, herr:"datos", marcados:[], rodeada:false, corte:null, cajas:{}, chip:null, op:null, escrito:"", frases:null,
    aviso:"", tono:"", fallos:0, bien:0, ejemplo:false});
 let problemasLista = false;
-const guardarPB = () => guardar("aula-problemas", {nivel:PB.nivel});
+const guardarPB = () => guardar("aula-problemas", {nivel:PB.nivel, forma:PB.forma});
 const NIVELES_PB = {
   semilla:{txt:"● Semilla · sumar sin llevar", marca:"● Semilla"},
   brote:{txt:"●● Brote · restar sin llevar", marca:"●● Brote"},
@@ -144,7 +144,7 @@ function trozosPB(r){
 const textoPB = (r, pinta) => trozosPB(r).map((t, i)=> (/^\s/.test(t.raw) ? " " : "")+pinta(t, i)+(/\s$/.test(t.raw) ? " " : "")).join("").replace(/\s+/g, " ");
 function nuevoProblemaPB(){
   const r = Object.assign({}, delMazo("pb-"+nivelPB(), listaPB(nivelPB())));
-  Object.assign(PB, {reto:r, paso:1, herr:"datos", marcados:[], rodeada:false, corte:null, cajas:{}, chip:null, op:null, escrito:"", frases:null,
+  Object.assign(PB, {reto:r, paso:1, herr:"datos", marcados:[], rodeada:false, corte:null, cajas:{}, chip:null, op:null, escrito:"", frases:null, calc:{},
     aviso:"", tono:"", fallos:0, ejemplo:false});
   pintarProblemas();
 }
@@ -232,6 +232,23 @@ function operacionPB(op){
   avanzarPB(r.juntar ? "¡Eso es! Falta el total: se suma." : "¡Eso es! Falta una parte: se resta.");
 }
 const cuentaPB = r => r.juntar ? [r.a, r.b, "+"] : [r.t, r.a, "−"];
+/* El cálculo, casilla a casilla. Tradicional: primero las unidades (con la llevada) y luego las decenas.
+   Por partes (solo sumas): decenas con decenas (20 + 10 = 30), unidades con unidades (7 + 8 = 15) y se juntan. */
+function casillasPB(r){
+  const [m, s] = cuentaPB(r), mu = m % 10, su = s % 10, md = m - mu, sd = s - su, x = incognitaPB(r);
+  if(r.juntar && PB.forma === "partes") return [
+    {id:"pd", r:md + sd, pista:"Suma las decenas: "+md+" + "+sd+" = ?"},
+    {id:"pu", r:mu + su, pista:"Suma las unidades: "+mu+" + "+su+" = ?"},
+    {id:"pt", r:x, pista:"Junta las dos sumas: "+(md + sd)+" + "+(mu + su)+" = ?"}];
+  const lleva = r.juntar ? mu + su >= 10 : mu < su;
+  return [
+    {id:"u", r:x % 10, pista:r.juntar ? "Suma las unidades: "+mu+" + "+su+" = "+(mu + su)+(lleva ? ". Escribe el "+(mu + su) % 10+" y te llevas 1 a las decenas." : ".") :
+      lleva ? mu+" − "+su+" no se puede: rompe una decena. "+(mu + 10)+" − "+su+" = ?" : "Resta las unidades: "+mu+" − "+su+" = ?",
+     bien:lleva ? (r.juntar ? "¡Bien! "+mu+" + "+su+" = "+(mu + su)+": escribes el "+(mu + su) % 10+" y te llevas 1 a las decenas." : "¡Bien! Has roto una decena: "+(mu + 10)+" − "+su+" = "+(mu + 10 - su)+". Arriba quedan "+(md / 10 - 1)+" decenas.") : ""},
+    {id:"d", r:Math.floor(x / 10), pista:r.juntar ? "Suma las decenas: "+md / 10+" + "+sd / 10+(lleva ? " + 1 que te llevas" : "")+" = ?" :
+      "Resta las decenas: "+(lleva ? (md / 10 - 1)+" (has roto una)" : md / 10)+" − "+sd / 10+" = ?"}];
+}
+const casillaPB = () => casillasPB(PB.reto).find(c=> PB.calc[c.id] === undefined);
 function teclaPB(t){
   if(![6, 8, 9].includes(PB.paso) || (PB.paso === 9 && !PB.reto.juntar)) return;
   if(t === "⌫") PB.escrito = PB.escrito.slice(0, -1);
@@ -239,10 +256,14 @@ function teclaPB(t){
   else if(PB.escrito){
     const v = +PB.escrito, r = PB.reto, x = incognitaPB(r); PB.escrito = "";
     if(PB.paso === 6){
-      if(v === x) return avanzarPB("¡Bien calculado! "+(r.juntar ? r.a+" + "+r.b : r.t+" − "+r.a)+" = "+x+".");
-      const [m, s] = cuentaPB(r), u = r.juntar ? m % 10 + s % 10 : m % 10 - s % 10;
-      return fallarPB(v+" no es. "+(r.juntar ? "Suma primero las unidades: "+(m % 10)+" + "+(s % 10)+" = "+u+(u >= 10 ? " (¡te llevas una decena!)" : "")+"." :
-        u < 0 ? "En las unidades, "+(m % 10)+" − "+(s % 10)+" no se puede: rompe una decena. Si lo necesitas, hazla con La resta descompuesta." : "Resta primero las unidades: "+(m % 10)+" − "+(s % 10)+" = "+u+"."));
+      const c = casillaPB();
+      if(v === c.r){
+        PB.calc[c.id] = v;
+        if(!casillaPB()) return avanzarPB("¡Bien calculado! "+(r.juntar ? r.a+" + "+r.b : r.t+" − "+r.a)+" = "+x+".");
+        PB.aviso = c.bien || ""; PB.tono = c.bien ? "bien" : "";
+        return pintarProblemas();
+      }
+      return fallarPB(v+" no es. "+c.pista);
     }
     if(PB.paso === 8){
       const bueno = r.juntar ? r.a : r.t;
@@ -315,11 +336,28 @@ function pintarProblemas(){
   }else if(p === 5){
     h += diagramaPB(false)+'<p>¿Falta el total? → <b>sumo</b>. ¿Falta una parte? → <b>resto</b>.</p><div class="ap-opciones"><button class="ap-opcion texto" data-op="+">+ sumo</button><button class="ap-opcion texto" data-op="−">− resto</button></div>';
   }else if(p === 6){
-    const [m, s, signo] = cuentaPB(r), res = PB.escrito.padStart(2, " ");
-    h += '<div class="pb-calculo"><table class="pb-du" aria-label="'+m+" "+(signo === "+" ? "más" : "menos")+" "+s+'"><thead><tr><th></th><th>D</th><th>U</th></tr></thead><tbody>'+
-      '<tr><td></td><td>'+Math.floor(m / 10)+'</td><td>'+m % 10+'</td></tr><tr><td class="pb-signo">'+signo+'</td><td>'+Math.floor(s / 10)+'</td><td>'+s % 10+'</td></tr>'+
-      '<tr class="pb-res"><td></td><td>'+(PB.escrito.length > 1 ? res[0] : "")+'</td><td>'+(PB.escrito ? res[res.length - 1] : "?")+'</td></tr></tbody></table>'+
-      (!r.juntar && r.a % 10 > r.t % 10 ? '<button class="bt" id="pbResta">➖ Hacerla con La resta descompuesta</button>' : '')+'</div>';
+    const [m, s2, signo] = cuentaPB(r), act = casillaPB(), campo = id=> PB.calc[id] !== undefined ? '<span class="pb-hecho">'+PB.calc[id]+'</span>' :
+      act && act.id === id ? '<span class="ap-campo activo'+(PB.tono === "mal" ? " mal" : "")+'">'+(PB.escrito || "?")+'</span>' : '';
+    if(r.juntar) h += '<div class="segmentos pb-formas" role="group" aria-label="Forma de calcular"><button data-forma="tradicional" aria-pressed="'+(PB.forma !== "partes")+'">Tradicional (D U)</button><button data-forma="partes" aria-pressed="'+(PB.forma === "partes")+'">Por partes (d + u)</button></div>';
+    h += '<div class="pb-calculo">';
+    if(r.juntar && PB.forma === "partes"){
+      const mu = m % 10, su = s2 % 10;
+      h += '<table class="pb-du partes" aria-label="'+m+" más "+s2+' por partes"><tbody>'+
+        '<tr><td></td><td class="pb-num">'+m+'</td><td></td></tr><tr><td class="pb-signo">+</td><td class="pb-num">'+s2+'</td><td></td></tr>'+
+        '<tr class="pb-linea"><td class="pb-letra">d</td><td>'+campo("pd")+'</td><td class="pb-ayuda">'+(m - mu)+' + '+(s2 - su)+'</td></tr>'+
+        '<tr><td class="pb-letra">u <span class="pb-signo">+</span></td><td>'+campo("pu")+'</td><td class="pb-ayuda">'+mu+' + '+su+'</td></tr>'+
+        '<tr class="pb-linea pb-total"><td></td><td>'+campo("pt")+'</td><td></td></tr></tbody></table>';
+    }else{
+      const lleva = r.juntar ? m % 10 + s2 % 10 >= 10 : m % 10 < s2 % 10, hechaU = PB.calc.u !== undefined;
+      const marca = lleva && hechaU ? (r.juntar ? '<span class="pb-llevo">1</span>' : '<span class="pb-llevo">'+(Math.floor(m / 10) - 1)+'</span>') : '';
+      const decArriba = lleva && hechaU && !r.juntar ? '<s>'+Math.floor(m / 10)+'</s>' : Math.floor(m / 10);
+      const uniArriba = lleva && hechaU && !r.juntar ? '<span class="pb-llevo">1'+m % 10+'</span><s>'+m % 10+'</s>' : m % 10;
+      h += '<table class="pb-du" aria-label="'+m+" "+(signo === "+" ? "más" : "menos")+" "+s2+'"><thead><tr><th></th><th>D</th><th>U</th></tr></thead><tbody>'+
+        '<tr><td></td><td class="pb-marca">'+marca+decArriba+'</td><td class="pb-marca">'+uniArriba+'</td></tr><tr><td class="pb-signo">'+signo+'</td><td>'+Math.floor(s2 / 10)+'</td><td>'+s2 % 10+'</td></tr>'+
+        '<tr class="pb-res"><td></td><td>'+campo("d")+'</td><td>'+campo("u")+'</td></tr></tbody></table>';
+    }
+    h += (!r.juntar && r.a % 10 > r.t % 10 ? '<button class="bt" id="pbResta">➖ Hacerla con La resta descompuesta</button>' : '')+'</div>';
+    if(act) h += '<p class="pb-cuenta">'+({u:"Empieza por las <b>unidades</b>.", d:"Ahora las <b>decenas</b>.", pd:"Suma las <b>decenas</b> (d).", pu:"Suma las <b>unidades</b> (u).", pt:"<b>Junta</b> las dos sumas."})[act.id]+'</p>';
   }else if(p === 7){
     h += '<p>¿Qué frase responde a la pregunta <b>«'+trozos.find(t=> t.tipo === "pregunta").txt+'»</b>?</p><div class="pb-frases">'+PB.frases.map((f, i)=> '<button class="ap-opcion texto pb-frase" data-fr="'+i+'">'+f.txt+'</button>').join("")+'</div>';
   }else if(p === 8){
@@ -355,6 +393,7 @@ function pintarProblemas(){
   c.querySelectorAll("[data-h]").forEach(b=> b.onclick = ()=>{ PB.herr = b.dataset.h; pintarProblemas(); c.querySelector('[data-h="'+PB.herr+'"]')?.focus(); });
   c.querySelectorAll("[data-f]").forEach(b=> b.onclick = ()=>{ PB.chip = PB.chip === b.dataset.f ? null : b.dataset.f; PB.aviso = ""; pintarProblemas(); (c.querySelector(".pb-caja.vacia") || c.querySelector('[data-f="'+b.dataset.f+'"]'))?.focus(); });
   c.querySelectorAll("[data-caja]").forEach(b=> b.onclick = ()=>{ ponerPB(b.dataset.caja); (c.querySelector(".pb-ficha") || c.querySelector(".ap-opcion"))?.focus(); });
+  c.querySelectorAll("[data-forma]").forEach(b=> b.onclick = ()=>{ PB.forma = b.dataset.forma; guardarPB(); PB.calc = {}; PB.escrito = ""; PB.aviso = ""; pintarProblemas(); c.querySelector('[data-forma="'+PB.forma+'"]')?.focus(); });
   c.querySelectorAll("[data-op]").forEach(b=> b.onclick = ()=> operacionPB(b.dataset.op));
   c.querySelectorAll("[data-fr]").forEach(b=> b.onclick = ()=> frasePB(+b.dataset.fr));
   $("pbLeido")?.addEventListener("click", ()=>{ avanzarPB(); c.querySelector("[data-tr]")?.focus(); });

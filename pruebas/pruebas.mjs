@@ -514,7 +514,19 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.click('[data-op="−"]');
   exigir(/falta el total/i.test(await p.textContent("#pbCuerpo")), "problemas: restar cuando falta el total no avisa");
   await p.click('[data-op="+"]');
-  for(const t of [...String(rPB.t), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  // tradicional: primero las unidades y luego las decenas
+  await p.click('[data-forma="tradicional"]');
+  for(const t of [String(rPB.t % 10), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  exigir(await p.evaluate(()=> PB.paso === 6 && PB.calc.u !== undefined), "problemas: escribir primero las unidades no vale");
+  for(const t of [String(Math.floor(rPB.t / 10)), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  exigir(await p.evaluate(()=> PB.paso === 7), "problemas: la suma en vertical no termina");
+  // por partes (como en el aula): d 20 + 10 = 30, u 7 + 8 = 15, 30 + 15 = 45
+  await p.evaluate(()=>{ PB.paso = 6; PB.calc = {}; pintarProblemas(); });
+  await p.click('[data-forma="partes"]');
+  for(const v of [rPB.a - rPB.a % 10 + rPB.b - rPB.b % 10, rPB.a % 10 + rPB.b % 10, rPB.t]) for(const t of [...String(v), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  exigir(await p.evaluate(()=> PB.paso === 7), "problemas: la suma por partes no termina");
+  await accesibilidad(p);
+  await p.click('[data-forma="tradicional"]').catch(()=>{});
   await p.click('[data-fr="'+(await p.evaluate(()=> PB.frases.findIndex(f=> f.ok)))+'"]');
   for(const t of [...String(rPB.a), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
   const deltaPB = await p.evaluate(()=> plantillaPB(PB.reto).reto[1]);
@@ -524,8 +536,12 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.evaluate(()=>{ PB.nivel = "arbol"; nuevoProblemaPB(); PB.paso = 3; pintarProblemas(); });
   await p.click("#pbCortar");
   exigir(await p.evaluate(()=> PB.paso === 4 && PB.corte !== null), "problemas: en el Árbol no se traza la división");
-  await p.evaluate(()=>{ PB.paso = 6; pintarProblemas(); });
+  await p.evaluate(()=>{ PB.paso = 6; PB.calc = {}; pintarProblemas(); });
   const tA = await p.evaluate(()=> [PB.reto.t, PB.reto.a]);
+  const xA = tA[0] - tA[1];
+  for(const t of [String(xA % 10), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  exigir(/Has roto una decena/.test(await p.textContent("#pbCuerpo")) && await p.locator(".pb-du s").count() === 2, "problemas: la resta llevando no enseña la decena rota");
+  await accesibilidad(p);
   await p.click("#pbResta"); await p.waitForSelector("#vResta:not([hidden]) .rd-caja");
   exigir(await p.evaluate(t=> RS.plan.a === t[0] && RS.plan.b === t[1], tA), "problemas: el botón no lleva la resta a La resta descompuesta");
   // La serpiente de números: comerse el bueno la hace crecer, el malo no; las paredes la paran; se completa la serie

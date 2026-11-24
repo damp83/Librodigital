@@ -238,8 +238,9 @@ Su entrada del catálogo y su portada se quitan solas.
       barras» (2.º). Los 8 pasos de la checklist, uno tras otro y con su nivel de Bloom, mientras la checklist se va
       marcando: leer (con voz), subrayar los datos y rodear la pregunta (tocando el texto con dos lápices), el
       diagrama de barras, colocar los datos y la ? (avisa si un dato no va ahí), ¿sumo o resto? (¿falta el total?
-      → sumo; ¿falta una parte? → resto), calcular en la tabla D U (la resta llevando se puede hacer con *La resta
-      descompuesta*), elegir la frase que responde a la pregunta, comprobar con la operación contraria y el reto
+      → sumo; ¿falta una parte? → resto), calcular casilla a casilla en la tabla D U (primero las unidades, con la
+      llevada o la decena rota a la vista; la resta llevando se puede hacer con *La resta descompuesta*) o, en las sumas,
+      por partes como en el aula (d: 20 + 10 = 30, u: 7 + 8 = 15, 30 + 15 = 45), elegir la frase que responde a la pregunta, comprobar con la operación contraria y el reto
       CREAR. Niveles: ● Semilla (sumar sin llevar, diagrama con nombres), ●● Brote (restar sin llevar; el alumno
       decide dónde va cada dato), ●●● Árbol (restar llevando; barras en blanco: traza la división) y Mezcla.
       Banco de 448 problemas (28 contextos de juntar y separar con números distintos) que no se repiten.

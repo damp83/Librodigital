@@ -328,7 +328,7 @@ function pintarProblemas(){
   }
   if(p <= 8) h += '</section>';
   if(p === 9){
-    h += '<section class="pb-paso reto"><h2>'+bloomPB(["CREAR"])+' <span>★ Reto</span></h2>';
+    h += '<section class="pb-paso pb-reto"><h2>'+bloomPB(["CREAR"])+' <span>★ Reto</span></h2>';
     if(r.juntar) h += '<p>'+tp.reto[0]+'</p><p class="ap-pregunta">'+r.t+' + '+tp.reto[1]+' = <span class="ap-campo activo'+(PB.tono === "mal" ? " mal" : "")+'">'+(PB.escrito || "?")+'</span></p>';
     else{
       h += '<p>'+(n === "arbol" ? "Inventa un problema de <b>sumar</b> que se resuelva con este mismo diagrama." : "Inventa <b>otra pregunta</b> con los mismos datos y respóndela.")+' Cuéntaselo a tu compañero o escríbelo en el cuaderno.</p>';
@@ -396,7 +396,7 @@ function fichaPapelPB(r, nivel, pagina, paginas){
         '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 6. Calculo.</p><table class="hj-pb-du"><tr><th>D</th><th>U</th></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr class="res"><td></td><td></td></tr></table></div></div>'+
       '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 7. Escribo la solución con una frase.</p>'+lineas(2)+'</div>'+
       '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["EVALUAR"])+' 8. Compruebo. ¿Tiene sentido mi resultado?</p><p class="hj-pb-si">SÍ &nbsp; NO &nbsp;&nbsp; Lo compruebo así: <span class="hj-pb-linea corta"></span></p></div>'+
-      '<div class="hj-pb-caja reto"><p class="hj-pb-tit">'+bl(["CREAR"])+' ★ Reto: '+reto+'</p>'+lineas(2)+'</div>'+mini+'</div>'});
+      '<div class="hj-pb-caja pb-reto"><p class="hj-pb-tit">'+bl(["CREAR"])+' ★ Reto: '+reto+'</p>'+lineas(2)+'</div>'+mini+'</div>'});
 }
 function solucionPB(r, nivel){
   const tp = plantillaPB(r), x = incognitaPB(r), datos = trozosPB(r).filter(t=> t.tipo === "dato").map(t=> t.txt).join(", ");

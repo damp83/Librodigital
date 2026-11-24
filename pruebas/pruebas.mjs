@@ -473,6 +473,15 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   exigir(/52 − 27 = 25!.*25 \+ 27 = 52/.test(await p.textContent("#rsCuerpo")), "resta: 52 − 27 no termina en 25");
   exigir(/el 5 pasa a 4 y el 2 pasa a 12/.test(await p.textContent(".rd-vertical")), "resta: la cuenta en vertical no enseña los tachados");
   await accesibilidad(p);
+  // modo libre (la resta que escribe la maestra) y sin escribir la descomposición
+  await p.click("#rsLibre"); await p.fill("#rsLibreA", "27"); await p.fill("#rsLibreB", "52"); await p.click('#rsLibreForm [type="submit"]');
+  exigir(/mayor que el segundo/.test(await p.textContent("#rsCuerpo")), "resta libre: no avisa si el primero es menor");
+  await accesibilidad(p);
+  await p.fill("#rsLibreA", "403"); await p.fill("#rsLibreB", "158"); await p.click('#rsLibreForm [type="submit"]');
+  exigir(await p.evaluate(()=> RS.plan.a === 403 && RS.plan.b === 158 && RS.reto.libre), "resta libre: no empieza la resta escrita");
+  await p.click("#rsDescomponer");
+  exigir(await p.evaluate(()=> pasoRS().t === "decide" && RS.hechas[0] === 400), "resta: sin escribir la descomposición no se empieza en «¿se puede quitar?»");
+  await p.click("#rsDescomponer");
   // La serpiente de números: comerse el bueno la hace crecer, el malo no; las paredes la paran; se completa la serie
   await p.evaluate(()=> localStorage.removeItem("aula-serpiente"));
   await p.goto(WEB+"#/serpiente"); await p.waitForSelector("#vSerpiente:not([hidden]) .sp-cabeza");

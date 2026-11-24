@@ -11,10 +11,10 @@
    delMazo, apTeclado, pintarIconos, pantallaCompleta, hojaPapel, lanzarImpresion…).
    ===================================================================== */
 
-const RS = Object.assign({nivel:"n2", material:true}, leer("aula-resta", {}),
+const RS = Object.assign({nivel:"n2", material:true, descomponer:true}, leer("aula-resta", {}),
   {reto:null, plan:null, paso:0, escrito:"", aviso:"", tono:"", fallos:0, bien:0, hechas:{}, quitados:{}});
 let restaLista = false;
-const guardarRS = () => guardar("aula-resta", {nivel:RS.nivel, material:RS.material});
+const guardarRS = () => guardar("aula-resta", {nivel:RS.nivel, material:RS.material, descomponer:RS.descomponer});
 const NIVELES_RS = {
   n1:{txt:"Sin llevada (58 − 23)"}, n2:{txt:"Con llevada (52 − 27)"}, n3:{txt:"Tres cifras, una llevada"},
   n4:{txt:"Tres cifras, dos llevadas (432 − 158)"}, n5:{txt:"Con ceros (300 − 127)"}};
@@ -37,6 +37,7 @@ function planRS(a, b){
     pasos.push({t:"caja", zona:"t", i:a2, r:cur[a2], antes:antes[1], de, a:a2});
   };
   for(let i = nd - 1; i >= 1; i--){
+    if(!db[i]) continue;   // si no se quita nada de ese orden, no hay nada que decidir
     const puede = cur[i] >= db[i];
     pasos.push({t:"decide", i, puede, hay:cur[i], quita:db[i]});
     if(!puede){
@@ -71,6 +72,19 @@ function listaRS(nivel){
   if(l.length > 300){ const paso = l.length / 300; l = Array.from({length:300}, (_, i)=> l[Math.floor(i * paso)]); }
   return l;
 }
+/* Modo libre: la resta que escribe la maestra (la del libro, la de la pizarra…) */
+function empezarLibreRS(ta, tb){
+  const a = +String(ta).trim(), b = +String(tb).trim();
+  RS.libreA = String(ta).trim(); RS.libreB = String(tb).trim();
+  const mal = !/^\d{1,3}$/.test(RS.libreA) || !/^\d{1,3}$/.test(RS.libreB) ? "Escribe dos números enteros de hasta tres cifras." :
+    a < 10 ? "El primer número tiene que tener al menos dos cifras." : b < 1 ? "El segundo número tiene que ser 1 o más." :
+    b >= a ? "El primer número tiene que ser mayor que el segundo." : "";
+  if(mal){ RS.libreAviso = mal; pintarResta(); $("rsLibreA")?.focus(); return; }
+  RS.escribiendo = false; RS.libreAviso = "";
+  Object.assign(RS, {reto:{k:"libre", a, b, libre:true}, plan:planRS(a, b), paso:0, escrito:"", aviso:"", tono:"", fallos:0, hechas:{}, quitados:{}});
+  pintarResta();
+  ($("rsTeclado").hidden ? $("rsCuerpo").querySelector("[data-d], .rd-toca") : $("rsTeclado").querySelector("button"))?.focus();
+}
 function nuevoRetoRS(){
   const r = delMazo("rd-"+nivelRS(), listaRS(nivelRS()));
   Object.assign(RS, {reto:r, plan:planRS(r.a, r.b), paso:0, escrito:"", aviso:"", tono:"", fallos:0, hechas:{}, quitados:{}});
@@ -101,6 +115,8 @@ function tocarPiezaRS(col, k){
 /* Sin el material a la vista, romper y quitar se hacen solos */
 function sinMaterialRS(){
   let s;
+  // «Escribir la descomposición» apagado: la descomposición sale hecha y se empieza en «¿se puede quitar?»
+  while(!RS.descomponer && (s = pasoRS()) && s.t === "caja" && (s.zona === "a" || s.zona === "b")){ RS.hechas[RS.paso] = s.r; RS.paso++; }
   while(!RS.material && (s = pasoRS()) && (s.t === "romper" || s.t === "quitar")){
     if(s.t === "quitar") RS.quitados[s.i] = Array.from({length:s.n}, (_, k)=> k);
     RS.paso++;
@@ -186,6 +202,8 @@ function iniciarResta(){
     $("rsNivel").innerHTML = Object.entries(NIVELES_RS).map(([k, v])=> '<option value="'+k+'">'+v.txt+'</option>').join("");
     $("rsNivel").onchange = e=>{ RS.nivel = e.target.value; guardarRS(); nuevoRetoRS(); };
     $("rsMaterial").onclick = ()=>{ RS.material = !RS.material; guardarRS(); pintarResta(); };
+    $("rsDescomponer").onclick = ()=>{ RS.descomponer = !RS.descomponer; guardarRS(); pintarResta(); };
+    $("rsLibre").onclick = ()=>{ RS.escribiendo = !RS.escribiendo; RS.libreAviso = ""; pintarResta(); if(RS.escribiendo) $("rsLibreA")?.focus(); };
     $("rsImprimir").onclick = imprimirResta;
     apTeclado("rsTeclado", teclaRS);
     if(document.fullscreenEnabled) $("rsPantalla").onclick = ()=> pantallaCompleta("vResta"); else $("rsPantalla").hidden = true;
@@ -214,7 +232,15 @@ function pintarResta(){
   const c = $("rsCuerpo"), p = RS.plan, s = pasoRS(), fin = !s;
   $("rsNivel").value = nivelRS();
   $("rsMaterial").setAttribute("aria-pressed", RS.material);
-  let h = '<p class="ap-marcador"><span>'+p.a+' − '+p.b+'</span><span class="ap-puntos" aria-label="'+RS.bien+' sin fallos">★ '+RS.bien+'</span></p>';
+  $("rsLibre").setAttribute("aria-pressed", !!RS.escribiendo);
+  $("rsDescomponer").setAttribute("aria-pressed", RS.descomponer);
+  let h = '';
+  if(RS.escribiendo) h += '<form class="rd-libre" id="rsLibreForm"><p>Escribe la resta que quieras (hasta 999):</p>'+
+    '<label><span class="sr">Minuendo</span><input id="rsLibreA" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="52" value="'+(RS.libreA || "")+'"></label>'+
+    '<span aria-hidden="true">−</span><label><span class="sr">Sustraendo</span><input id="rsLibreB" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="27" value="'+(RS.libreB || "")+'"></label>'+
+    '<button class="bt azul" type="submit">Empezar</button><button class="bt" type="button" id="rsLibreCerrar">Cancelar</button>'+
+    (RS.libreAviso ? '<p class="rd-libre-aviso" role="alert">'+RS.libreAviso+'</p>' : '')+'</form>';
+  h += '<p class="ap-marcador"><span>'+p.a+' − '+p.b+'</span><span class="ap-puntos" aria-label="'+RS.bien+' sin fallos">★ '+RS.bien+'</span></p>';
   const decide = p.pasos.findIndex(x=> x.t === "decide");
   h += '<div class="rd-cuenta" role="group" aria-label="La resta descompuesta">'+
     '<div class="rd-izq"><span class="rd-num">'+p.a+'</span><span class="rd-ig">=</span>'+filaRS("a")+
@@ -229,13 +255,19 @@ function pintarResta(){
       '<div class="ap-opciones"><button class="ap-opcion texto" data-d="si">Sí, se puede</button><button class="ap-opcion texto" data-d="no">No, hay que romper</button></div>';
   }else if(s) h += '<p class="rd-que">'+queRS(s)+'</p>';
   h += '<p class="ap-explica '+(RS.aviso ? RS.tono : "rd-sin")+'" role="status">'+RS.aviso+'</p>';
-  if(fin) h += verticalRS()+'<div class="pt-acciones"><button class="bt azul" id="rsOtra">Otra resta</button></div>';
+  if(fin) h += verticalRS()+'<div class="pt-acciones"><button class="bt azul" id="rsOtra">Otra resta</button>'+(RS.reto.libre ? '<button class="bt" id="rsOtraLibre">Escribir otra</button>' : '')+'</div>';
   if(RS.material) h += materialHTML();
   c.innerHTML = h;
   $("rsTeclado").hidden = !s || s.t !== "caja" && s.t !== "final";
   c.querySelectorAll(".rd-toca").forEach(b=> b.onclick = ()=> tocarPiezaRS(+b.dataset.col, +b.dataset.k));
   c.querySelectorAll("[data-d]").forEach(b=> b.onclick = ()=> decidirRS(b.dataset.d === "si"));
   $("rsOtra")?.addEventListener("click", nuevoRetoRS);
+  $("rsOtraLibre")?.addEventListener("click", ()=>{ RS.escribiendo = true; pintarResta(); $("rsLibreA")?.focus(); });
+  const f = $("rsLibreForm");
+  if(f){
+    f.onsubmit = e=>{ e.preventDefault(); empezarLibreRS($("rsLibreA").value, $("rsLibreB").value); };
+    $("rsLibreCerrar").onclick = ()=>{ RS.escribiendo = false; pintarResta(); $("rsLibre").focus(); };
+  }
 }
 const mayusRS = t => t[0].toUpperCase()+t.slice(1);
 function queRS(s){

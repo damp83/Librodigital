@@ -244,8 +244,8 @@ Su entrada del catálogo y su portada se quitan solas.
       CREAR. En todos los niveles hay problemas de sumar y de restar; lo que sube es la dificultad: ● Semilla
       (problemas directos sin llevar, diagrama con nombres), ●● Brote (directos con llevadas; el alumno decide dónde
       va cada dato) y ●●● Árbol (problemas que despistan: «perdió 15 y le quedan 27, ¿cuántas tenía?» se suma; «le
-      regaló algunos», «¿cuántos más?» se restan; barras en blanco: traza la división). Banco de 336 problemas
-      (42 contextos con números distintos, la mitad de sumar y la mitad de restar) que no se repiten.
+      regaló algunos», «¿cuántos más?» se restan; barras en blanco: traza la división). Banco de 608 problemas
+      (76 contextos con números distintos, la mitad de sumar y la mitad de restar) que no se repiten.
       Al imprimir se elige el papel: *la estación* (la checklist, una ficha de cada nivel con el formato de la
       estación y el solucionario) o *2 fichas por cara* (4 fichas del nivel elegido en media hoja cada una, con línea
       de corte, para imprimir a doble cara, y su solucionario). Y el *cálculo* de la ficha: *tradicional* (D U, con una fila

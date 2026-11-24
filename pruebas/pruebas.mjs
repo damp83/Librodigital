@@ -494,6 +494,10 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
         if(r.a + r.b !== r.t || r.t > 99 || r.a < 11 || r.b < 11 || !plantillaPB(r) || (n === "semilla" && (!"js".includes(r.g) || lleva)) || (n === "brote" && (!"js".includes(r.g) || !lleva)) || (n === "arbol" && !["dt", "dp"].includes(r.g))){ mal.push(n+": "+r.k); break; }
       }
       if(!l.some(r=> r.juntar) || !l.some(r=> !r.juntar)) mal.push(n+": no tiene problemas de sumar y de restar");
+      for(const r of l){   // cada contexto: sus dos datos, una pregunta y la frase con el hueco
+        const tp = plantillaPB(r), vars = trozosPB(r).filter(t=> t.tipo === "dato").map(t=> t.v).sort().join("");
+        if(vars !== (r.juntar ? "ab" : "at") || trozosPB(r).filter(t=> t.tipo === "pregunta").length !== 1 || !tp.sol.includes("#") || !tp.mal.includes("#") || (r.juntar && !tp.reto)){ mal.push(n+": contexto mal escrito «"+tp.txt.slice(0, 40)+"…»"); break; }
+      }
     }
     return mal; });
   exigir(!bancoPB.length, "problemas: banco mal hecho: "+bancoPB.join("; "));

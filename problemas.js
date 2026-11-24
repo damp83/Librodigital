@@ -9,7 +9,7 @@
      ●● Brote: problemas directos con llevadas; el alumno decide dónde va cada dato.
      ●●● Árbol: problemas que despistan (el verbo dice «perdió» y hay que sumar; «le regaló» y hay que restar)
      y de comparar («¿cuántos más?»); barras en blanco: el alumno traza la división.
-   - Banco de problemas: 42 contextos con números distintos; no se repiten hasta agotarlos.
+   - Banco de problemas: 76 contextos con números distintos; no se repiten hasta agotarlos.
    - Imprimir la estación: checklist, una ficha de cada nivel (como las de la estación) y el solucionario.
    Usa las utilidades de index.html, herramientas.js, banco.js, aproximar.js y secciones.js ($, leer, guardar,
    delMazo, barajar, apTeclado, pintarIconos, pantallaCompleta, hojaPapel, lanzarImpresion…).
@@ -66,7 +66,27 @@ const JUNTAR_PB = [
   {txt:"Marcos leyó [a páginas] el sábado y [b páginas] el domingo. {¿Cuántas páginas leyó el fin de semana?}", total:"Páginas leídas", p1:"Sábado", p2:"Domingo",
    sol:"El fin de semana leyó # páginas.", mal:"El domingo leyó # páginas.", reto:["Si el lunes lee 4 páginas, ¿cuántas habrá leído?", 4]},
   {txt:"Hoy comen en el comedor [a alumnos de 1.º] y [b alumnos de 2.º]. {¿Cuántos alumnos comen en el comedor?}", total:"Alumnos del comedor", p1:"De 1.º", p2:"De 2.º",
-   sol:"En el comedor comen # alumnos.", mal:"En el comedor comen # alumnos de 1.º.", reto:["Si llegan 2 alumnos más, ¿cuántos comerán?", 2]}];
+   sol:"En el comedor comen # alumnos.", mal:"En el comedor comen # alumnos de 1.º.", reto:["Si llegan 2 alumnos más, ¿cuántos comerán?", 2]},
+  {txt:"El sábado vinieron al museo [a niños] y el domingo, [b niños]. {¿Cuántos niños visitaron el museo el fin de semana?}", total:"Visitantes", p1:"Sábado", p2:"Domingo",
+   sol:"El fin de semana vinieron # niños.", mal:"El domingo vinieron # niños.", reto:["Si el lunes vienen 3 niños más, ¿cuántos habrán venido?", 3]},
+  {txt:"En el acuario de clase hay [a peces rojos] y [b peces amarillos]. {¿Cuántos peces hay en el acuario?}", total:"Peces", p1:"Rojos", p2:"Amarillos",
+   sol:"En el acuario hay # peces.", mal:"En el acuario hay # peces rojos.", reto:["Si compramos 2 peces más, ¿cuántos habrá?", 2]},
+  {txt:"Para la fiesta de fin de curso inflamos [a globos verdes] y [b globos naranjas]. {¿Cuántos globos inflamos?}", total:"Globos", p1:"Verdes", p2:"Naranjas",
+   sol:"Inflamos # globos.", mal:"Inflamos # globos verdes.", reto:["Si inflamos 4 globos más, ¿cuántos tendremos?", 4]},
+  {txt:"En el mercado, Rosa vendió [a kilos de tomates] por la mañana y [b kilos] por la tarde. {¿Cuántos kilos de tomates vendió en todo el día?}", total:"Kilos vendidos", p1:"Mañana", p2:"Tarde",
+   sol:"Rosa vendió # kilos de tomates.", mal:"Por la tarde vendió # kilos.", reto:["Si al día siguiente vende 5 kilos más, ¿cuántos habrá vendido?", 5]},
+  {txt:"En la carrera solidaria corrieron [a alumnos de Primaria] y [b alumnos de Infantil]. {¿Cuántos alumnos corrieron?}", total:"Corredores", p1:"Primaria", p2:"Infantil",
+   sol:"Corrieron # alumnos.", mal:"Corrieron # alumnos de Infantil.", reto:["Si también corren 3 maestros, ¿cuántas personas correrán?", 3]},
+  {txt:"En la estantería de clase hay [a cuentos] y [b cómics]. {¿Cuántos libros hay en la estantería?}", total:"Libros", p1:"Cuentos", p2:"Cómics",
+   sol:"En la estantería hay # libros.", mal:"En la estantería hay # cómics.", reto:["Si traemos 2 cuentos más, ¿cuántos libros habrá?", 2]},
+  {txt:"En el jardín del cole plantamos [a girasoles] y [b margaritas]. {¿Cuántas flores plantamos?}", total:"Flores", p1:"Girasoles", p2:"Margaritas",
+   sol:"Plantamos # flores.", mal:"Plantamos # girasoles.", reto:["Si plantamos 3 flores más, ¿cuántas tendremos?", 3]},
+  {txt:"En el concierto de Navidad cantaron [a niños] y tocaron la flauta [b niños]. {¿Cuántos niños participaron en el concierto?}", total:"Participantes", p1:"Cantaron", p2:"Flauta",
+   sol:"En el concierto participaron # niños.", mal:"En el concierto cantaron # niños.", reto:["Si se apuntan 2 niños más, ¿cuántos participarán?", 2]},
+  {txt:"Javier hizo [a fotos] en la playa y [b fotos] en la montaña. {¿Cuántas fotos hizo en las vacaciones?}", total:"Fotos", p1:"Playa", p2:"Montaña",
+   sol:"En las vacaciones Javier hizo # fotos.", mal:"Javier hizo # fotos en la playa.", reto:["Si hace 4 fotos más, ¿cuántas tendrá?", 4]},
+  {txt:"En el recreo, los de 1.º recogieron [a papeles] del patio y los de 2.º, [b papeles]. {¿Cuántos papeles recogieron entre todos?}", total:"Papeles", p1:"Los de 1.º", p2:"Los de 2.º",
+   sol:"Entre todos recogieron # papeles.", mal:"Los de 2.º recogieron # papeles.", reto:["Si los de 3.º recogen 5 papeles, ¿cuántos habrá?", 5]}];
 const SEPARAR_PB = [
   {txt:"En la biblioteca hay [t libros]. [a son de cuentos] y el resto son de animales. {¿Cuántos libros de animales hay?}", total:"Libros", p1:"De cuentos", p2:"De animales",
    sol:"Hay # libros de animales.", mal:"Hay # libros de cuentos."},
@@ -95,7 +115,27 @@ const SEPARAR_PB = [
   {txt:"La carrera del cole tiene [t metros]. Laura ya ha corrido [a metros]. {¿Cuántos metros le faltan para llegar a la meta?}", total:"Metros de la carrera", p1:"Ha corrido", p2:"Le faltan",
    sol:"A Laura le faltan # metros para llegar.", mal:"Laura ha corrido # metros."},
   {txt:"En el jardín hay [t flores]. [a son margaritas] y el resto son rosas. {¿Cuántas rosas hay?}", total:"Flores", p1:"Margaritas", p2:"Rosas",
-   sol:"En el jardín hay # rosas.", mal:"En el jardín hay # margaritas."}];
+   sol:"En el jardín hay # rosas.", mal:"En el jardín hay # margaritas."},
+  {txt:"En el acuario había [t peces]. Regalamos [a peces] a otra clase. {¿Cuántos peces quedan en el acuario?}", total:"Había", p1:"Regalamos", p2:"Quedan",
+   sol:"En el acuario quedan # peces.", mal:"Regalamos # peces."},
+  {txt:"Hay que pintar [t baldosas] del patio. Ya hemos pintado [a baldosas]. {¿Cuántas baldosas faltan por pintar?}", total:"Baldosas", p1:"Pintadas", p2:"Faltan",
+   sol:"Faltan # baldosas por pintar.", mal:"Hemos pintado # baldosas."},
+  {txt:"En la sala del cine hay [t butacas]. Están ocupadas [a butacas]. {¿Cuántas butacas están vacías?}", total:"Butacas", p1:"Ocupadas", p2:"Vacías",
+   sol:"Hay # butacas vacías.", mal:"Hay # butacas ocupadas."},
+  {txt:"En la frutería había [t melones]. Por la mañana se vendieron [a melones]. {¿Cuántos melones quedan?}", total:"Había", p1:"Vendidos", p2:"Quedan",
+   sol:"En la frutería quedan # melones.", mal:"Se vendieron # melones."},
+  {txt:"En el colegio hay [t alumnos]. [a se quedan al comedor] y el resto come en casa. {¿Cuántos alumnos comen en casa?}", total:"Alumnos", p1:"Comedor", p2:"En casa",
+   sol:"En casa comen # alumnos.", mal:"Al comedor se quedan # alumnos."},
+  {txt:"El tren lleva [t viajeros]. En Murcia se bajan [a viajeros]. {¿Cuántos viajeros siguen en el tren?}", total:"Viajeros", p1:"Se bajan", p2:"Siguen",
+   sol:"En el tren siguen # viajeros.", mal:"En Murcia se bajan # viajeros."},
+  {txt:"Hicimos [t galletas] para la fiesta. Ya nos hemos comido [a galletas]. {¿Cuántas galletas quedan?}", total:"Galletas", p1:"Comidas", p2:"Quedan",
+   sol:"Quedan # galletas.", mal:"Nos hemos comido # galletas."},
+  {txt:"En la caja de material hay [t gomas]. [a son blancas] y el resto, de colores. {¿Cuántas gomas son de colores?}", total:"Gomas", p1:"Blancas", p2:"De colores",
+   sol:"Hay # gomas de colores.", mal:"Hay # gomas blancas."},
+  {txt:"La excursión cuesta [t euros]. Marta ya ha pagado [a euros]. {¿Cuántos euros le faltan por pagar?}", total:"Precio", p1:"Pagado", p2:"Le falta",
+   sol:"A Marta le faltan # euros por pagar.", mal:"Marta ha pagado # euros."},
+  {txt:"En el huerto teníamos [t zanahorias]. Ya hemos recogido [a zanahorias]. {¿Cuántas zanahorias quedan en la tierra?}", total:"Zanahorias", p1:"Recogidas", p2:"En la tierra",
+   sol:"Quedan # zanahorias en la tierra.", mal:"Hemos recogido # zanahorias."}];
 
 /* Problemas que despistan (Árbol): el verbo invita a la operación contraria, o hay que comparar */
 const DIFICIL_TOTAL_PB = [   // falta el total: se suma
@@ -112,7 +152,21 @@ const DIFICIL_TOTAL_PB = [   // falta el total: se suma
   {txt:"Carmen se gastó [a euros] en un libro y le sobraron [b euros]. {¿Cuántos euros llevaba?}", total:"Llevaba", p1:"Gastó", p2:"Le sobraron",
    sol:"Carmen llevaba # euros.", mal:"A Carmen le sobraron # euros.", reto:["Si hubiera llevado 5 euros más, ¿cuántos habría llevado?", 5]},
   {txt:"Hoy han faltado [a alumnos] al comedor y han comido [b alumnos]. {¿Cuántos alumnos se quedan normalmente en el comedor?}", total:"Alumnos del comedor", p1:"Han faltado", p2:"Han comido",
-   sol:"Normalmente se quedan # alumnos en el comedor.", mal:"Hoy han comido # alumnos.", reto:["Si se apuntan 2 alumnos nuevos, ¿cuántos serán?", 2]}];
+   sol:"Normalmente se quedan # alumnos en el comedor.", mal:"Hoy han comido # alumnos.", reto:["Si se apuntan 2 alumnos nuevos, ¿cuántos serán?", 2]},
+  {txt:"Sofía regaló [a pegatinas] a sus amigas y todavía le quedan [b pegatinas]. {¿Cuántas pegatinas tenía al principio?}", total:"Tenía", p1:"Regaló", p2:"Le quedan",
+   sol:"Al principio Sofía tenía # pegatinas.", mal:"A Sofía le quedan # pegatinas.", reto:["¿Y si hubiera tenido 2 pegatinas más? ¿Cuántas serían?", 2]},
+  {txt:"En la biblioteca se prestaron [a libros] y se quedaron en las estanterías [b libros]. {¿Cuántos libros había antes de prestarlos?}", total:"Había", p1:"Prestados", p2:"Se quedaron",
+   sol:"Antes había # libros.", mal:"Se prestaron # libros.", reto:["Si compramos 3 libros nuevos, ¿cuántos habría?", 3]},
+  {txt:"Mi tío tiene [a años]. Mi abuelo tiene [b años más que mi tío]. {¿Cuántos años tiene mi abuelo?}", total:"Años del abuelo", p1:"Como el tío", p2:"Más que el tío",
+   sol:"Mi abuelo tiene # años.", mal:"Mi tío tiene # años.", reto:["¿Cuántos años tendrá mi abuelo dentro de 2 años?", 2]},
+  {txt:"Después de comernos [a cerezas], en el plato quedan [b cerezas]. {¿Cuántas cerezas había en el plato?}", total:"Había", p1:"Comidas", p2:"Quedan",
+   sol:"En el plato había # cerezas.", mal:"En el plato quedan # cerezas.", reto:["Si hubiera habido 5 cerezas más, ¿cuántas serían?", 5]},
+  {txt:"El equipo azul tiene [a puntos]. El equipo verde tiene [b puntos más que el azul]. {¿Cuántos puntos tiene el equipo verde?}", total:"Equipo verde", p1:"Como el azul", p2:"Más que el azul",
+   sol:"El equipo verde tiene # puntos.", mal:"El equipo azul tiene # puntos.", reto:["Si el verde marca 2 puntos más, ¿cuántos tendrá?", 2]},
+  {txt:"Para completar el álbum a Juan le faltan [b cromos]. Ya tiene pegados [a cromos]. {¿Cuántos cromos tiene el álbum completo?}", total:"Cromos del álbum", p1:"Pegados", p2:"Le faltan",
+   sol:"El álbum tiene # cromos.", mal:"A Juan le faltan # cromos.", reto:["Si el álbum tuviera 4 cromos más, ¿cuántos tendría?", 4]},
+  {txt:"Lola gastó [a euros] en el cine y ahora le quedan [b euros]. {¿Cuántos euros tenía Lola antes de ir al cine?}", total:"Tenía", p1:"Gastó", p2:"Le quedan",
+   sol:"Antes de ir al cine Lola tenía # euros.", mal:"Lola gastó # euros.", reto:["¿Y si hubiera tenido 5 euros más? ¿Cuántos serían?", 5]}];
 const DIFICIL_PARTE_PB = [   // falta una parte: se resta
   {txt:"Lucía tenía [a cromos]. Su hermano le regaló algunos y ahora tiene [t cromos]. {¿Cuántos cromos le regaló su hermano?}", total:"Ahora tiene", p1:"Tenía", p2:"Le regaló",
    sol:"Su hermano le regaló # cromos.", mal:"Lucía tiene # cromos."},
@@ -127,7 +181,21 @@ const DIFICIL_PARTE_PB = [   // falta una parte: se resta
   {txt:"En la granja había [a gallinas]. Han comprado más y ahora hay [t gallinas]. {¿Cuántas gallinas han comprado?}", total:"Ahora hay", p1:"Había", p2:"Han comprado",
    sol:"Han comprado # gallinas.", mal:"Ahora hay # gallinas."},
   {txt:"Laura ha hecho [t puntos] en el juego y Sergio, [a puntos]. {¿Cuántos puntos le faltan a Sergio para empatar con Laura?}", total:"Puntos de Laura", p1:"Puntos de Sergio", p2:"Le faltan",
-   sol:"A Sergio le faltan # puntos.", mal:"Sergio tiene # puntos."}];
+   sol:"A Sergio le faltan # puntos.", mal:"Sergio tiene # puntos."},
+  {txt:"Antonio tenía [a sellos]. Su abuelo le dio algunos más y ahora tiene [t sellos]. {¿Cuántos sellos le dio su abuelo?}", total:"Ahora tiene", p1:"Tenía", p2:"Le dio",
+   sol:"Su abuelo le dio # sellos.", mal:"Antonio tiene # sellos."},
+  {txt:"Mi abuelo tiene [t años] y mi tío, [a años]. {¿Cuántos años más que mi tío tiene mi abuelo?}", total:"Años del abuelo", p1:"Como el tío", p2:"Más que el tío",
+   sol:"Mi abuelo tiene # años más que mi tío.", mal:"Mi tío tiene # años."},
+  {txt:"En la granja había [a ovejas]. Han nacido corderitos y ahora hay [t ovejas]. {¿Cuántos corderitos han nacido?}", total:"Ahora hay", p1:"Había", p2:"Han nacido",
+   sol:"Han nacido # corderitos.", mal:"Ahora hay # ovejas."},
+  {txt:"El edificio rojo tiene [t ventanas] y el azul, [a ventanas]. {¿Cuántas ventanas menos que el rojo tiene el edificio azul?}", total:"Edificio rojo", p1:"Edificio azul", p2:"Menos que el rojo",
+   sol:"El edificio azul tiene # ventanas menos.", mal:"El edificio azul tiene # ventanas."},
+  {txt:"Nerea tenía [a euros] en la hucha. Su tía le dio dinero y ahora tiene [t euros]. {¿Cuántos euros le dio su tía?}", total:"Ahora tiene", p1:"Tenía", p2:"Le dio la tía",
+   sol:"Su tía le dio # euros.", mal:"Nerea tiene # euros."},
+  {txt:"En la primera parte del partido marcamos [a puntos] y al terminar teníamos [t puntos]. {¿Cuántos puntos marcamos en la segunda parte?}", total:"Al terminar", p1:"1.ª parte", p2:"2.ª parte",
+   sol:"En la segunda parte marcamos # puntos.", mal:"Al terminar teníamos # puntos."},
+  {txt:"Elena ha leído [t páginas] y Hugo, [a páginas]. {¿Cuántas páginas tiene que leer Hugo para alcanzar a Elena?}", total:"Páginas de Elena", p1:"Páginas de Hugo", p2:"Le faltan",
+   sol:"Hugo tiene que leer # páginas.", mal:"Hugo ha leído # páginas."}];
 const GRUPOS_PB = {j:JUNTAR_PB, s:SEPARAR_PB, dt:DIFICIL_TOTAL_PB, dp:DIFICIL_PARTE_PB};
 
 /* Números de cada problema: 8 parejas fijas por contexto (siempre las mismas, para que el banco sepa cuáles han salido) */

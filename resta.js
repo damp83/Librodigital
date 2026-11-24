@@ -208,6 +208,8 @@ function iniciarResta(){
     apTeclado("rsTeclado", teclaRS);
     if(document.fullscreenEnabled) $("rsPantalla").onclick = ()=> pantallaCompleta("vResta"); else $("rsPantalla").hidden = true;
   }
+  // desde «Resuelvo problemas»: la resta del problema
+  if(window.restaPendiente){ const [a, b] = window.restaPendiente; window.restaPendiente = null; empezarLibreRS(a, b); return; }
   if(!RS.reto) nuevoRetoRS(); else pintarResta();
 }
 /* Una casilla de la cuenta: hecha, activa (con lo que se escribe) o vacía */

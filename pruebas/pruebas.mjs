@@ -60,7 +60,7 @@ await prueba("ruta.json enlaza materiales y páginas que existen", ()=>{
 /* ---------- Datos: el reto de la semana está bien escrito ---------- */
 await prueba("reto.json tiene fechas, textos y enlaces válidos", ()=>{
   const fallos = [], archivos = new Set(catalogo.map(m=>m.archivo));
-  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","aviones","serpiente","parejas","litros","resta","escalera","series","mas","donde","ruta","familias"];
+  const herramientas = ["regletas","bombo","calculo","panel","partes","marco","muros","geoplano","calculadora","piramides","redondeo","estimacion","minuto","escondido","cien","reloj","dinero","multiplicar","aviones","serpiente","parejas","litros","resta","problemas","escalera","series","mas","donde","ruta","familias"];
   exigir(Array.isArray(reto.semanas) && reto.semanas.length, "no hay «semanas»");
   reto.semanas.forEach((s,i)=>{
     const donde = "semana "+(i+1)+" ("+s.desde+")";
@@ -482,6 +482,52 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.click("#rsDescomponer");
   exigir(await p.evaluate(()=> pasoRS().t === "decide" && RS.hechas[0] === 400), "resta: sin escribir la descomposición no se empieza en «¿se puede quitar?»");
   await p.click("#rsDescomponer");
+  // Resuelvo problemas: los 8 pasos de la checklist con el diagrama de barras, el reto y el banco
+  await p.evaluate(()=> localStorage.removeItem("aula-problemas"));
+  await p.goto(WEB+"#/problemas"); await p.waitForSelector("#vProblemas:not([hidden]) #pbLeido");
+  const bancoPB = await p.evaluate(()=>{ const mal = [];
+    for(const n of Object.keys(NIVELES_PB)){
+      const l = listaPB(n);
+      if(l.length < 100 || new Set(l.map(r=> r.k)).size !== l.length) mal.push(n+": "+l.length+" problemas");
+      for(const r of l){
+        const lleva = r.juntar ? r.a % 10 + r.b % 10 >= 10 : r.a % 10 > r.t % 10;
+        if(r.a + r.b !== r.t || r.t > 99 || r.a < 11 || r.b < 11 || (n === "semilla" && (!r.juntar || lleva)) || (n === "brote" && (r.juntar || lleva)) || (n === "arbol" && (r.juntar || !lleva))){ mal.push(n+": "+r.k); break; }
+      }
+    }
+    return mal; });
+  exigir(!bancoPB.length, "problemas: banco mal hecho: "+bancoPB.join("; "));
+  await p.evaluate(()=>{ PB.nivel = "semilla"; nuevoProblemaPB(); });
+  const rPB = await p.evaluate(()=> PB.reto), trozosP = await p.evaluate(()=> trozosPB(PB.reto).map(t=> t.tipo));
+  await p.click("#pbLeido");
+  await p.click('[data-tr="'+trozosP.indexOf("texto")+'"]');
+  exigir(/no es un dato/.test(await p.textContent("#pbCuerpo")), "problemas: subrayar algo que no es un dato no avisa");
+  for(let i=0; i<trozosP.length; i++) if(trozosP[i] === "dato") await p.click('[data-tr="'+i+'"]');
+  await p.click('[data-h="pregunta"]'); await p.click('[data-tr="'+trozosP.indexOf("pregunta")+'"]');
+  exigir(await p.evaluate(()=> PB.paso === 3), "problemas: subrayar los datos y rodear la pregunta no pasa al diagrama");
+  await accesibilidad(p);
+  await p.click("#pbVisto");
+  await p.click('[data-f="a"]'); await p.click('[data-caja="total"]');
+  exigir(/barra de abajo/.test(await p.textContent("#pbCuerpo")), "problemas: poner una parte en el total no avisa");
+  await p.click('[data-caja="p1"]'); await p.click('[data-f="b"]'); await p.click('[data-caja="p2"]'); await p.click('[data-f="?"]'); await p.click('[data-caja="total"]');
+  exigir(await p.evaluate(()=> PB.paso === 5), "problemas: colocar los datos no pasa a la operación");
+  await accesibilidad(p);
+  await p.click('[data-op="−"]');
+  exigir(/falta el total/i.test(await p.textContent("#pbCuerpo")), "problemas: restar cuando falta el total no avisa");
+  await p.click('[data-op="+"]');
+  for(const t of [...String(rPB.t), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  await p.click('[data-fr="'+(await p.evaluate(()=> PB.frases.findIndex(f=> f.ok)))+'"]');
+  for(const t of [...String(rPB.a), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  const deltaPB = await p.evaluate(()=> plantillaPB(PB.reto).reto[1]);
+  for(const t of [...String(rPB.t + deltaPB), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  exigir(await p.evaluate(()=> PB.paso === 10) && /Problema resuelto/.test(await p.textContent("#pbCuerpo")), "problemas: no se llega al final del problema");
+  await accesibilidad(p);
+  await p.evaluate(()=>{ PB.nivel = "arbol"; nuevoProblemaPB(); PB.paso = 3; pintarProblemas(); });
+  await p.click("#pbCortar");
+  exigir(await p.evaluate(()=> PB.paso === 4 && PB.corte !== null), "problemas: en el Árbol no se traza la división");
+  await p.evaluate(()=>{ PB.paso = 6; pintarProblemas(); });
+  const tA = await p.evaluate(()=> [PB.reto.t, PB.reto.a]);
+  await p.click("#pbResta"); await p.waitForSelector("#vResta:not([hidden]) .rd-caja");
+  exigir(await p.evaluate(t=> RS.plan.a === t[0] && RS.plan.b === t[1], tA), "problemas: el botón no lleva la resta a La resta descompuesta");
   // La serpiente de números: comerse el bueno la hace crecer, el malo no; las paredes la paran; se completa la serie
   await p.evaluate(()=> localStorage.removeItem("aula-serpiente"));
   await p.goto(WEB+"#/serpiente"); await p.waitForSelector("#vSerpiente:not([hidden]) .sp-cabeza");
@@ -528,6 +574,7 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
     for(const nivel of Object.keys(NIVELES_SP)) mazos.push(["sp-"+nivel, listaSP(nivel)]);
     for(const m of ["cuanto", "llenar"]) for(const nivel of Object.keys(NIVELES_LT[m])) mazos.push(["lt-"+m+"-"+nivel, listaLT(m, nivel)]);
     for(const nivel of Object.keys(NIVELES_RS)) mazos.push(["rd-"+nivel, listaRS(nivel)]);
+    for(const nivel of Object.keys(NIVELES_PB)) mazos.push(["pb-"+nivel, listaPB(nivel)]);
     for(const nivel of Object.keys(NIVELES_MX)) mazos.push(["mu-"+nivel, listaMX(nivel)], ["mu-dm-"+nivel, listaDoble(nivel)]);
     const fallos = [];
     for(const [clave, lista] of mazos){
@@ -664,7 +711,7 @@ await prueba("El código no usa sintaxis que los móviles algo antiguos no entie
   const NUEVO = [[/\|\|=|&&=|\?\?=/, "asignaciones lógicas (||= &&= ??=)"], [/\(\?<[=!]/, "expresiones regulares con «lookbehind»"],
                  [/\.at\(|structuredClone|Object\.hasOwn|\.findLast\(|\.toSorted\(/, "funciones de 2022 o posteriores"]];
   const fallos = [];
-  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "aviones.js", "serpiente.js", "parejas.js", "litros.js", "resta.js", "infantil.js", "sw.js"]){
+  for(const f of ["index.html", "herramientas.js", "secciones.js", "banco.js", "aula.js", "geoplano.js", "calculadora.js", "piramides.js", "aproximar.js", "minuto.js", "escondido.js", "cien.js", "reloj.js", "dinero.js", "multiplicar.js", "aviones.js", "serpiente.js", "parejas.js", "litros.js", "resta.js", "problemas.js", "infantil.js", "sw.js"]){
     readFileSync(new URL(f, RAIZ), "utf8").split("\n").forEach((l, i)=> NUEVO.forEach(([re, que])=>{ if(re.test(l)) fallos.push(f+":"+(i+1)+" usa "+que); }));
   }
   exigir(!fallos.length, fallos.join("; "));
@@ -724,6 +771,7 @@ await prueba("Las fichas en papel caben en un A4 con todos los niveles, sin ejer
     for(const m of Object.keys(NIVELES_PJ)) for(const n of Object.keys(NIVELES_PJ[m])) c.push([`parejas ${m} ${n}`, `PJ.modo="${m}";PJ.nivel.${m}="${n}";imprimirParejas()`]);
     for(const n of Object.keys(NIVELES_LT.cuanto)) c.push([`litros ${n}`, `LT.nivel.cuanto="${n}";imprimirLitros()`]);
     for(const n of Object.keys(NIVELES_RS)) c.push([`resta ${n}`, `RS.nivel="${n}";imprimirResta()`]);
+    c.push(["problemas (la estación)", "imprimirProblemas()"]);
     for(const n of Object.keys(NIVELES_SP)) c.push([`serpiente ${n}`, `SP.nivel="${n}";imprimirSerpiente()`]);
     return c;
   });

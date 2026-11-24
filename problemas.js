@@ -4,10 +4,12 @@
    con su nivel de Bloom: 1 leo, 2 subrayo datos y rodeo la pregunta, 3 dibujo el diagrama, 4 coloco los datos
    (y la ? en lo que no sé), 5 elijo la operación (¿falta el total? sumo; ¿falta una parte? resto), 6 calculo,
    7 escribo la solución con una frase y 8 compruebo con la operación contraria; y el reto CREAR.
-   - Niveles: ● Semilla (suma sin llevar, falta el total; diagrama con nombres), ●● Brote (resta sin llevar,
-     falta una parte; el alumno decide dónde va cada dato), ●●● Árbol (resta llevando; barras en blanco: el
-     alumno traza la división) y Mezcla (sumar o restar, con o sin llevar: hay que decidir la operación).
-   - Banco de problemas: 28 contextos (juntar y separar) con números distintos; no se repiten hasta agotarlos.
+   - Niveles (en todos hay problemas de sumar y de restar; lo que sube es la dificultad del problema):
+     ● Semilla: problemas directos sin llevar; el diagrama viene dibujado y con los nombres.
+     ●● Brote: problemas directos con llevadas; el alumno decide dónde va cada dato.
+     ●●● Árbol: problemas que despistan (el verbo dice «perdió» y hay que sumar; «le regaló» y hay que restar)
+     y de comparar («¿cuántos más?»); barras en blanco: el alumno traza la división.
+   - Banco de problemas: 42 contextos con números distintos; no se repiten hasta agotarlos.
    - Imprimir la estación: checklist, una ficha de cada nivel (como las de la estación) y el solucionario.
    Usa las utilidades de index.html, herramientas.js, banco.js, aproximar.js y secciones.js ($, leer, guardar,
    delMazo, barajar, apTeclado, pintarIconos, pantallaCompleta, hojaPapel, lanzarImpresion…).
@@ -19,10 +21,9 @@ const PB = Object.assign({nivel:"semilla", forma:"tradicional"}, leer("aula-prob
 let problemasLista = false;
 const guardarPB = () => guardar("aula-problemas", {nivel:PB.nivel, forma:PB.forma});
 const NIVELES_PB = {
-  semilla:{txt:"● Semilla · sumar sin llevar", marca:"● Semilla"},
-  brote:{txt:"●● Brote · restar sin llevar", marca:"●● Brote"},
-  arbol:{txt:"●●● Árbol · restar llevando", marca:"●●● Árbol"},
-  mezcla:{txt:"Mezcla · ¿sumo o resto?", marca:"Mezcla"}};
+  semilla:{txt:"● Semilla · problemas directos, sin llevar", marca:"● Semilla"},
+  brote:{txt:"●● Brote · problemas directos, con llevadas", marca:"●● Brote"},
+  arbol:{txt:"●●● Árbol · problemas que despistan", marca:"●●● Árbol"}};
 const nivelPB = () => NIVELES_PB[PB.nivel] ? PB.nivel : "semilla";
 const PASOS_PB = [null,
   {txt:"Leo el problema", sub:"Despacio, para saber de qué trata.", bloom:["RECORDAR"]},
@@ -96,6 +97,39 @@ const SEPARAR_PB = [
   {txt:"En el jardín hay [t flores]. [a son margaritas] y el resto son rosas. {¿Cuántas rosas hay?}", total:"Flores", p1:"Margaritas", p2:"Rosas",
    sol:"En el jardín hay # rosas.", mal:"En el jardín hay # margaritas."}];
 
+/* Problemas que despistan (Árbol): el verbo invita a la operación contraria, o hay que comparar */
+const DIFICIL_TOTAL_PB = [   // falta el total: se suma
+  {txt:"Pablo tenía unas canicas. En el recreo perdió [a canicas] y ahora le quedan [b canicas]. {¿Cuántas canicas tenía al principio?}", total:"Tenía al principio", p1:"Perdió", p2:"Le quedan",
+   sol:"Al principio Pablo tenía # canicas.", mal:"Pablo perdió # canicas.", reto:["¿Y si al principio hubiera tenido 2 canicas más? ¿Cuántas serían?", 2]},
+  {txt:"Ana tiene [a euros]. Luis tiene [b euros más que Ana]. {¿Cuántos euros tiene Luis?}", total:"Euros de Luis", p1:"Como Ana", p2:"Más que Ana",
+   sol:"Luis tiene # euros.", mal:"Ana tiene # euros.", reto:["Si Luis gana 2 euros más, ¿cuántos tendrá?", 2]},
+  {txt:"En el autobús quedan [b personas] después de que se bajaran [a personas] en la parada. {¿Cuántas personas iban antes de la parada?}", total:"Iban antes", p1:"Se bajaron", p2:"Quedan",
+   sol:"Antes de la parada iban # personas.", mal:"Se bajaron # personas.", reto:["Si antes hubieran subido 2 personas más, ¿cuántas irían?", 2]},
+  {txt:"Marta ha leído [a páginas] de su libro y todavía le faltan [b páginas] para terminarlo. {¿Cuántas páginas tiene el libro?}", total:"Páginas del libro", p1:"Leídas", p2:"Le faltan",
+   sol:"El libro tiene # páginas.", mal:"A Marta le faltan # páginas.", reto:["Si el libro tuviera 3 páginas más, ¿cuántas tendría?", 3]},
+  {txt:"La torre azul tiene [a cubos]. La torre roja tiene [b cubos más que la azul]. {¿Cuántos cubos tiene la torre roja?}", total:"Torre roja", p1:"Como la azul", p2:"Más que la azul",
+   sol:"La torre roja tiene # cubos.", mal:"La torre azul tiene # cubos.", reto:["Si ponemos 2 cubos más en la torre roja, ¿cuántos tendrá?", 2]},
+  {txt:"Carmen se gastó [a euros] en un libro y le sobraron [b euros]. {¿Cuántos euros llevaba?}", total:"Llevaba", p1:"Gastó", p2:"Le sobraron",
+   sol:"Carmen llevaba # euros.", mal:"A Carmen le sobraron # euros.", reto:["Si hubiera llevado 5 euros más, ¿cuántos habría llevado?", 5]},
+  {txt:"Hoy han faltado [a alumnos] al comedor y han comido [b alumnos]. {¿Cuántos alumnos se quedan normalmente en el comedor?}", total:"Alumnos del comedor", p1:"Han faltado", p2:"Han comido",
+   sol:"Normalmente se quedan # alumnos en el comedor.", mal:"Hoy han comido # alumnos.", reto:["Si se apuntan 2 alumnos nuevos, ¿cuántos serán?", 2]}];
+const DIFICIL_PARTE_PB = [   // falta una parte: se resta
+  {txt:"Lucía tenía [a cromos]. Su hermano le regaló algunos y ahora tiene [t cromos]. {¿Cuántos cromos le regaló su hermano?}", total:"Ahora tiene", p1:"Tenía", p2:"Le regaló",
+   sol:"Su hermano le regaló # cromos.", mal:"Lucía tiene # cromos."},
+  {txt:"Luis tiene [t euros] y Ana tiene [a euros]. {¿Cuántos euros más que Ana tiene Luis?}", total:"Euros de Luis", p1:"Como Ana", p2:"Más que Ana",
+   sol:"Luis tiene # euros más que Ana.", mal:"Ana tiene # euros."},
+  {txt:"En el autobús iban [a personas]. En la parada subieron algunas y ahora van [t personas]. {¿Cuántas personas subieron?}", total:"Ahora van", p1:"Iban", p2:"Subieron",
+   sol:"En la parada subieron # personas.", mal:"Ahora van # personas."},
+  {txt:"La torre roja tiene [t cubos] y la azul, [a cubos]. {¿Cuántos cubos le faltan a la torre azul para ser tan alta como la roja?}", total:"Torre roja", p1:"Torre azul", p2:"Le faltan",
+   sol:"A la torre azul le faltan # cubos.", mal:"La torre azul tiene # cubos."},
+  {txt:"Pedro tenía [a canicas] y ganó algunas en el recreo. Ahora tiene [t canicas]. {¿Cuántas canicas ganó?}", total:"Ahora tiene", p1:"Tenía", p2:"Ganó",
+   sol:"Pedro ganó # canicas.", mal:"Pedro tenía # canicas."},
+  {txt:"En la granja había [a gallinas]. Han comprado más y ahora hay [t gallinas]. {¿Cuántas gallinas han comprado?}", total:"Ahora hay", p1:"Había", p2:"Han comprado",
+   sol:"Han comprado # gallinas.", mal:"Ahora hay # gallinas."},
+  {txt:"Laura ha hecho [t puntos] en el juego y Sergio, [a puntos]. {¿Cuántos puntos le faltan a Sergio para empatar con Laura?}", total:"Puntos de Laura", p1:"Puntos de Sergio", p2:"Le faltan",
+   sol:"A Sergio le faltan # puntos.", mal:"Sergio tiene # puntos."}];
+const GRUPOS_PB = {j:JUNTAR_PB, s:SEPARAR_PB, dt:DIFICIL_TOTAL_PB, dp:DIFICIL_PARTE_PB};
+
 /* Números de cada problema: 8 parejas fijas por contexto (siempre las mismas, para que el banco sepa cuáles han salido) */
 function numerosPB(tipo, k, semilla){
   let x = 1103 * (k + 1) + 7919 * semilla;
@@ -115,15 +149,15 @@ function numerosPB(tipo, k, semilla){
 /* Todos los problemas de un nivel */
 function listaPB(nivel){
   const l = [];
-  const juntar = (tipo, cuantos) => JUNTAR_PB.forEach((tp, k)=> numerosPB(tipo, k, 1).slice(0, cuantos).forEach(([a, b])=> l.push({k:"j"+k+"-"+a+"-"+b, tpl:k, juntar:true, a, b, t:a + b})));
-  const separar = (tipo, cuantos) => SEPARAR_PB.forEach((tp, k)=> numerosPB(tipo, k, 2).slice(0, cuantos).forEach(([t, a])=> l.push({k:"s"+k+"-"+t+"-"+a, tpl:k, juntar:false, a, b:t - a, t})));
-  if(nivel === "semilla") juntar("sumaSin", 8);
-  else if(nivel === "brote") separar("restaSin", 8);
-  else if(nivel === "arbol") separar("restaCon", 8);
-  else{ juntar("sumaSin", 2); juntar("sumaCon", 2); separar("restaSin", 2); separar("restaCon", 2); }
+  // falta el total (g = j o dt): se conocen las partes a y b; falta una parte (g = s o dp): se conocen t y a
+  const juntar = (g, tipo, semilla, cuantos) => GRUPOS_PB[g].forEach((tp, k)=> numerosPB(tipo, k, semilla).slice(0, cuantos).forEach(([a, b])=> l.push({k:g+k+"-"+a+"-"+b, g, tpl:k, juntar:true, a, b, t:a + b})));
+  const separar = (g, tipo, semilla, cuantos) => GRUPOS_PB[g].forEach((tp, k)=> numerosPB(tipo, k, semilla).slice(0, cuantos).forEach(([t, a])=> l.push({k:g+k+"-"+t+"-"+a, g, tpl:k, juntar:false, a, b:t - a, t})));
+  if(nivel === "semilla"){ juntar("j", "sumaSin", 1, 4); separar("s", "restaSin", 2, 4); }
+  else if(nivel === "brote"){ juntar("j", "sumaCon", 1, 4); separar("s", "restaCon", 2, 4); }
+  else{ juntar("dt", "sumaSin", 3, 4); juntar("dt", "sumaCon", 3, 4); separar("dp", "restaSin", 4, 4); separar("dp", "restaCon", 4, 4); }
   return l;
 }
-const plantillaPB = r => (r.juntar ? JUNTAR_PB : SEPARAR_PB)[r.tpl];
+const plantillaPB = r => GRUPOS_PB[r.g || (r.juntar ? "j" : "s")][r.tpl];
 const incognitaPB = r => r.juntar ? r.t : r.b;
 const valorPB = (r, c) => c === "?" ? "?" : r[c];
 /* El texto en trozos: datos, pregunta y el resto (todos se pueden tocar en el paso 2) */

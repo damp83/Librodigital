@@ -491,12 +491,13 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
       if(l.length < 100 || new Set(l.map(r=> r.k)).size !== l.length) mal.push(n+": "+l.length+" problemas");
       for(const r of l){
         const lleva = r.juntar ? r.a % 10 + r.b % 10 >= 10 : r.a % 10 > r.t % 10;
-        if(r.a + r.b !== r.t || r.t > 99 || r.a < 11 || r.b < 11 || (n === "semilla" && (!r.juntar || lleva)) || (n === "brote" && (r.juntar || lleva)) || (n === "arbol" && (r.juntar || !lleva))){ mal.push(n+": "+r.k); break; }
+        if(r.a + r.b !== r.t || r.t > 99 || r.a < 11 || r.b < 11 || !plantillaPB(r) || (n === "semilla" && (!"js".includes(r.g) || lleva)) || (n === "brote" && (!"js".includes(r.g) || !lleva)) || (n === "arbol" && !["dt", "dp"].includes(r.g))){ mal.push(n+": "+r.k); break; }
       }
+      if(!l.some(r=> r.juntar) || !l.some(r=> !r.juntar)) mal.push(n+": no tiene problemas de sumar y de restar");
     }
     return mal; });
   exigir(!bancoPB.length, "problemas: banco mal hecho: "+bancoPB.join("; "));
-  await p.evaluate(()=>{ PB.nivel = "semilla"; nuevoProblemaPB(); });
+  await p.evaluate(()=>{ PB.nivel = "semilla"; nuevoProblemaPB(); PB.reto = listaPB("semilla").find(r=> r.juntar); pintarProblemas(); });
   const rPB = await p.evaluate(()=> PB.reto), trozosP = await p.evaluate(()=> trozosPB(PB.reto).map(t=> t.tipo));
   await p.click("#pbLeido");
   await p.click('[data-tr="'+trozosP.indexOf("texto")+'"]');
@@ -514,18 +515,34 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.click('[data-op="−"]');
   exigir(/falta el total/i.test(await p.textContent("#pbCuerpo")), "problemas: restar cuando falta el total no avisa");
   await p.click('[data-op="+"]');
-  for(const t of [...String(rPB.t), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  // tradicional: primero las unidades y luego las decenas
+  await p.click('[data-forma="tradicional"]');
+  for(const t of [String(rPB.t % 10), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  exigir(await p.evaluate(()=> PB.paso === 6 && PB.calc.u !== undefined), "problemas: escribir primero las unidades no vale");
+  for(const t of [String(Math.floor(rPB.t / 10)), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  exigir(await p.evaluate(()=> PB.paso === 7), "problemas: la suma en vertical no termina");
+  // por partes (como en el aula): d 20 + 10 = 30, u 7 + 8 = 15, 30 + 15 = 45
+  await p.evaluate(()=>{ PB.paso = 6; PB.calc = {}; pintarProblemas(); });
+  await p.click('[data-forma="partes"]');
+  for(const v of [rPB.a - rPB.a % 10 + rPB.b - rPB.b % 10, rPB.a % 10 + rPB.b % 10, rPB.t]) for(const t of [...String(v), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  exigir(await p.evaluate(()=> PB.paso === 7), "problemas: la suma por partes no termina");
+  await accesibilidad(p);
+  await p.click('[data-forma="tradicional"]').catch(()=>{});
   await p.click('[data-fr="'+(await p.evaluate(()=> PB.frases.findIndex(f=> f.ok)))+'"]');
   for(const t of [...String(rPB.a), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
   const deltaPB = await p.evaluate(()=> plantillaPB(PB.reto).reto[1]);
   for(const t of [...String(rPB.t + deltaPB), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
   exigir(await p.evaluate(()=> PB.paso === 10) && /Problema resuelto/.test(await p.textContent("#pbCuerpo")), "problemas: no se llega al final del problema");
   await accesibilidad(p);
-  await p.evaluate(()=>{ PB.nivel = "arbol"; nuevoProblemaPB(); PB.paso = 3; pintarProblemas(); });
+  await p.evaluate(()=>{ PB.nivel = "arbol"; nuevoProblemaPB(); PB.reto = listaPB("arbol").find(r=> !r.juntar && r.a % 10 > r.t % 10); PB.paso = 3; pintarProblemas(); });
   await p.click("#pbCortar");
   exigir(await p.evaluate(()=> PB.paso === 4 && PB.corte !== null), "problemas: en el Árbol no se traza la división");
-  await p.evaluate(()=>{ PB.paso = 6; pintarProblemas(); });
+  await p.evaluate(()=>{ PB.paso = 6; PB.calc = {}; pintarProblemas(); });
   const tA = await p.evaluate(()=> [PB.reto.t, PB.reto.a]);
+  const xA = tA[0] - tA[1];
+  for(const t of [String(xA % 10), "✓"]) await p.click('#pbTeclado [data-t="'+t+'"]');
+  exigir(/Has roto una decena/.test(await p.textContent("#pbCuerpo")) && await p.locator(".pb-du s").count() === 2, "problemas: la resta llevando no enseña la decena rota");
+  await accesibilidad(p);
   await p.click("#pbResta"); await p.waitForSelector("#vResta:not([hidden]) .rd-caja");
   exigir(await p.evaluate(t=> RS.plan.a === t[0] && RS.plan.b === t[1], tA), "problemas: el botón no lleva la resta a La resta descompuesta");
   // La serpiente de números: comerse el bueno la hace crecer, el malo no; las paredes la paran; se completa la serie
@@ -772,6 +789,7 @@ await prueba("Las fichas en papel caben en un A4 con todos los niveles, sin ejer
     for(const n of Object.keys(NIVELES_LT.cuanto)) c.push([`litros ${n}`, `LT.nivel.cuanto="${n}";imprimirLitros()`]);
     for(const n of Object.keys(NIVELES_RS)) c.push([`resta ${n}`, `RS.nivel="${n}";imprimirResta()`]);
     c.push(["problemas (la estación)", "imprimirProblemas()"]);
+    for(const n of Object.keys(NIVELES_PB)) c.push([`problemas 2 por cara ${n}`, `PB.nivel="${n}";imprimirDosPorCaraPB()`]);
     for(const n of Object.keys(NIVELES_SP)) c.push([`serpiente ${n}`, `SP.nivel="${n}";imprimirSerpiente()`]);
     return c;
   });

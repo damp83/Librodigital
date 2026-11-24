@@ -238,12 +238,17 @@ Su entrada del catálogo y su portada se quitan solas.
       barras» (2.º). Los 8 pasos de la checklist, uno tras otro y con su nivel de Bloom, mientras la checklist se va
       marcando: leer (con voz), subrayar los datos y rodear la pregunta (tocando el texto con dos lápices), el
       diagrama de barras, colocar los datos y la ? (avisa si un dato no va ahí), ¿sumo o resto? (¿falta el total?
-      → sumo; ¿falta una parte? → resto), calcular en la tabla D U (la resta llevando se puede hacer con *La resta
-      descompuesta*), elegir la frase que responde a la pregunta, comprobar con la operación contraria y el reto
-      CREAR. Niveles: ● Semilla (sumar sin llevar, diagrama con nombres), ●● Brote (restar sin llevar; el alumno
-      decide dónde va cada dato), ●●● Árbol (restar llevando; barras en blanco: traza la división) y Mezcla.
-      Banco de 448 problemas (28 contextos de juntar y separar con números distintos) que no se repiten.
-      *Imprimir la estación*: la checklist, una ficha de cada nivel con el formato de la estación y el solucionario.
+      → sumo; ¿falta una parte? → resto), calcular casilla a casilla en la tabla D U (primero las unidades, con la
+      llevada o la decena rota a la vista; la resta llevando se puede hacer con *La resta descompuesta*) o, en las sumas,
+      por partes como en el aula (d: 20 + 10 = 30, u: 7 + 8 = 15, 30 + 15 = 45), elegir la frase que responde a la pregunta, comprobar con la operación contraria y el reto
+      CREAR. En todos los niveles hay problemas de sumar y de restar; lo que sube es la dificultad: ● Semilla
+      (problemas directos sin llevar, diagrama con nombres), ●● Brote (directos con llevadas; el alumno decide dónde
+      va cada dato) y ●●● Árbol (problemas que despistan: «perdió 15 y le quedan 27, ¿cuántas tenía?» se suma; «le
+      regaló algunos», «¿cuántos más?» se restan; barras en blanco: traza la división). Banco de 336 problemas
+      (42 contextos con números distintos, la mitad de sumar y la mitad de restar) que no se repiten.
+      Al imprimir se elige el papel: *la estación* (la checklist, una ficha de cada nivel con el formato de la
+      estación y el solucionario) o *2 fichas por cara* (4 fichas del nivel elegido en media hoja cada una, con línea
+      de corte, para imprimir a doble cara, y su solucionario).
     - *La resta descompuesta* (`#/resta`, en `resta.js`): la resta con el formato del aula: se descomponen
       los dos números (52 = 50 + 2, − 27 = 20 + 7), después de la doble raya se transforma el minuendo si no
       llega (40 + 12: se rompe una decena), se resta cada orden (20 + 5) y se junta (25). Antes de romper pregunta

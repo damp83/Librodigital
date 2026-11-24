@@ -965,6 +965,19 @@ button.pb-caja{cursor:pointer}
 .pb-du .pb-signo{color:#b3261e}
 .pb-du .pb-res td{border-top:4px solid var(--ink);color:var(--accent)}
 .pb-du .pb-res td:first-child{border-top:0}
+.pb-formas{margin:0 auto 12px;width:max-content;max-width:100%}
+.pb-du td.pb-marca{position:relative}
+.pb-llevo{position:absolute;top:-2px;right:3px;font:700 15px var(--font-titulos);color:#b3261e}
+.pb-du td s{color:var(--muted);text-decoration-color:#b3261e;text-decoration-thickness:3px}
+.pb-hecho{color:var(--ok)}
+.pb-du .ap-campo{font-size:30px;min-width:1.4ch;padding:0 4px}
+.pb-du.partes td{border:0;width:auto;height:58px;padding:0 6px}
+.pb-du.partes .pb-num{text-align:right;min-width:86px}
+.pb-du.partes td:nth-child(2){text-align:right}
+.pb-du.partes .pb-linea td:nth-child(2){border-top:4px solid var(--ink)}
+.pb-du.partes .pb-letra{font:700 22px var(--font-titulos);color:var(--ink-2);text-align:right;white-space:nowrap}
+.pb-du.partes .pb-ayuda{font:600 16px var(--font);color:var(--muted);text-align:left}
+.pb-du.partes .pb-total td:nth-child(2) .pb-hecho,.pb-du.partes .pb-total .ap-campo{box-shadow:0 0 0 3px var(--ink);border-radius:6px;padding:0 8px}
 .pb-frases{display:flex;flex-direction:column;gap:10px;align-items:stretch}
 .pb-frase{text-align:left;min-width:0}
 .pb-ejemplo{padding:8px 12px;border-radius:10px;background:var(--surface-2)}
@@ -1020,6 +1033,41 @@ button.pb-caja{cursor:pointer}
 .hj-pb-check b{font:700 12pt var(--font-titulos)}
 .hj-pb-check i{flex:none;width:6mm;height:6mm;border:.4mm solid #1c2330;border-radius:1.2mm}
 .hj-pb-regla{margin:2.5mm 0 0;text-align:center;font-size:11pt}
+/* Dos fichas por cara: cada una en media hoja */
+.hj-compacta .hj-regletas{margin-bottom:2mm;height:2mm}
+.hj-compacta .hj-tit h1{font-size:14pt}
+.hj-compacta .hj-tit p{font-size:8.5pt;margin:0}
+.hj-compacta header + div{height:2mm !important}
+.hj-pbm-hoja{display:grid;grid-template-rows:1fr auto 1fr;height:100%}
+.hj-pbm-corte{position:relative;height:5mm;display:flex;align-items:center;justify-content:center;font-size:11pt;color:#5b6676}
+.hj-pbm-corte::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:.35mm dashed #8a94a3}
+.hj-pbm-corte{background:transparent}
+.hj-pbm{display:flex;flex-direction:column;gap:1.3mm;min-height:0}
+.hj-pbm .hj-pb-caja{padding:1.2mm 3mm}
+.hj-pbm .hj-pb-tit{margin:0 0 .8mm;font-size:9pt}
+.hj-pbm .hj-pb-bloom{font-size:5.5pt;padding:0 1.5mm}
+.hj-pbm-cab{display:flex;align-items:baseline;gap:3mm;font-size:9pt}
+.hj-pbm-cab > b{font:700 12pt var(--font-titulos)}
+.hj-pbm-nivel{padding:.2mm 2.5mm;border:.35mm solid #1c2330;border-radius:3mm;font:700 8.5pt var(--font-titulos)}
+.hj-pbm-dato{flex:3;display:flex;gap:1.5mm;align-items:baseline}
+.hj-pbm-dato.corto{flex:1.4}
+.hj-pbm-dato i{flex:1;border-bottom:.3mm solid #8a94a3;height:3.5mm}
+.hj-pbm-texto{margin:0;font-size:10.5pt;line-height:1.4}
+.hj-pbm-diag{width:120mm;gap:1mm}
+.hj-pbm-diag .hj-pb-barra{height:7.5mm;flex-direction:row;gap:2mm}
+.hj-pbm-diag .hj-pb-hueco{height:5mm;width:13mm}
+.hj-pbm-tres{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:1.3mm}
+.hj-pbm .hj-pb-ops{margin:1.5mm 0}
+.hj-pbm .hj-pb-ops span{font-size:11pt}
+.hj-pbm .hj-pb-du td{height:3.6mm;width:8mm}
+.hj-pbm .hj-pb-du th{font-size:7.5pt}
+.hj-pbm .hj-pb-si{margin:.5mm 0;font-size:9pt}
+.hj-pbm .hj-pb-linea{height:5.5mm}
+.hj-pbm .hj-pb-linea.corta{width:30mm}
+.hj-pbm .hj-pb-mini{margin-top:0;padding-top:1mm;font-size:6.5pt;gap:.6mm 2mm}
+.hj-pbm .hj-pb-mini i{width:2.6mm;height:2.6mm}
+.hj-pbm-dos{display:grid;grid-template-columns:1fr 1fr;gap:1.3mm}
+.hj-pbm-mini{grid-template-columns:repeat(8,auto) !important;justify-content:space-between}
 .hj-pb-sol{border:.35mm dashed #8a94a3;border-radius:3mm;padding:3mm 5mm;margin-bottom:5mm}
 .hj-pb-sol-tit{margin:0 0 1.5mm;font:700 12pt var(--font-titulos)}
 .hj-pb-sol ul{margin:0;padding-left:5mm;font-size:10.5pt;line-height:1.55}
@@ -2620,7 +2668,8 @@ button.pb-caja{cursor:pointer}
   <div class="reg-barra">
     <label class="b-select"><span>Nivel</span><select id="pbNivel"></select></label>
     <button class="bt" id="pbOtro">Otro problema</button>
-    <div class="reg-acc"><button class="icbtn" id="pbImprimir" data-icon="imprimir" aria-label="Imprimir la estación" title="Imprimir la estación"></button><button class="icbtn" id="pbPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
+    <label class="b-select"><span>Papel</span><select id="pbPapel"><option value="estacion">La estación (checklist, 3 fichas y solucionario)</option><option value="dos">2 fichas por cara (este nivel)</option></select></label>
+    <div class="reg-acc"><button class="icbtn" id="pbImprimir" data-icon="imprimir" aria-label="Imprimir" title="Imprimir"></button><button class="icbtn" id="pbPantalla" data-icon="pantalla" aria-label="Pantalla completa" title="Pantalla completa"></button></div>
   </div>
   <div class="ap-cuerpo"><div class="pb-juego" id="pbCuerpo"></div><div class="pi-teclado" id="pbTeclado" role="group" aria-label="Escribir un número" hidden></div></div>
 </div>

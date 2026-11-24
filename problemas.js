@@ -4,25 +4,26 @@
    con su nivel de Bloom: 1 leo, 2 subrayo datos y rodeo la pregunta, 3 dibujo el diagrama, 4 coloco los datos
    (y la ? en lo que no sé), 5 elijo la operación (¿falta el total? sumo; ¿falta una parte? resto), 6 calculo,
    7 escribo la solución con una frase y 8 compruebo con la operación contraria; y el reto CREAR.
-   - Niveles: ● Semilla (suma sin llevar, falta el total; diagrama con nombres), ●● Brote (resta sin llevar,
-     falta una parte; el alumno decide dónde va cada dato), ●●● Árbol (resta llevando; barras en blanco: el
-     alumno traza la división) y Mezcla (sumar o restar, con o sin llevar: hay que decidir la operación).
-   - Banco de problemas: 28 contextos (juntar y separar) con números distintos; no se repiten hasta agotarlos.
+   - Niveles (en todos hay problemas de sumar y de restar; lo que sube es la dificultad del problema):
+     ● Semilla: problemas directos sin llevar; el diagrama viene dibujado y con los nombres.
+     ●● Brote: problemas directos con llevadas; el alumno decide dónde va cada dato.
+     ●●● Árbol: problemas que despistan (el verbo dice «perdió» y hay que sumar; «le regaló» y hay que restar)
+     y de comparar («¿cuántos más?»); barras en blanco: el alumno traza la división.
+   - Banco de problemas: 42 contextos con números distintos; no se repiten hasta agotarlos.
    - Imprimir la estación: checklist, una ficha de cada nivel (como las de la estación) y el solucionario.
    Usa las utilidades de index.html, herramientas.js, banco.js, aproximar.js y secciones.js ($, leer, guardar,
    delMazo, barajar, apTeclado, pintarIconos, pantallaCompleta, hojaPapel, lanzarImpresion…).
    ===================================================================== */
 
-const PB = Object.assign({nivel:"semilla"}, leer("aula-problemas", {}),
-  {reto:null, paso:1, herr:"datos", marcados:[], rodeada:false, corte:null, cajas:{}, chip:null, op:null, escrito:"", frases:null,
+const PB = Object.assign({nivel:"semilla", forma:"tradicional", papel:"estacion"}, leer("aula-problemas", {}),
+  {reto:null, calc:{}, paso:1, herr:"datos", marcados:[], rodeada:false, corte:null, cajas:{}, chip:null, op:null, escrito:"", frases:null,
    aviso:"", tono:"", fallos:0, bien:0, ejemplo:false});
 let problemasLista = false;
-const guardarPB = () => guardar("aula-problemas", {nivel:PB.nivel});
+const guardarPB = () => guardar("aula-problemas", {nivel:PB.nivel, forma:PB.forma, papel:PB.papel});
 const NIVELES_PB = {
-  semilla:{txt:"● Semilla · sumar sin llevar", marca:"● Semilla"},
-  brote:{txt:"●● Brote · restar sin llevar", marca:"●● Brote"},
-  arbol:{txt:"●●● Árbol · restar llevando", marca:"●●● Árbol"},
-  mezcla:{txt:"Mezcla · ¿sumo o resto?", marca:"Mezcla"}};
+  semilla:{txt:"● Semilla · problemas directos, sin llevar", marca:"● Semilla"},
+  brote:{txt:"●● Brote · problemas directos, con llevadas", marca:"●● Brote"},
+  arbol:{txt:"●●● Árbol · problemas que despistan", marca:"●●● Árbol"}};
 const nivelPB = () => NIVELES_PB[PB.nivel] ? PB.nivel : "semilla";
 const PASOS_PB = [null,
   {txt:"Leo el problema", sub:"Despacio, para saber de qué trata.", bloom:["RECORDAR"]},
@@ -96,6 +97,39 @@ const SEPARAR_PB = [
   {txt:"En el jardín hay [t flores]. [a son margaritas] y el resto son rosas. {¿Cuántas rosas hay?}", total:"Flores", p1:"Margaritas", p2:"Rosas",
    sol:"En el jardín hay # rosas.", mal:"En el jardín hay # margaritas."}];
 
+/* Problemas que despistan (Árbol): el verbo invita a la operación contraria, o hay que comparar */
+const DIFICIL_TOTAL_PB = [   // falta el total: se suma
+  {txt:"Pablo tenía unas canicas. En el recreo perdió [a canicas] y ahora le quedan [b canicas]. {¿Cuántas canicas tenía al principio?}", total:"Tenía al principio", p1:"Perdió", p2:"Le quedan",
+   sol:"Al principio Pablo tenía # canicas.", mal:"Pablo perdió # canicas.", reto:["¿Y si al principio hubiera tenido 2 canicas más? ¿Cuántas serían?", 2]},
+  {txt:"Ana tiene [a euros]. Luis tiene [b euros más que Ana]. {¿Cuántos euros tiene Luis?}", total:"Euros de Luis", p1:"Como Ana", p2:"Más que Ana",
+   sol:"Luis tiene # euros.", mal:"Ana tiene # euros.", reto:["Si Luis gana 2 euros más, ¿cuántos tendrá?", 2]},
+  {txt:"En el autobús quedan [b personas] después de que se bajaran [a personas] en la parada. {¿Cuántas personas iban antes de la parada?}", total:"Iban antes", p1:"Se bajaron", p2:"Quedan",
+   sol:"Antes de la parada iban # personas.", mal:"Se bajaron # personas.", reto:["Si antes hubieran subido 2 personas más, ¿cuántas irían?", 2]},
+  {txt:"Marta ha leído [a páginas] de su libro y todavía le faltan [b páginas] para terminarlo. {¿Cuántas páginas tiene el libro?}", total:"Páginas del libro", p1:"Leídas", p2:"Le faltan",
+   sol:"El libro tiene # páginas.", mal:"A Marta le faltan # páginas.", reto:["Si el libro tuviera 3 páginas más, ¿cuántas tendría?", 3]},
+  {txt:"La torre azul tiene [a cubos]. La torre roja tiene [b cubos más que la azul]. {¿Cuántos cubos tiene la torre roja?}", total:"Torre roja", p1:"Como la azul", p2:"Más que la azul",
+   sol:"La torre roja tiene # cubos.", mal:"La torre azul tiene # cubos.", reto:["Si ponemos 2 cubos más en la torre roja, ¿cuántos tendrá?", 2]},
+  {txt:"Carmen se gastó [a euros] en un libro y le sobraron [b euros]. {¿Cuántos euros llevaba?}", total:"Llevaba", p1:"Gastó", p2:"Le sobraron",
+   sol:"Carmen llevaba # euros.", mal:"A Carmen le sobraron # euros.", reto:["Si hubiera llevado 5 euros más, ¿cuántos habría llevado?", 5]},
+  {txt:"Hoy han faltado [a alumnos] al comedor y han comido [b alumnos]. {¿Cuántos alumnos se quedan normalmente en el comedor?}", total:"Alumnos del comedor", p1:"Han faltado", p2:"Han comido",
+   sol:"Normalmente se quedan # alumnos en el comedor.", mal:"Hoy han comido # alumnos.", reto:["Si se apuntan 2 alumnos nuevos, ¿cuántos serán?", 2]}];
+const DIFICIL_PARTE_PB = [   // falta una parte: se resta
+  {txt:"Lucía tenía [a cromos]. Su hermano le regaló algunos y ahora tiene [t cromos]. {¿Cuántos cromos le regaló su hermano?}", total:"Ahora tiene", p1:"Tenía", p2:"Le regaló",
+   sol:"Su hermano le regaló # cromos.", mal:"Lucía tiene # cromos."},
+  {txt:"Luis tiene [t euros] y Ana tiene [a euros]. {¿Cuántos euros más que Ana tiene Luis?}", total:"Euros de Luis", p1:"Como Ana", p2:"Más que Ana",
+   sol:"Luis tiene # euros más que Ana.", mal:"Ana tiene # euros."},
+  {txt:"En el autobús iban [a personas]. En la parada subieron algunas y ahora van [t personas]. {¿Cuántas personas subieron?}", total:"Ahora van", p1:"Iban", p2:"Subieron",
+   sol:"En la parada subieron # personas.", mal:"Ahora van # personas."},
+  {txt:"La torre roja tiene [t cubos] y la azul, [a cubos]. {¿Cuántos cubos le faltan a la torre azul para ser tan alta como la roja?}", total:"Torre roja", p1:"Torre azul", p2:"Le faltan",
+   sol:"A la torre azul le faltan # cubos.", mal:"La torre azul tiene # cubos."},
+  {txt:"Pedro tenía [a canicas] y ganó algunas en el recreo. Ahora tiene [t canicas]. {¿Cuántas canicas ganó?}", total:"Ahora tiene", p1:"Tenía", p2:"Ganó",
+   sol:"Pedro ganó # canicas.", mal:"Pedro tenía # canicas."},
+  {txt:"En la granja había [a gallinas]. Han comprado más y ahora hay [t gallinas]. {¿Cuántas gallinas han comprado?}", total:"Ahora hay", p1:"Había", p2:"Han comprado",
+   sol:"Han comprado # gallinas.", mal:"Ahora hay # gallinas."},
+  {txt:"Laura ha hecho [t puntos] en el juego y Sergio, [a puntos]. {¿Cuántos puntos le faltan a Sergio para empatar con Laura?}", total:"Puntos de Laura", p1:"Puntos de Sergio", p2:"Le faltan",
+   sol:"A Sergio le faltan # puntos.", mal:"Sergio tiene # puntos."}];
+const GRUPOS_PB = {j:JUNTAR_PB, s:SEPARAR_PB, dt:DIFICIL_TOTAL_PB, dp:DIFICIL_PARTE_PB};
+
 /* Números de cada problema: 8 parejas fijas por contexto (siempre las mismas, para que el banco sepa cuáles han salido) */
 function numerosPB(tipo, k, semilla){
   let x = 1103 * (k + 1) + 7919 * semilla;
@@ -115,15 +149,15 @@ function numerosPB(tipo, k, semilla){
 /* Todos los problemas de un nivel */
 function listaPB(nivel){
   const l = [];
-  const juntar = (tipo, cuantos) => JUNTAR_PB.forEach((tp, k)=> numerosPB(tipo, k, 1).slice(0, cuantos).forEach(([a, b])=> l.push({k:"j"+k+"-"+a+"-"+b, tpl:k, juntar:true, a, b, t:a + b})));
-  const separar = (tipo, cuantos) => SEPARAR_PB.forEach((tp, k)=> numerosPB(tipo, k, 2).slice(0, cuantos).forEach(([t, a])=> l.push({k:"s"+k+"-"+t+"-"+a, tpl:k, juntar:false, a, b:t - a, t})));
-  if(nivel === "semilla") juntar("sumaSin", 8);
-  else if(nivel === "brote") separar("restaSin", 8);
-  else if(nivel === "arbol") separar("restaCon", 8);
-  else{ juntar("sumaSin", 2); juntar("sumaCon", 2); separar("restaSin", 2); separar("restaCon", 2); }
+  // falta el total (g = j o dt): se conocen las partes a y b; falta una parte (g = s o dp): se conocen t y a
+  const juntar = (g, tipo, semilla, cuantos) => GRUPOS_PB[g].forEach((tp, k)=> numerosPB(tipo, k, semilla).slice(0, cuantos).forEach(([a, b])=> l.push({k:g+k+"-"+a+"-"+b, g, tpl:k, juntar:true, a, b, t:a + b})));
+  const separar = (g, tipo, semilla, cuantos) => GRUPOS_PB[g].forEach((tp, k)=> numerosPB(tipo, k, semilla).slice(0, cuantos).forEach(([t, a])=> l.push({k:g+k+"-"+t+"-"+a, g, tpl:k, juntar:false, a, b:t - a, t})));
+  if(nivel === "semilla"){ juntar("j", "sumaSin", 1, 4); separar("s", "restaSin", 2, 4); }
+  else if(nivel === "brote"){ juntar("j", "sumaCon", 1, 4); separar("s", "restaCon", 2, 4); }
+  else{ juntar("dt", "sumaSin", 3, 4); juntar("dt", "sumaCon", 3, 4); separar("dp", "restaSin", 4, 4); separar("dp", "restaCon", 4, 4); }
   return l;
 }
-const plantillaPB = r => (r.juntar ? JUNTAR_PB : SEPARAR_PB)[r.tpl];
+const plantillaPB = r => GRUPOS_PB[r.g || (r.juntar ? "j" : "s")][r.tpl];
 const incognitaPB = r => r.juntar ? r.t : r.b;
 const valorPB = (r, c) => c === "?" ? "?" : r[c];
 /* El texto en trozos: datos, pregunta y el resto (todos se pueden tocar en el paso 2) */
@@ -144,7 +178,7 @@ function trozosPB(r){
 const textoPB = (r, pinta) => trozosPB(r).map((t, i)=> (/^\s/.test(t.raw) ? " " : "")+pinta(t, i)+(/\s$/.test(t.raw) ? " " : "")).join("").replace(/\s+/g, " ");
 function nuevoProblemaPB(){
   const r = Object.assign({}, delMazo("pb-"+nivelPB(), listaPB(nivelPB())));
-  Object.assign(PB, {reto:r, paso:1, herr:"datos", marcados:[], rodeada:false, corte:null, cajas:{}, chip:null, op:null, escrito:"", frases:null,
+  Object.assign(PB, {reto:r, paso:1, herr:"datos", marcados:[], rodeada:false, corte:null, cajas:{}, chip:null, op:null, escrito:"", frases:null, calc:{},
     aviso:"", tono:"", fallos:0, ejemplo:false});
   pintarProblemas();
 }
@@ -232,6 +266,23 @@ function operacionPB(op){
   avanzarPB(r.juntar ? "¡Eso es! Falta el total: se suma." : "¡Eso es! Falta una parte: se resta.");
 }
 const cuentaPB = r => r.juntar ? [r.a, r.b, "+"] : [r.t, r.a, "−"];
+/* El cálculo, casilla a casilla. Tradicional: primero las unidades (con la llevada) y luego las decenas.
+   Por partes (solo sumas): decenas con decenas (20 + 10 = 30), unidades con unidades (7 + 8 = 15) y se juntan. */
+function casillasPB(r){
+  const [m, s] = cuentaPB(r), mu = m % 10, su = s % 10, md = m - mu, sd = s - su, x = incognitaPB(r);
+  if(r.juntar && PB.forma === "partes") return [
+    {id:"pd", r:md + sd, pista:"Suma las decenas: "+md+" + "+sd+" = ?"},
+    {id:"pu", r:mu + su, pista:"Suma las unidades: "+mu+" + "+su+" = ?"},
+    {id:"pt", r:x, pista:"Junta las dos sumas: "+(md + sd)+" + "+(mu + su)+" = ?"}];
+  const lleva = r.juntar ? mu + su >= 10 : mu < su;
+  return [
+    {id:"u", r:x % 10, pista:r.juntar ? "Suma las unidades: "+mu+" + "+su+" = "+(mu + su)+(lleva ? ". Escribe el "+(mu + su) % 10+" y te llevas 1 a las decenas." : ".") :
+      lleva ? mu+" − "+su+" no se puede: rompe una decena. "+(mu + 10)+" − "+su+" = ?" : "Resta las unidades: "+mu+" − "+su+" = ?",
+     bien:lleva ? (r.juntar ? "¡Bien! "+mu+" + "+su+" = "+(mu + su)+": escribes el "+(mu + su) % 10+" y te llevas 1 a las decenas." : "¡Bien! Has roto una decena: "+(mu + 10)+" − "+su+" = "+(mu + 10 - su)+". Arriba quedan "+(md / 10 - 1)+" decenas.") : ""},
+    {id:"d", r:Math.floor(x / 10), pista:r.juntar ? "Suma las decenas: "+md / 10+" + "+sd / 10+(lleva ? " + 1 que te llevas" : "")+" = ?" :
+      "Resta las decenas: "+(lleva ? (md / 10 - 1)+" (has roto una)" : md / 10)+" − "+sd / 10+" = ?"}];
+}
+const casillaPB = () => casillasPB(PB.reto).find(c=> PB.calc[c.id] === undefined);
 function teclaPB(t){
   if(![6, 8, 9].includes(PB.paso) || (PB.paso === 9 && !PB.reto.juntar)) return;
   if(t === "⌫") PB.escrito = PB.escrito.slice(0, -1);
@@ -239,10 +290,14 @@ function teclaPB(t){
   else if(PB.escrito){
     const v = +PB.escrito, r = PB.reto, x = incognitaPB(r); PB.escrito = "";
     if(PB.paso === 6){
-      if(v === x) return avanzarPB("¡Bien calculado! "+(r.juntar ? r.a+" + "+r.b : r.t+" − "+r.a)+" = "+x+".");
-      const [m, s] = cuentaPB(r), u = r.juntar ? m % 10 + s % 10 : m % 10 - s % 10;
-      return fallarPB(v+" no es. "+(r.juntar ? "Suma primero las unidades: "+(m % 10)+" + "+(s % 10)+" = "+u+(u >= 10 ? " (¡te llevas una decena!)" : "")+"." :
-        u < 0 ? "En las unidades, "+(m % 10)+" − "+(s % 10)+" no se puede: rompe una decena. Si lo necesitas, hazla con La resta descompuesta." : "Resta primero las unidades: "+(m % 10)+" − "+(s % 10)+" = "+u+"."));
+      const c = casillaPB();
+      if(v === c.r){
+        PB.calc[c.id] = v;
+        if(!casillaPB()) return avanzarPB("¡Bien calculado! "+(r.juntar ? r.a+" + "+r.b : r.t+" − "+r.a)+" = "+x+".");
+        PB.aviso = c.bien || ""; PB.tono = c.bien ? "bien" : "";
+        return pintarProblemas();
+      }
+      return fallarPB(v+" no es. "+c.pista);
     }
     if(PB.paso === 8){
       const bueno = r.juntar ? r.a : r.t;
@@ -270,6 +325,8 @@ function iniciarProblemas(){
     $("pbNivel").innerHTML = Object.entries(NIVELES_PB).map(([k, v])=> '<option value="'+k+'">'+v.txt+'</option>').join("");
     $("pbNivel").onchange = e=>{ PB.nivel = e.target.value; guardarPB(); nuevoProblemaPB(); };
     $("pbImprimir").onclick = imprimirProblemas;
+    $("pbPapel").value = PB.papel === "dos" ? "dos" : "estacion";
+    $("pbPapel").onchange = e=>{ PB.papel = e.target.value; guardarPB(); };
     $("pbOtro").onclick = nuevoProblemaPB;
     apTeclado("pbTeclado", teclaPB);
     if(document.fullscreenEnabled) $("pbPantalla").onclick = ()=> pantallaCompleta("vProblemas"); else $("pbPantalla").hidden = true;
@@ -315,11 +372,28 @@ function pintarProblemas(){
   }else if(p === 5){
     h += diagramaPB(false)+'<p>¿Falta el total? → <b>sumo</b>. ¿Falta una parte? → <b>resto</b>.</p><div class="ap-opciones"><button class="ap-opcion texto" data-op="+">+ sumo</button><button class="ap-opcion texto" data-op="−">− resto</button></div>';
   }else if(p === 6){
-    const [m, s, signo] = cuentaPB(r), res = PB.escrito.padStart(2, " ");
-    h += '<div class="pb-calculo"><table class="pb-du" aria-label="'+m+" "+(signo === "+" ? "más" : "menos")+" "+s+'"><thead><tr><th></th><th>D</th><th>U</th></tr></thead><tbody>'+
-      '<tr><td></td><td>'+Math.floor(m / 10)+'</td><td>'+m % 10+'</td></tr><tr><td class="pb-signo">'+signo+'</td><td>'+Math.floor(s / 10)+'</td><td>'+s % 10+'</td></tr>'+
-      '<tr class="pb-res"><td></td><td>'+(PB.escrito.length > 1 ? res[0] : "")+'</td><td>'+(PB.escrito ? res[res.length - 1] : "?")+'</td></tr></tbody></table>'+
-      (!r.juntar && r.a % 10 > r.t % 10 ? '<button class="bt" id="pbResta">➖ Hacerla con La resta descompuesta</button>' : '')+'</div>';
+    const [m, s2, signo] = cuentaPB(r), act = casillaPB(), campo = id=> PB.calc[id] !== undefined ? '<span class="pb-hecho">'+PB.calc[id]+'</span>' :
+      act && act.id === id ? '<span class="ap-campo activo'+(PB.tono === "mal" ? " mal" : "")+'">'+(PB.escrito || "?")+'</span>' : '';
+    if(r.juntar) h += '<div class="segmentos pb-formas" role="group" aria-label="Forma de calcular"><button data-forma="tradicional" aria-pressed="'+(PB.forma !== "partes")+'">Tradicional (D U)</button><button data-forma="partes" aria-pressed="'+(PB.forma === "partes")+'">Por partes (d + u)</button></div>';
+    h += '<div class="pb-calculo">';
+    if(r.juntar && PB.forma === "partes"){
+      const mu = m % 10, su = s2 % 10;
+      h += '<table class="pb-du partes" aria-label="'+m+" más "+s2+' por partes"><tbody>'+
+        '<tr><td></td><td class="pb-num">'+m+'</td><td></td></tr><tr><td class="pb-signo">+</td><td class="pb-num">'+s2+'</td><td></td></tr>'+
+        '<tr class="pb-linea"><td class="pb-letra">d</td><td>'+campo("pd")+'</td><td class="pb-ayuda">'+(m - mu)+' + '+(s2 - su)+'</td></tr>'+
+        '<tr><td class="pb-letra">u <span class="pb-signo">+</span></td><td>'+campo("pu")+'</td><td class="pb-ayuda">'+mu+' + '+su+'</td></tr>'+
+        '<tr class="pb-linea pb-total"><td></td><td>'+campo("pt")+'</td><td></td></tr></tbody></table>';
+    }else{
+      const lleva = r.juntar ? m % 10 + s2 % 10 >= 10 : m % 10 < s2 % 10, hechaU = PB.calc.u !== undefined;
+      const marca = lleva && hechaU ? (r.juntar ? '<span class="pb-llevo">1</span>' : '<span class="pb-llevo">'+(Math.floor(m / 10) - 1)+'</span>') : '';
+      const decArriba = lleva && hechaU && !r.juntar ? '<s>'+Math.floor(m / 10)+'</s>' : Math.floor(m / 10);
+      const uniArriba = lleva && hechaU && !r.juntar ? '<span class="pb-llevo">1'+m % 10+'</span><s>'+m % 10+'</s>' : m % 10;
+      h += '<table class="pb-du" aria-label="'+m+" "+(signo === "+" ? "más" : "menos")+" "+s2+'"><thead><tr><th></th><th>D</th><th>U</th></tr></thead><tbody>'+
+        '<tr><td></td><td class="pb-marca">'+marca+decArriba+'</td><td class="pb-marca">'+uniArriba+'</td></tr><tr><td class="pb-signo">'+signo+'</td><td>'+Math.floor(s2 / 10)+'</td><td>'+s2 % 10+'</td></tr>'+
+        '<tr class="pb-res"><td></td><td>'+campo("d")+'</td><td>'+campo("u")+'</td></tr></tbody></table>';
+    }
+    h += (!r.juntar && r.a % 10 > r.t % 10 ? '<button class="bt" id="pbResta">➖ Hacerla con La resta descompuesta</button>' : '')+'</div>';
+    if(act) h += '<p class="pb-cuenta">'+({u:"Empieza por las <b>unidades</b>.", d:"Ahora las <b>decenas</b>.", pd:"Suma las <b>decenas</b> (d).", pu:"Suma las <b>unidades</b> (u).", pt:"<b>Junta</b> las dos sumas."})[act.id]+'</p>';
   }else if(p === 7){
     h += '<p>¿Qué frase responde a la pregunta <b>«'+trozos.find(t=> t.tipo === "pregunta").txt+'»</b>?</p><div class="pb-frases">'+PB.frases.map((f, i)=> '<button class="ap-opcion texto pb-frase" data-fr="'+i+'">'+f.txt+'</button>').join("")+'</div>';
   }else if(p === 8){
@@ -355,6 +429,7 @@ function pintarProblemas(){
   c.querySelectorAll("[data-h]").forEach(b=> b.onclick = ()=>{ PB.herr = b.dataset.h; pintarProblemas(); c.querySelector('[data-h="'+PB.herr+'"]')?.focus(); });
   c.querySelectorAll("[data-f]").forEach(b=> b.onclick = ()=>{ PB.chip = PB.chip === b.dataset.f ? null : b.dataset.f; PB.aviso = ""; pintarProblemas(); (c.querySelector(".pb-caja.vacia") || c.querySelector('[data-f="'+b.dataset.f+'"]'))?.focus(); });
   c.querySelectorAll("[data-caja]").forEach(b=> b.onclick = ()=>{ ponerPB(b.dataset.caja); (c.querySelector(".pb-ficha") || c.querySelector(".ap-opcion"))?.focus(); });
+  c.querySelectorAll("[data-forma]").forEach(b=> b.onclick = ()=>{ PB.forma = b.dataset.forma; guardarPB(); PB.calc = {}; PB.escrito = ""; PB.aviso = ""; pintarProblemas(); c.querySelector('[data-forma="'+PB.forma+'"]')?.focus(); });
   c.querySelectorAll("[data-op]").forEach(b=> b.onclick = ()=> operacionPB(b.dataset.op));
   c.querySelectorAll("[data-fr]").forEach(b=> b.onclick = ()=> frasePB(+b.dataset.fr));
   $("pbLeido")?.addEventListener("click", ()=>{ avanzarPB(); c.querySelector("[data-tr]")?.focus(); });
@@ -376,15 +451,32 @@ function tecladoProblemas(e){
 }
 
 /* ---------- Imprimir la estación: checklist, una ficha por nivel y el solucionario ---------- */
+/* El diagrama en papel: con nombres (Semilla), con huecos para los nombres (Brote) o en blanco (Árbol) */
+function diagPapelPB(r, nivel){
+  const tp = plantillaPB(r), caja = '<span class="hj-pb-hueco"></span>';
+  if(nivel === "semilla") return '<div class="hj-pb-barra"><span>'+tp.total+'</span>'+caja+'</div><div class="hj-pb-partes"><div class="hj-pb-barra"><span>'+tp.p1+'</span>'+caja+'</div><div class="hj-pb-barra"><span>'+tp.p2+'</span>'+caja+'</div></div>';
+  if(nivel === "arbol") return '<div class="hj-pb-barra blanco"><span class="gris">total</span></div><div class="hj-pb-barra blanco"><span class="gris">parte + parte (traza tú la línea que las separa)</span></div>';
+  return '<div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div><div class="hj-pb-partes"><div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div><div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div></div>';
+}
+const retoPapelPB = (r, nivel) => r.juntar ? plantillaPB(r).reto[0] : nivel === "arbol" ? "Inventa un problema de sumar que se resuelva con este mismo diagrama." : "Inventa otra pregunta con los mismos datos y respóndela.";
+const bloomPapelPB = l => l.map(b=> '<span class="hj-pb-bloom">'+b+'</span>').join("");
+/* Media ficha (para imprimir dos por cara): lo mismo que la ficha entera, más apretado */
+function mediaFichaPB(r, nivel){
+  const texto = textoPB(r, t=> t.tipo === "dato" ? '<b>'+t.txt+'</b>' : t.txt), bl = bloomPapelPB;
+  return '<div class="hj-pbm">'+
+    '<div class="hj-pbm-cab"><b>Resuelvo problemas</b><span class="hj-pbm-nivel">'+NIVELES_PB[nivel].marca+'</span><span class="hj-pbm-dato">Nombre: <i></i></span><span class="hj-pbm-dato corto">Fecha: <i></i></span></div>'+
+    '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["RECORDAR", "COMPRENDER"])+' 1 y 2. Lee. Subraya los datos y rodea la pregunta.</p><p class="hj-pbm-texto">'+texto+'</p></div>'+
+    '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["ANALIZAR"])+' 3 y 4. Escribe cada número en su sitio y pon <b>?</b> en lo que no sabes.</p><div class="hj-pb-diag hj-pbm-diag">'+diagPapelPB(r, nivel)+'</div></div>'+
+    '<div class="hj-pbm-tres"><div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 5. ¿Qué hago?</p><p class="hj-pb-ops"><span>+ sumo</span><span>− resto</span></p></div>'+
+      '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 6. Calculo.</p><table class="hj-pb-du"><tr><th>D</th><th>U</th></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr class="res"><td></td><td></td></tr></table></div>'+
+      '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["EVALUAR"])+' 8. Compruebo.</p><p class="hj-pb-si">SÍ &nbsp; NO</p><p class="hj-pb-si">Así: <span class="hj-pb-linea corta"></span></p></div></div>'+
+    '<div class="hj-pbm-dos"><div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 7. La solución con una frase.</p><span class="hj-pb-linea"></span></div>'+
+      '<div class="hj-pb-caja pb-reto"><p class="hj-pb-tit">'+bl(["CREAR"])+' ★ '+(r.juntar ? retoPapelPB(r, nivel) : nivel === "arbol" ? "Inventa un problema de sumar con este diagrama." : "Inventa otra pregunta con estos datos.")+'</p><span class="hj-pb-linea"></span></div></div>'+
+    '<div class="hj-pb-mini hj-pbm-mini">'+["Leo", "Subrayo", "Diagrama", "Datos", "Operación", "Calculo", "Solución", "Compruebo"].map((t, i)=> '<span><i></i>'+(i + 1)+'. '+t+'</span>').join("")+'</div></div>';
+}
 function fichaPapelPB(r, nivel, pagina, paginas){
   const tp = plantillaPB(r), texto = textoPB(r, t=> t.tipo === "dato" ? '<b>'+t.txt+'</b>' : t.txt);
-  const bl = l => l.map(b=> '<span class="hj-pb-bloom">'+b+'</span>').join("");
-  const caja = '<span class="hj-pb-hueco"></span>';
-  let diag;
-  if(nivel === "semilla") diag = '<div class="hj-pb-barra"><span>'+tp.total+'</span>'+caja+'</div><div class="hj-pb-partes"><div class="hj-pb-barra"><span>'+tp.p1+'</span>'+caja+'</div><div class="hj-pb-barra"><span>'+tp.p2+'</span>'+caja+'</div></div>';
-  else if(nivel === "arbol") diag = '<div class="hj-pb-barra blanco"><span class="gris">total</span></div><div class="hj-pb-barra blanco"><span class="gris">parte + parte (traza tú la línea que las separa)</span></div>';
-  else diag = '<div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div><div class="hj-pb-partes"><div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div><div class="hj-pb-barra"><span class="raya"></span>'+caja+'</div></div>';
-  const reto = r.juntar ? tp.reto[0] : nivel === "arbol" ? "Inventa un problema de sumar que se resuelva con este mismo diagrama." : "Inventa otra pregunta con los mismos datos y respóndela.";
+  const bl = bloomPapelPB, diag = diagPapelPB(r, nivel), reto = retoPapelPB(r, nivel);
   const lineas = n => Array(n).fill('<span class="hj-pb-linea"></span>').join("");
   const mini = '<div class="hj-pb-mini">'+PASOS_PB.slice(1).map((s, i)=> '<span><i></i>'+(i + 1)+'. '+s.txt+'</span>').join("")+'</div>';
   return hojaPapel({titulo:"Resuelvo problemas", sub:"Sigue los 8 pasos de la checklist.", eti:NIVELES_PB[nivel].marca, pagina, paginas, datos:[["Nombre", "", 3], ["Fecha", "", 1]],
@@ -407,7 +499,18 @@ function solucionPB(r, nivel){
     '<li>Solución: '+tp.sol.replace("#", x)+'</li>'+
     '<li>Comprobación: '+(r.juntar ? x+" − "+r.b+" = "+r.a : r.a+" + "+x+" = "+r.t)+' ✓ · Reto: '+(r.juntar ? r.t+" + "+tp.reto[1]+" = "+(r.t + tp.reto[1]) : nivel === "arbol" ? "ej. «"+tp.p1+": "+r.a+"; "+tp.p2+": "+x+". ¿Cuántos son en total?»" : "respuesta libre")+'.</li></ul></div>';
 }
+/* Dos fichas por cara: 4 fichas del nivel elegido en dos caras (para imprimir a doble cara) y el solucionario */
+function imprimirDosPorCaraPB(){
+  const n = nivelPB(), lista = listaPB(n), retos = Array.from({length:4}, ()=> Object.assign({}, delMazo("pb-"+n, lista)));
+  const cara = (i, pagina) => hojaPapel({titulo:"Resuelvo problemas", sub:"Sigue los 8 pasos de la checklist. Dos fichas por cara: recorta por la línea.", eti:NIVELES_PB[n].marca, pagina, paginas:3,
+    cuerpo:'<div class="hj-pbm-hoja">'+mediaFichaPB(retos[i], n)+'<div class="hj-pbm-corte" aria-hidden="true">✂</div>'+mediaFichaPB(retos[i + 1], n)+'</div>'});
+  $("impresion").innerHTML = (cara(0, 1)+cara(2, 2)).replace(/<section class="hoja/g, '<section class="hoja hj-compacta')+
+    hojaPapel({titulo:"Solucionario", sub:"Las cuatro fichas, en orden.", eti:"Para el docente", pagina:3, paginas:3, docente:true,
+      cuerpo:retos.map((r, i)=> solucionPB(r, n).replace('<p class="hj-pb-sol-tit">', '<p class="hj-pb-sol-tit">Ficha '+(i + 1)+' · ')).join("")});
+  lanzarImpresion();
+}
 function imprimirProblemas(){
+  if(PB.papel === "dos") return imprimirDosPorCaraPB();
   const niveles = ["semilla", "brote", "arbol"], retos = niveles.map(n=> Object.assign({}, delMazo("pb-"+n, listaPB(n))));
   const paginas = 5;
   const check = '<div class="hj-pb-check">'+PASOS_PB.slice(1).map((s, i)=> '<div><i></i><span><b>'+(i + 1)+'. '+s.txt+'</b><br>'+s.sub+'</span></div>').join("")+'</div>'+

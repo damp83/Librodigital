@@ -22,9 +22,6 @@ concurrency:
 jobs:
   publicar:
     runs-on: ubuntu-24.04   # Playwright 1.56 aún no instala Chromium en Ubuntu 26.04 (el ubuntu-latest actual)
-    environment:
-      name: github-pages
-      url: ${{ steps.despliegue.outputs.page_url }}
     steps:
       # Siempre la versión más reciente de main (no la del momento en que se subió el archivo): si se suben
       # varias tandas seguidas, cada publicación espera a la anterior y parte de lo que esta ya guardó.
@@ -90,5 +87,14 @@ jobs:
         with:
           path: .
 
+  # El despliegue va en un trabajo aparte, como recomienda GitHub: si se hace en el mismo trabajo, justo después de
+  # subir la web, a veces GitHub aún no la tiene registrada («No artifacts named github-pages were found»).
+  desplegar:
+    needs: publicar
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
       - id: despliegue
         uses: actions/deploy-pages@v4

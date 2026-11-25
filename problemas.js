@@ -554,10 +554,15 @@ function diagPapelPB(r, nivel){
 const retoPapelPB = (r, nivel) => r.juntar ? plantillaPB(r).reto[0] : nivel === "arbol" ? "Inventa un problema de sumar que se resuelva con este mismo diagrama." : "Inventa otra pregunta con los mismos datos y respóndela.";
 const bloomPapelPB = l => l.map(b=> '<span class="hj-pb-bloom">'+b+'</span>').join("");
 /* El hueco para calcular en papel: tradicional (D U, con una fila para lo que te llevas o lo que rompes) o por
-   descomposición, como en el aula (27 = 20 + 7… y, si hay que romper una decena, 52 = 50 + 2 ‖ 40 + 12) */
-function calcPapelPB(){
+   descomposición, como en el aula (27 = 20 + 7… y, si hay que romper una decena, 52 = 50 + 2 ‖ 40 + 12).
+   La suma por descomposición, en vertical como en el aula: 27 + 18, d 30, u + 15 y el resultado en una caja (45). */
+function calcPapelPB(r){
   if(PB.calcPapel === "descomposicion"){
     const c = '<span class="hj-pb-hueco"></span>', fila = c+' = '+c+' + '+c;
+    if(r && r.juntar){
+      const f = (eti, cl) => '<tr'+(cl ? ' class="'+cl+'"' : '')+'><td>'+eti+'</td><td></td><td></td></tr>';
+      return '<table class="hj-pb-du hj-pb-dsum" aria-label="Suma por descomposición">'+f("")+f("+")+f("d", "res")+f("u +")+f("", "res tot")+'</table>';
+    }
     return '<div class="hj-pb-desc"><div class="hj-pb-desc-izq"><span>'+fila+'</span><span>'+fila+'</span></div><div class="hj-pb-desc-doble"></div>'+
       '<div class="hj-pb-desc-der"><span>'+c+' + '+c+'</span><span>'+c+' + '+c+'</span><span class="hj-pb-desc-raya"></span><span>'+c+' + '+c+' → '+c+'</span></div></div>'+
       '<p class="hj-pb-desc-nota">Después de ‖, cómo queda si hay que romper una decena.</p>';
@@ -568,7 +573,7 @@ function calcPapelPB(){
 function calcSolucionPB(r){
   const [m, s] = cuentaPB(r), x = incognitaPB(r), d = n => (n - n % 10)+" + "+n % 10;
   if(PB.calcPapel !== "descomposicion") return r.juntar ? m+" + "+s+" = "+x+(m % 10 + s % 10 >= 10 ? " (me llevo 1)" : "") : m+" − "+s+" = "+x+(m % 10 < s % 10 ? " (rompo una decena)" : "");
-  if(r.juntar) return m+" = "+d(m)+"; "+s+" = "+d(s)+" → "+(m - m % 10 + s - s % 10)+" + "+(m % 10 + s % 10)+" = "+x;
+  if(r.juntar) return m+" + "+s+" → d "+(m - m % 10)+" + "+(s - s % 10)+" = "+(m - m % 10 + s - s % 10)+"; u "+m % 10+" + "+s % 10+" = "+(m % 10 + s % 10)+" → "+(m - m % 10 + s - s % 10)+" + "+(m % 10 + s % 10)+" = "+x;
   const rompe = m % 10 < s % 10;
   return m+" = "+d(m)+"; "+s+" = "+d(s)+(rompe ? " ‖ "+(m - m % 10 - 10)+" + "+(m % 10 + 10) : "")+" → "+(x - x % 10)+" + "+x % 10+" = "+x;
 }
@@ -581,7 +586,7 @@ function mediaFichaPB(r, nivel){
     '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["ANALIZAR"])+' 3 y 4. Escribe cada número en su sitio y pon <b>?</b> en lo que no sabes.</p><div class="hj-pb-diag hj-pbm-diag">'+diagPapelPB(r, nivel)+'</div></div>'+
     '<div class="hj-pbm-calc"><div class="hj-pbm-col"><div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 5. ¿Qué hago?</p><p class="hj-pb-ops"><span>+ sumo</span><span>− resto</span></p></div>'+
         '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["EVALUAR"])+' 8. Compruebo.</p><p class="hj-pb-si">SÍ &nbsp; NO &nbsp; Así: <span class="hj-pb-linea corta"></span></p></div></div>'+
-      '<div class="hj-pb-caja hj-pb-calc"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 6. Calculo.</p>'+calcPapelPB()+'</div></div>'+
+      '<div class="hj-pb-caja hj-pb-calc"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 6. Calculo.</p>'+calcPapelPB(r)+'</div></div>'+
     '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 7. Escribo la solución con una frase.</p><span class="hj-pb-linea"></span></div>'+
     '<div class="hj-pb-caja pb-reto"><p class="hj-pb-tit">'+bl(["CREAR"])+' ★ Reto: '+retoPapelPB(r, nivel)+'</p><span class="hj-pb-linea"></span></div></div>';
 }
@@ -596,7 +601,7 @@ function fichaPapelPB(r, nivel, pagina, paginas){
       '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["ANALIZAR"])+' 3 y 4. Representa el problema en el diagrama. Escribe cada número en su sitio y pon <b>?</b> en lo que no sabes.</p><div class="hj-pb-diag">'+diag+'</div>'+
         (nivel === "semilla" ? '<p class="hj-pb-pista">Pista: puedes construir el '+r.a+' con regletas: '+Math.floor(r.a / 10)+' naranjas y '+r.a % 10+' blancas.</p>' : '')+'</div>'+
       '<div class="hj-pb-dos"><div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 5. ¿Qué operación hago?</p><p class="hj-pb-ops vertical"><span>+ sumo</span><span>− resto</span></p></div>'+
-        '<div class="hj-pb-caja hj-pb-calc"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 6. Calculo.</p>'+calcPapelPB()+'</div></div>'+
+        '<div class="hj-pb-caja hj-pb-calc"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 6. Calculo.</p>'+calcPapelPB(r)+'</div></div>'+
       '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["APLICAR"])+' 7. Escribo la solución con una frase.</p>'+lineas(2)+'</div>'+
       '<div class="hj-pb-caja"><p class="hj-pb-tit">'+bl(["EVALUAR"])+' 8. Compruebo. ¿Tiene sentido mi resultado?</p><p class="hj-pb-si">SÍ &nbsp; NO &nbsp;&nbsp; Lo compruebo así: <span class="hj-pb-linea corta"></span></p></div>'+
       '<div class="hj-pb-caja pb-reto"><p class="hj-pb-tit">'+bl(["CREAR"])+' ★ Reto: '+reto+'</p>'+lineas(2)+'</div>'+mini+'</div>'});

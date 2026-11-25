@@ -558,6 +558,12 @@ await prueba("Herramientas, modo aula y secciones funcionan", ()=> conPagina({},
   await p.click('[data-forma="tradicional"]');
   await p.click("#pbResta"); await p.waitForSelector("#vResta:not([hidden]) .rd-caja");
   exigir(await p.evaluate(t=> RS.plan.a === t[0] && RS.plan.b === t[1], tA), "problemas: el botón no lleva la resta a La resta descompuesta");
+  // en papel, la suma por descomposición solo lleva sus huecos; la resta, los de romper la decena (‖)
+  const papelPB = await p.evaluate(()=>{ PB.calcPapel = "descomposicion"; const l = listaPB("brote");
+    const suma = document.createElement("div"), resta = document.createElement("div");
+    suma.innerHTML = calcPapelPB(l.find(r=> r.juntar)); resta.innerHTML = calcPapelPB(l.find(r=> !r.juntar)); PB.calcPapel = "tradicional";
+    return [suma.querySelector(".hj-pb-desc-doble"), suma.querySelector(".hj-pb-desc-sep"), resta.querySelector(".hj-pb-desc-doble")].map(Boolean); });
+  exigir(papelPB.join() === "false,true,true", "problemas: en papel, la suma por descomposición lleva los huecos de la resta: "+papelPB);
   // La serpiente de números: comerse el bueno la hace crecer, el malo no; las paredes la paran; se completa la serie
   await p.evaluate(()=> localStorage.removeItem("aula-serpiente"));
   await p.goto(WEB+"#/serpiente"); await p.waitForSelector("#vSerpiente:not([hidden]) .sp-cabeza");

@@ -250,7 +250,7 @@ Su entrada del catálogo y su portada se quitan solas.
       estación y el solucionario) o *2 fichas por cara* (4 fichas del nivel elegido en media hoja cada una, con línea
       de corte, para imprimir a doble cara, y su solucionario). Y el *cálculo* de la ficha: *tradicional* (D U, con una fila
       para lo que te llevas o rompes) o *por descomposición* (27 = 20 + 7… y, si hay que romper una decena,
-      52 = 50 + 2 ‖ 40 + 12; las sumas solo llevan sus huecos: d ▢ + ▢ = ▢, u ▢ + ▢ = ▢ y el total); el solucionario lo escribe de la forma elegida.
+      52 = 50 + 2 ‖ 40 + 12; las sumas, en vertical como en el aula: 27 + 18, d 30, u + 15 y el 45 en una caja); el solucionario lo escribe de la forma elegida.
     - *La resta descompuesta* (`#/resta`, en `resta.js`): la resta con el formato del aula: se descomponen
       los dos números (52 = 50 + 2, − 27 = 20 + 7), después de la doble raya se transforma el minuendo si no
       llega (40 + 12: se rompe una decena), se resta cada orden (20 + 5) y se junta (25). Antes de romper pregunta

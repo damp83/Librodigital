@@ -555,12 +555,14 @@ const retoPapelPB = (r, nivel) => r.juntar ? plantillaPB(r).reto[0] : nivel === 
 const bloomPapelPB = l => l.map(b=> '<span class="hj-pb-bloom">'+b+'</span>').join("");
 /* El hueco para calcular en papel: tradicional (D U, con una fila para lo que te llevas o lo que rompes) o por
    descomposición, como en el aula (27 = 20 + 7… y, si hay que romper una decena, 52 = 50 + 2 ‖ 40 + 12).
-   La suma por descomposición solo lleva sus huecos: 27 = 20 + 7, 18 = 10 + 8, d 20 + 10 = 30, u 7 + 8 = 15, 30 + 15 = 45. */
+   La suma por descomposición, en vertical como en el aula: 27 + 18, d 30, u + 15 y el resultado en una caja (45). */
 function calcPapelPB(r){
   if(PB.calcPapel === "descomposicion"){
     const c = '<span class="hj-pb-hueco"></span>', fila = c+' = '+c+' + '+c;
-    if(r && r.juntar) return '<div class="hj-pb-desc"><div class="hj-pb-desc-izq"><span>'+fila+'</span><span>'+fila+'</span></div><div class="hj-pb-desc-sep"></div>'+
-      '<div class="hj-pb-desc-der"><span><b class="hj-pb-desc-l">d</b>'+c+' + '+c+' = '+c+'</span><span><b class="hj-pb-desc-l">u</b>'+c+' + '+c+' = '+c+'</span><span class="hj-pb-desc-raya"></span><span><b class="hj-pb-desc-l"></b>'+c+' + '+c+' = '+c+'</span></div></div>';
+    if(r && r.juntar){
+      const f = (eti, cl) => '<tr'+(cl ? ' class="'+cl+'"' : '')+'><td>'+eti+'</td><td></td><td></td></tr>';
+      return '<table class="hj-pb-du hj-pb-dsum" aria-label="Suma por descomposición">'+f("")+f("+")+f("d", "res")+f("u +")+f("", "res tot")+'</table>';
+    }
     return '<div class="hj-pb-desc"><div class="hj-pb-desc-izq"><span>'+fila+'</span><span>'+fila+'</span></div><div class="hj-pb-desc-doble"></div>'+
       '<div class="hj-pb-desc-der"><span>'+c+' + '+c+'</span><span>'+c+' + '+c+'</span><span class="hj-pb-desc-raya"></span><span>'+c+' + '+c+' → '+c+'</span></div></div>'+
       '<p class="hj-pb-desc-nota">Después de ‖, cómo queda si hay que romper una decena.</p>';
@@ -571,7 +573,7 @@ function calcPapelPB(r){
 function calcSolucionPB(r){
   const [m, s] = cuentaPB(r), x = incognitaPB(r), d = n => (n - n % 10)+" + "+n % 10;
   if(PB.calcPapel !== "descomposicion") return r.juntar ? m+" + "+s+" = "+x+(m % 10 + s % 10 >= 10 ? " (me llevo 1)" : "") : m+" − "+s+" = "+x+(m % 10 < s % 10 ? " (rompo una decena)" : "");
-  if(r.juntar) return m+" = "+d(m)+"; "+s+" = "+d(s)+" → "+(m - m % 10 + s - s % 10)+" + "+(m % 10 + s % 10)+" = "+x;
+  if(r.juntar) return m+" + "+s+" → d "+(m - m % 10)+" + "+(s - s % 10)+" = "+(m - m % 10 + s - s % 10)+"; u "+m % 10+" + "+s % 10+" = "+(m % 10 + s % 10)+" → "+(m - m % 10 + s - s % 10)+" + "+(m % 10 + s % 10)+" = "+x;
   const rompe = m % 10 < s % 10;
   return m+" = "+d(m)+"; "+s+" = "+d(s)+(rompe ? " ‖ "+(m - m % 10 - 10)+" + "+(m % 10 + 10) : "")+" → "+(x - x % 10)+" + "+x % 10+" = "+x;
 }
